@@ -1,0 +1,19 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-service
+
+eureka:
+  client:
+    # 자신의 정보를 Eureka 서버에 등록
+    register-with-eureka: false
+    # 다른 서비스들의 정보를 eureka 서버에서 받아서 로컬에 캐싱
+    fetch-registry: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
