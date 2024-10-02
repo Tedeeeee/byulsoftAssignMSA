@@ -34,10 +34,12 @@ public class AuthController {
 
     @PostMapping("/token/renew")
     public ResponseEntity<String> renewToken(HttpServletRequest request, HttpServletResponse response) {
+        // 쿠키를 전달해주면 된다
         String refreshToken = findRefreshTokenInCookie(request);
 
         Map<String, String> tokenMap = authService.resetRefreshToken(refreshToken);
 
+        // response.addHeader를 통해 쿠키만 넣어주면 된다
         addRefreshTokenToResponseCookie(response, tokenMap);
 
         return new ResponseEntity<>(tokenMap.get("accessToken"), HttpStatus.OK);
