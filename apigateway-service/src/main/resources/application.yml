@@ -13,11 +13,22 @@ spring:
             - Path=/api/authService/**
           filters:
             - RewritePath=/api/authService/(?<segment>.*), /${segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/userService/**
+          filters:
+            - RewritePath=/api/userService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
+
+jwt:
+  secret:
+    key: alksdhtkothklajnsgklvjhaskgbjhsbgamnkhabksjghjhdhbjkggnjfTlsejrlfrpaksemfdjdigksmszlfkspdyurmfotjdhfbrkrjffuTekspdy
 
 management:
   endpoints:
