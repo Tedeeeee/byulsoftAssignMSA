@@ -85,7 +85,7 @@ public class WebSecurityConfig {
     public CustomAuthenticationFilter customAuthenticationFilter() {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(), objectMapper);
         customAuthenticationFilter.setFilterProcessesUrl("/login");
-        customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler(memberMapper, tokenCreateService));
+        customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler(memberMapper, tokenCreateService, objectMapper));
         customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler(objectMapper));
         customAuthenticationFilter.afterPropertiesSet();
         return customAuthenticationFilter;

@@ -6,11 +6,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,16 +28,20 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
         // Map 형태로 전달 vs 객체 형태로 제작 후 전달
         Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", HttpStatus.UNAUTHORIZED);
+        errorResponse.put("statusCode", HttpStatus.UNAUTHORIZED.value());
 
         if (exception instanceof BadCredentialsException) {
-            errorResponse.put("status", HttpStatus.UNAUTHORIZED);
-            errorResponse.put("statusCode", HttpStatus.UNAUTHORIZED.value());
+            errorResponse.put("message", exception.getMessage());
+        } else if (exception instanceof UsernameNotFoundException) {
+            errorResponse.put("message", exception.getMessage());
+        } else {
             errorResponse.put("message", exception.getMessage());
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
         String responseBody = objectMapper.writeValueAsString(errorResponse);
 

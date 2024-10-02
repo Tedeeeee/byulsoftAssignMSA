@@ -1,6 +1,7 @@
 package com.example.authservice.security.filter;
 
 import com.example.authservice.entity.Member;
+import com.example.authservice.security.service.MemberValidationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,7 +37,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) throws IOException {
         Member member = objectMapper.readValue(request.getReader(), Member.class);
 
-        // 여기서 패턴을 컴파일러하는 로직이 필요
+        MemberValidationService.memberInputDataValidation(member.getMemberEmail(),member.getMemberPassword());
 
         return new UsernamePasswordAuthenticationToken(member.getMemberEmail(), member.getMemberPassword());
     }

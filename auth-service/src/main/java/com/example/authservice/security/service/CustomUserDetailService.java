@@ -19,7 +19,11 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Member member = memberMapper.findMemberByMemberEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("아이디가 잘못 되었습니다"));
+
+        if (member.isMemberIsDelete()) {
+            throw new UsernameNotFoundException("탈퇴한 사용자 입니다");
+        }
 
         return User.builder()
                 .username(member.getMemberEmail())
