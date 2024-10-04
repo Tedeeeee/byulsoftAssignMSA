@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -17,7 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,14 +46,16 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     private void sendTokens(HttpServletResponse response, String accessToken, String refreshToken, Member member) throws IOException {
-        ResponseCookie refreshCookie = ResponseCookie.from("RefreshToken", refreshToken)
+        System.out.println(TokenCreateService.REFRESH_TOKEN_SUBJECT);
+        ResponseCookie refreshCookie = ResponseCookie.from(TokenCreateService.REFRESH_TOKEN_SUBJECT, refreshToken)
                 .httpOnly(true)
                 .path("/")
-                .maxAge(604800)
+                .maxAge(TokenCreateService.REFRESH_TOKEN_EXPIRES_IN)
                 .build();
 
         Map<String, String> responseValue = new HashMap<>();
-        responseValue.put("accessToken", accessToken);
+        responseValue.put(TokenCreateService.ACCESS_TOKEN_SUBJECT, accessToken);
+        // accessToken 이 메모리에 저장되면서 nickname을 꼭 사용해야 하는가에 대한 고려
         responseValue.put("nickname", member.getMemberNickname());
 
         String jsonResponseBody = objectMapper.writeValueAsString(responseValue);

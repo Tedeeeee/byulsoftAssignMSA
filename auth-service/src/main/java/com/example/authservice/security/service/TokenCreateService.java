@@ -19,8 +19,9 @@ public class TokenCreateService {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
-    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+    public static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
+    public static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+    public static final int REFRESH_TOKEN_EXPIRES_IN = 604800;
 
     public String createAccessToken(Member member) {
         JwtBuilder builder = Jwts.builder()

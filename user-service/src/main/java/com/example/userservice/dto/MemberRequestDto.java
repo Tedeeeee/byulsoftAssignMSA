@@ -1,6 +1,7 @@
 package com.example.userservice.dto;
 
-import jakarta.validation.ValidationException;
+import com.example.userservice.entity.Member;
+import com.example.userservice.util.ValidationUtil;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberRequestDto {
 
-    private static final String EMAIL_VALIDATION = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-    private static final String PASSWORD_VALIDATION = "^(?=.*[A-Z])(?=.*[!@#$%^*+=-]).{6,}$";
-
     @NotBlank
     private int memberId;
 
@@ -23,13 +21,23 @@ public class MemberRequestDto {
     @NotBlank
     private String memberPassword;
 
-    public void validation() {
-        if (!memberEmail.matches(EMAIL_VALIDATION)) {
-            throw new ValidationException("이메일이 유효하지 않습니다");
-        }
+    @NotBlank
+    private String memberNickname;
+    private String memberName;
+    private String memberPhoneNumber;
 
-        if (!memberPassword.matches(PASSWORD_VALIDATION)) {
-            throw new ValidationException("유효한 비밀번호를 입력해주세요");
-        }
+    public void memberSignupValidator() {
+        ValidationUtil.emailValidationCheck(memberEmail);
+        ValidationUtil.nicknameValidationCheck(memberNickname);
+    }
+
+    public Member toEntity() {
+        return Member.builder()
+                .memberEmail(memberEmail)
+                .memberPassword(memberPassword)
+                .memberNickname(memberNickname)
+                .memberName(memberName)
+                .memberPhoneNumber(memberPhoneNumber)
+                .build();
     }
 }

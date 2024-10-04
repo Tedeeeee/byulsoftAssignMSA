@@ -19,6 +19,27 @@
         <result property="memberUpdatedAt" column="member_updated_at"/>
     </resultMap>
 
+    <insert id="save" parameterType="com.example.userservice.entity.Member" >
+        INSERT INTO Member
+        (
+            member_email,
+            member_password,
+            member_nickname,
+            member_name,
+            member_phone_number,
+            member_is_delete,
+            member_role
+        ) values (
+             #{memberEmail},
+             #{memberPassword},
+             #{memberNickname},
+             #{memberName},
+             #{memberPhoneNumber},
+             false,
+             'USER'
+         )
+    </insert>
+
     <select id="findMemberByMemberEmail" resultMap="memberResultMap">
         select
             member_id,
@@ -32,5 +53,21 @@
             member_updated_at
         from member
         where member_email = #{memberEmail}
+    </select>
+
+    <select id="checkNickName" resultType="java.lang.Boolean">
+        select exists(
+            select 1
+            from member
+            where member_nickname = #{memberNickname}
+        );
+    </select>
+
+    <select id="checkEmail" resultType="java.lang.Boolean">
+        select exists(
+            select 1
+            from member
+            where member_email = #{memberEmail}
+        );
     </select>
 </mapper>

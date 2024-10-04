@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Mapper
 public interface MemberMapper {
-    Optional<Member> findMemberByMemberEmail(String memberEmail);
     void saveRefreshToken(@Param("memberId") int memberId,@Param("memberRefreshToken") String refreshToken);
+    Optional<Member> findMemberByMemberEmail(String memberEmail);
     Optional<Member> findMemberByRefreshToken(String refreshToken);
 }

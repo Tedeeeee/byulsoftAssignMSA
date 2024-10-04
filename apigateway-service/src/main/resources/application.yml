@@ -7,18 +7,74 @@ spring:
   cloud:
     gateway:
       routes:
+        # 인증, 인가 관련
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/api/authService/**
           filters:
             - RewritePath=/api/authService/(?<segment>.*), /${segment}
+
+        # 사용자 관련
+        - id: user-service-register
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/userService/users/register, /api/userService/users/check-nickname, /api/userService/users/check-email
+          filters:
+            - RewritePath=/api/userService/(?<segment>.*), /${segment}
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/userService/**
           filters:
             - RewritePath=/api/userService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter
+
+        # 관리자 관련
+        - id: admin-service-register
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/api/adminService/admins/register, /api/adminService/admins/check-email, /api/adminService/admins/check-nickname
+          filters:
+            - RewritePath=/api/adminService/(?<segment>.*), /${segment}
+        - id: admin-service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/api/adminService/**
+          filters:
+            - RewritePath=/api/adminService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter
+
+        # 사용자 게시글 관련
+        - id: user-board-service-findAll
+          uri: lb://USER-BOARD-SERVICE
+          predicates:
+            - Path=/api/userBoardService/comments, /api/userBoardService/comments/healthCheck
+            - Method=GET
+          filters:
+            - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
+        - id: user-board-service
+          uri: lb://USER-BOARD-SERVICE
+          predicates:
+            - Path=/api/userBoardService/**
+          filters:
+            - RewritePath=/api/userBoardService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter
+
+        # 사용자 댓글 관련
+        - id: user-comment-service-findAll
+          uri: lb://USER-COMMENT-SERVICE
+          predicates:
+            - Path=/api/userCommentService/comments, /api/userCommentService/comments/healthCheck
+            - Method=GET
+          filters:
+            - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
+        - id: user-comment-service
+          uri: lb://USER-COMMENT-SERVICE
+          predicates:
+            - Path=/api/userCommentService/**
+          filters:
+            - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
             - AuthorizationHeaderFilter
 
 eureka:

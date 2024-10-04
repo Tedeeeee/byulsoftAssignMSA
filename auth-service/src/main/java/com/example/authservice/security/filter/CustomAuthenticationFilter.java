@@ -37,7 +37,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) throws IOException {
         Member member = objectMapper.readValue(request.getReader(), Member.class);
 
-        MemberValidationService.memberInputDataValidation(member.getMemberEmail(),member.getMemberPassword());
+        MemberValidationService.loginDataValidation(member.getMemberEmail(),member.getMemberPassword());
 
         return new UsernamePasswordAuthenticationToken(member.getMemberEmail(), member.getMemberPassword());
     }

@@ -23,6 +23,4 @@ public class Member {
     private Role memberRole;
     private LocalDateTime memberCreatedAt;
     private LocalDateTime memberUpdatedAt;
-
-
 }

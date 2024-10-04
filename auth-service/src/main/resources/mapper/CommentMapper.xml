@@ -19,17 +19,17 @@
         <result property="memberUpdatedAt" column="member_updated_at"/>
     </resultMap>
 
-    <select id="findMemberByMemberEmail" resultMap="memberResultMap">
-        select member_id, member_email, member_password, member_nickname, member_is_delete, member_role
-        from member
-        where member_email = #{memberEmail}
-    </select>
-
     <update id="saveRefreshToken">
         update member
         set member_refresh_token = #{memberRefreshToken}
         where member_id = #{memberId};
     </update>
+
+    <select id="findMemberByMemberEmail" resultMap="memberResultMap">
+        select member_id, member_email, member_password, member_nickname, member_is_delete, member_role
+        from member
+        where member_email = #{memberEmail}
+    </select>
 
     <select id="findMemberByRefreshToken" resultMap="memberResultMap">
         select member_id, member_email, member_role

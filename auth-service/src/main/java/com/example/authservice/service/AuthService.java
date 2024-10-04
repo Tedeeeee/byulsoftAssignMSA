@@ -1,7 +1,12 @@
 package com.example.authservice.service;
 
-import java.util.Map;
+import com.example.authservice.dto.TokenResponseDto;
 
 public interface AuthService {
-    Map<String, String> resetRefreshToken(String refreshToken);
+    /**
+     * 설명 : RefreshToken 을 이용한 새로운 토큰 재발급
+     * @since : 2024.10.04
+     * @author : T.S YUN
+     */
+    TokenResponseDto resetRefreshToken(String refreshToken);
 }

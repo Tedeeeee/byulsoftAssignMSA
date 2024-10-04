@@ -1,11 +1,10 @@
 package com.example.authservice.controller;
 
-import com.example.authservice.entity.Member;
-import com.example.authservice.entity.Role;
-import com.example.authservice.mapper.MemberMapper;
+import com.example.authservice.commonApi.BodyResponse;
+import com.example.authservice.dto.TokenResponseDto;
 import com.example.authservice.security.service.TokenCreateService;
 import com.example.authservice.service.AuthService;
-import jakarta.servlet.http.Cookie;
+import com.example.authservice.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,36 +28,30 @@ public class AuthController {
     }
 
     @PostMapping("/token/renew")
-    public ResponseEntity<String> renewToken(HttpServletRequest request, HttpServletResponse response) {
-        // 쿠키를 전달해주면 된다
-        String refreshToken = findRefreshTokenInCookie(request);
+    public ResponseEntity<BodyResponse<String>> renewToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = CookieUtil.getRefreshTokenInCookie(request, TokenCreateService.REFRESH_TOKEN_SUBJECT);
 
-        Map<String, String> tokenMap = authService.resetRefreshToken(refreshToken);
+        TokenResponseDto tokenResponseDto = authService.resetRefreshToken(refreshToken);
 
-        // response.addHeader를 통해 쿠키만 넣어주면 된다
-        addRefreshTokenToResponseCookie(response, tokenMap);
+        addRefreshTokenToResponseCookie(response, tokenResponseDto.getRefreshToken());
 
-        return new ResponseEntity<>(tokenMap.get("accessToken"), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BodyResponse.success(tokenResponseDto.getAccessToken()));
     }
 
-    private static void addRefreshTokenToResponseCookie(HttpServletResponse response, Map<String, String> tokenMap) {
-        String renewRefreshToken = tokenMap.get("refreshToken");
+    // 회원가입
 
-        ResponseCookie refreshCookie = ResponseCookie.from("RefreshToken", renewRefreshToken)
+    // 이메일 체크
+
+    // 닉네임 체크
+
+    private void addRefreshTokenToResponseCookie(HttpServletResponse response, String renewRefreshToken) {
+        ResponseCookie refreshCookie = ResponseCookie.from(TokenCreateService.REFRESH_TOKEN_SUBJECT, renewRefreshToken)
                 .httpOnly(true)
                 .path("/")
-                .maxAge(604800)
+                .maxAge(TokenCreateService.REFRESH_TOKEN_EXPIRES_IN)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-    }
-
-    private static String findRefreshTokenInCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        return Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("RefreshToken"))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 토큰입니다"));
     }
 }

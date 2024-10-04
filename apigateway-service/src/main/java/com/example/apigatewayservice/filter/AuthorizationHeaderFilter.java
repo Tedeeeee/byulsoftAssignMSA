@@ -68,7 +68,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     private ServerHttpRequest getNewRequest(ServerHttpRequest request, String memberEmail) {
-        return request.mutate().header("email", memberEmail).build();
+        return request.mutate().header("memberEmail", memberEmail).build();
     }
 
     private Token getAccessToken(ServerHttpRequest request) {
