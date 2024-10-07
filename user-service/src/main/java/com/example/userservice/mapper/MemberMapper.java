@@ -8,7 +8,8 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
     int save(Member member);
-    Optional<Member> findMemberByMemberEmail(String memberEmail);
+    Optional<Member> findUserByMemberEmail(String memberEmail);
+    Optional<String> findUserNicknameByMemberId(int memberId);
     boolean checkNickName(String memberNickName);
     boolean checkEmail(String memberEmail);
 }

@@ -16,7 +16,7 @@
     </resultMap>
 
     <insert id="save" parameterType="com.example.usercommentservice.entity.Comment">
-        insert into Comment (
+        insert into comment (
             board_id,
             member_id,
             comment_content,
@@ -30,8 +30,44 @@
     </insert>
 
     <select id="findCommentsByBoardId" resultMap="commentResultMap">
-        select comment_id, board_id, member_id, comment_content, comment_created_at, comment_updated_at, comment_is_delete
+        select comment_id,
+               board_id,
+               member_id,
+               comment_content,
+               comment_created_at,
+               comment_updated_at
         from comment
-        where board_id = #{boardId};
+        where board_id = #{boardId}
+        and comment_is_delete = 0;
     </select>
+
+    <update id="updateComment">
+        update comment
+        set comment_content = #{commentContent}
+        where comment_id = #{commentId};
+    </update>
+
+    <select id="findCommentByCommentId" resultMap="commentResultMap">
+        select
+            comment_id,
+            board_id,
+            member_id,
+            comment_content,
+            comment_created_at,
+            comment_updated_at
+        from comment
+        where comment_id = #{commentId};
+    </select>
+
+    <update id="deleteCommentByCommentId">
+        update comment
+        set comment_is_delete = 1
+        where comment_id = #{commentId};
+    </update>
+
+    <update id="deleteCommentByBoardId">
+        update comment
+        set comment_is_delete = 1
+        where board_id = #{boardId};
+    </update>
 </mapper>

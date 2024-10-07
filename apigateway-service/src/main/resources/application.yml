@@ -19,7 +19,7 @@ spring:
         - id: user-service-register
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/api/userService/users/register, /api/userService/users/check-nickname, /api/userService/users/check-email
+            - Path=/api/userService/feign/**, /api/userService/users/register, /api/userService/users/check-nickname, /api/userService/users/check-email
           filters:
             - RewritePath=/api/userService/(?<segment>.*), /${segment}
         - id: user-service
@@ -49,24 +49,30 @@ spring:
         - id: user-board-service-findAll
           uri: lb://USER-BOARD-SERVICE
           predicates:
-            - Path=/api/userBoardService/comments, /api/userBoardService/comments/healthCheck
-            - Method=GET
+            - Path=/api/userBoardService/**
+            - Method=POST
           filters:
-            - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
+            - RewritePath=/api/userBoardService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter
         - id: user-board-service
           uri: lb://USER-BOARD-SERVICE
           predicates:
             - Path=/api/userBoardService/**
           filters:
             - RewritePath=/api/userBoardService/(?<segment>.*), /${segment}
-            - AuthorizationHeaderFilter
 
         # 사용자 댓글 관련
         - id: user-comment-service-findAll
           uri: lb://USER-COMMENT-SERVICE
           predicates:
-            - Path=/api/userCommentService/comments, /api/userCommentService/comments/healthCheck
+            - Path=/api/userCommentService/**
             - Method=GET
+          filters:
+            - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
+        - id: user-comment-service-feign
+          uri: lb://USER-COMMENT-SERVICE
+          predicates:
+            - Path=/api/userCommentService/feign/**
           filters:
             - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
         - id: user-comment-service

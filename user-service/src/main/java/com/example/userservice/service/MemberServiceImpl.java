@@ -17,10 +17,23 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto findUserByMemberEmail(String memberEmail) {
 
-        Member member = memberMapper.findMemberByMemberEmail(memberEmail)
+        System.out.println(memberEmail);
+        Member member = memberMapper.findUserByMemberEmail(memberEmail)
                 .orElseThrow(() -> new RuntimeException("사용자가 확인되지 않습니다."));
 
         return MemberResponseDto.from(member);
+    }
+
+    @Override
+    public String findUserNicknameByMemberId(int memberId) {
+        String nickname = memberMapper.findUserNicknameByMemberId(memberId)
+                .orElseThrow(() -> new RuntimeException("사용자가 확인되지 않습니다"));
+
+        if (nickname == null || nickname.isEmpty()) {
+            nickname = "탈퇴한 회원입니다";
+        }
+
+        return nickname;
     }
 
     @Override

@@ -87,8 +87,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
 
-        Map<String, Object> errorResponseBody = new HashMap<>();
+//        Map<String, Object> errorResponseBody = new HashMap<>();
 
+        Map<String, Object> errorResponseBody = new HashMap<>();
         errorResponseBody.put("statusCode", HttpStatus.UNAUTHORIZED.value());
         errorResponseBody.put("error", err);
 

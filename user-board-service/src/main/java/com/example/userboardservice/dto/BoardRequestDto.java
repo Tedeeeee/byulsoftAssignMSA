@@ -27,9 +27,7 @@ public class BoardRequestDto {
 
     private List<BoardStarRequestDto> boardStars = new ArrayList<>();
 
-    public void validationCheck(String memberEmail) {
-        // 사용자 확인 ( OpenFeign )
-
+    public void validationCheck() {
         if (boardTitle.length() > 100) {
             throw new RuntimeException("제목의 최대 글자수를 초과했습니다");
         }
@@ -43,7 +41,7 @@ public class BoardRequestDto {
         }
     }
 
-    public Board toEntity() {
+    public Board toEntity(int memberId) {
         return  Board.builder()
                 .boardId(boardId)
                 .memberId(memberId)

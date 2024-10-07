@@ -2,7 +2,7 @@ package com.example.usercommentservice.util;
 
 
 public class ValidationUtil {
-    private static final String CONTENT_CONFIRM = "^[a-zA-Z0-9가-힝\\\\s.,?!]+$";
+    private static final String CONTENT_CONFIRM = "^[^<>&\"']+$";
 
     public static void checkContentValidate(String content) {
         if (!content.matches(CONTENT_CONFIRM)) {

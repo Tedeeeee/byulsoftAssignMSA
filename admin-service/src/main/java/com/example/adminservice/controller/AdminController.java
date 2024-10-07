@@ -2,7 +2,6 @@ package com.example.adminservice.controller;
 
 import com.example.adminservice.commonApi.BodyResponse;
 import com.example.adminservice.dto.AdminRequestDto;
-import com.example.adminservice.entity.Member;
 import com.example.adminservice.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

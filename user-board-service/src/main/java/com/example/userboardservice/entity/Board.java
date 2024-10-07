@@ -23,4 +23,8 @@ public class Board {
     private LocalDateTime boardUpdatedAt;
     private boolean boardIsDelete;
     private List<BoardStar> stars;
+
+    public boolean checkUserIdMatch(int memberId) {
+        return this.memberId == memberId;
+    }
 }

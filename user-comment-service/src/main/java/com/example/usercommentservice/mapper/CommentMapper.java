@@ -9,5 +9,9 @@ import java.util.Optional;
 @Mapper
 public interface CommentMapper {
     void save(Comment comment);
-    Optional<List<Comment>> findCommentsByBoardId(int boardId);
+    List<Comment> findCommentsByBoardId(int boardId);
+    void updateComment(Comment comment);
+    Optional<Comment> findCommentByCommentId(int commentId);
+    void deleteCommentByCommentId(int commentId);
+    void deleteCommentByBoardId(int boardId);
 }

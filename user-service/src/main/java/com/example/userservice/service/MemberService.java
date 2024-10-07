@@ -14,6 +14,13 @@ public interface MemberService {
     MemberResponseDto findUserByMemberEmail(String memberEmail);
 
     /**
+     * 설명 : id를 통해 사용자 닉네임 가져오기
+     * @since : 2024.10.07
+     * @author : T.S YUN
+     */
+    String findUserNicknameByMemberId(int memberId);
+
+    /**
      * 설명 : 이메일 유효성 검사와 중복 체크
      * @since : 2024.10.04
      * @author : T.S YUN

@@ -40,14 +40,20 @@
          )
     </insert>
 
-    <select id="findMemberByMemberEmail" resultMap="memberResultMap">
+    <select id="findUserNicknameByMemberId" resultType="java.lang.String">
+        select member_nickname
+        from member
+        where member_id = #{memberId}
+    </select>
+
+    <select id="findUserByMemberEmail" resultMap="memberResultMap">
         select
             member_id,
             member_email,
-            member_password,
             member_nickname,
-            member_name,
             member_phone_number,
+            member_refresh_token,
+            member_is_delete,
             member_role,
             member_created_at,
             member_updated_at

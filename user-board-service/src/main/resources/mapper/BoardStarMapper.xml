@@ -33,4 +33,34 @@
             )
         </foreach>
     </insert>
+
+    <select id="getBoardIdsBySortType" resultType="java.lang.Integer">
+        select board_id
+        from board_star
+        where board_star_type = #{sortType}
+        and exists(
+        select 1
+        from board b
+        where b.board_is_delete = 0
+        and b.board_id = board_star.board_id
+        <if test="'지역'.equals(searchType)">
+            and b.board_region = #{searchText}
+        </if>
+        <if test="'제목'.equals(searchType)">
+            and board_title like CONCAT('%', #{searchText}, '%')
+        </if>
+        )
+        <if test="'desc'.equals(sortOrder)">
+            order by board_star_rating desc
+        </if>
+        <if test="'asc'.equals(sortOrder)">
+            order by board_star_rating
+        </if>
+        limit 5 offset #{offset}
+    </select>
+
+    <delete id="deleteBoardStarByBoardId">
+        delete from msa_board.board_star
+        where board_id = #{boardId}
+    </delete>
 </mapper>

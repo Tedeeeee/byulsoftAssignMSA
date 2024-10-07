@@ -19,5 +19,27 @@ public interface CommentService {
      * @since : 2024.10.04
      * @author : T.S YUN
      */
-    void addComment(CommentRequestDto commentRequestDto);
+    void addComment(CommentRequestDto commentRequestDto, String memberEmail);
+
+    /**
+     * 설명 : 댓글 수정하기
+     * @since : 2024.10.07
+     * @author : T.S YUN
+     */
+    CommentResponseDto updateComment(CommentRequestDto commentRequestDto, String memberEmail);
+
+    /**
+     * 설명 : 댓글 삭제 (soft)
+     * @since : 2024.10.07
+     * @author : T.S YUN
+     */
+    void deleteComment(int commentId, String memberEmail);
+
+    /**
+     * 설명 : 게시글 삭제로 인한 댓글 전체 삭제
+     *       Feign 을 이용한 Service
+     * @since : 2024.10.07
+     * @author : T.S YUN
+     */
+    void deleteAllCommentsByBoardId(int boardId);
 }

@@ -1,6 +1,9 @@
 package com.example.adminservice.util;
 
 public class ValidationUtil {
+
+    private ValidationUtil() {}
+    
     private static final String EMAIL_CONFIRM = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     private static final String PASSWORD_CONFIRM = "^(?=.*[A-Z])(?=.*[!@#$%^*+=-]).{6,}$";
     private static final String NICKNAME_CONFIRM = "^[a-zA-Z가-힝0-9]+$";
