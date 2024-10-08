@@ -3,10 +3,8 @@ package com.example.apigatewayservice.filter;
 import com.example.apigatewayservice.Token;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,12 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.*;
 
 @Component
@@ -86,8 +82,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
-
-//        Map<String, Object> errorResponseBody = new HashMap<>();
 
         Map<String, Object> errorResponseBody = new HashMap<>();
         errorResponseBody.put("statusCode", HttpStatus.UNAUTHORIZED.value());

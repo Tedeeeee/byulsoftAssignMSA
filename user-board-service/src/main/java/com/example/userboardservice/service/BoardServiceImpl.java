@@ -79,7 +79,7 @@ public class BoardServiceImpl implements BoardService{
     public BoardListResponseDto getPostsByCondition(SearchConditionDto searchConditionDto) {
         List<Integer> postList = getFilteredPostIdsByCondition(searchConditionDto);
 
-        List<Board> postsByPostIdList = boardMapper.getPostsByPostIdList(postList);
+        List<Board> postsByPostIdList = boardMapper.getBoardsByBoardIdList(postList);
 
         Map<Integer, Board> postListMapping = getPostMappingByPostIdList(postsByPostIdList);
 
@@ -121,7 +121,7 @@ public class BoardServiceImpl implements BoardService{
                 }).toList();
     }
 
-    private static Map<Integer, Board> getPostMappingByPostIdList(List<Board> postsByPostIdList) {
+    private Map<Integer, Board> getPostMappingByPostIdList(List<Board> postsByPostIdList) {
         return postsByPostIdList.stream()
                 .collect(Collectors.toMap(Board::getBoardId, Function.identity()));
     }

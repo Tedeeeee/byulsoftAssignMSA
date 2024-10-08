@@ -1,6 +1,8 @@
 package com.example.adminservice.service;
 
 import com.example.adminservice.dto.AdminRequestDto;
+import com.example.adminservice.dto.AdminListResponseDto;
+import com.example.adminservice.dto.AdminResponseDto;
 
 public interface AdminService {
 
@@ -24,4 +26,19 @@ public interface AdminService {
      * @since : 2024.10.04
      */
     void registerAdmin(AdminRequestDto adminRequestDto);
+
+    /**
+     * 설명 : 개인 사용자 정보 가져오기
+     * @author : T.S YUN
+     * @since : 2024.10.08
+     */
+    AdminResponseDto getMember(int memberId);
+
+    /**
+     * 설명 : 사용자 전체 데이터 가져오기
+     *       전체 사용자인 만큼 모든 데이터를 가져올 필요는 없다.
+     * @since : 2024.10.08
+     * @author : T.S YUN
+     */
+    AdminListResponseDto getMemberList();
 }

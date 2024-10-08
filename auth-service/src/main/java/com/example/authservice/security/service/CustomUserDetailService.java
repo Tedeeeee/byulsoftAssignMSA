@@ -1,6 +1,8 @@
 package com.example.authservice.security.service;
 
+import com.example.authservice.entity.AdminMember;
 import com.example.authservice.entity.Member;
+import com.example.authservice.mapper.AdminMapper;
 import com.example.authservice.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -17,9 +19,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Member member = memberMapper.findMemberByMemberEmail(username);
 
-        Member member = memberMapper.findMemberByMemberEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("아이디가 잘못 되었습니다"));
+        adminMapper.findAdminByAdminEmail(username);
 
         if (member.isMemberIsDelete()) {
             throw new UsernameNotFoundException("탈퇴한 사용자 입니다");

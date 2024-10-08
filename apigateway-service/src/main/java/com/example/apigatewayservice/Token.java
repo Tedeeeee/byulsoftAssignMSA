@@ -19,13 +19,17 @@ public class Token {
         return new Token(headerTargetToken.replace(TOKEN_TARGET, ""));
     }
 
+    public Claims getClaims(SecretKey secretKey) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(value)
+                .getBody();
+    }
+
     public void validationToken(SecretKey secretKey) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(value)
-                    .getBody();
+            getClaims(secretKey);
 
         } catch (ExpiredJwtException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효기간이 지난 JWT 를 사용하였습니다.");
@@ -39,13 +43,15 @@ public class Token {
             throw new RuntimeException("토큰 검증 중 예기치 못한 오류가 발생했습니다.");
         }
     }
+    public boolean isAdminCheck(SecretKey secretKey) {
+        String role = getClaims(secretKey)
+                .get("role", String.class);
+
+        return "ADMIN".equals(role);
+    }
 
     public String getMemberEmail(SecretKey secretKey) {
-        Claims body = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(value)
-                .getBody();
+        Claims body = getClaims(secretKey);
 
         return body.get("memberEmail", String.class);
     }

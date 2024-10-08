@@ -6,11 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberRequestDto {
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @NotBlank
     private int memberId;
@@ -34,7 +36,7 @@ public class MemberRequestDto {
     public Member toEntity() {
         return Member.builder()
                 .memberEmail(memberEmail)
-                .memberPassword(memberPassword)
+                .memberPassword(passwordEncoder.encode(memberPassword))
                 .memberNickname(memberNickname)
                 .memberName(memberName)
                 .memberPhoneNumber(memberPhoneNumber)

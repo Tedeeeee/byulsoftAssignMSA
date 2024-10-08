@@ -1,6 +1,8 @@
 package com.example.authservice.security.handler;
 
+import com.example.authservice.entity.AdminMember;
 import com.example.authservice.entity.Member;
+import com.example.authservice.mapper.AdminMapper;
 import com.example.authservice.mapper.MemberMapper;
 import com.example.authservice.security.service.TokenCreateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,14 +28,19 @@ import java.util.Map;
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final MemberMapper memberMapper;
+    private final AdminMapper adminMapper;
     private final TokenCreateService tokenCreateService;
     private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String memberEmail = extractUsername(authentication);
-        Member member = memberMapper.findMemberByMemberEmail(memberEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾지 못했습니다"));
+        String email = extractUsername(authentication);
+        Member member = memberMapper.findMemberByMemberEmail(email);
+        AdminMember adminMember = adminMapper.findAdminByAdminEmail(email);
+
+        if (member == null && adminMember == null) {
+            throw new UsernameNotFoundException("존재하지 않는 사용자입니다");
+        }
 
         String accessToken = tokenCreateService.createAccessToken(member);
         String refreshToken = tokenCreateService.createRefreshToken();

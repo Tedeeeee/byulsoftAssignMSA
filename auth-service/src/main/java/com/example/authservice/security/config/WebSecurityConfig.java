@@ -1,6 +1,7 @@
 package com.example.authservice.security.config;
 
 
+import com.example.authservice.mapper.AdminMapper;
 import com.example.authservice.mapper.MemberMapper;
 import com.example.authservice.security.filter.CustomAuthenticationFilter;
 import com.example.authservice.security.handler.CustomAuthenticationFailureHandler;
@@ -35,6 +36,7 @@ public class WebSecurityConfig {
 
     private final ObjectMapper objectMapper;
     private final MemberMapper memberMapper;
+    private final AdminMapper adminMapper;
     private final TokenCreateService tokenCreateService;
 
     @Bean
@@ -78,13 +80,26 @@ public class WebSecurityConfig {
 
     @Bean
     public CustomUserDetailService customUserDetailService() {
-        return new CustomUserDetailService(memberMapper);
+        return new CustomUserDetailService(memberMapper, adminMapper);
+    }
+
+    @Bean
+    public CustomAdminDeta
+
+    @Bean
+    public CustomAuthenticationFilter customAuthenticationFilter() {
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(), objectMapper);
+        customAuthenticationFilter.setFilterProcessesUrl("/user/login");
+        customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler(memberMapper, tokenCreateService, objectMapper));
+        customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler(objectMapper));
+        customAuthenticationFilter.afterPropertiesSet();
+        return customAuthenticationFilter;
     }
 
     @Bean
     public CustomAuthenticationFilter customAuthenticationFilter() {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(), objectMapper);
-        customAuthenticationFilter.setFilterProcessesUrl("/login");
+        customAuthenticationFilter.setFilterProcessesUrl("/admin/login");
         customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler(memberMapper, tokenCreateService, objectMapper));
         customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler(objectMapper));
         customAuthenticationFilter.afterPropertiesSet();

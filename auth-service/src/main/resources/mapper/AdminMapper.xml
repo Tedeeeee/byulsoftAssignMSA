@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.authservice.mapper.AdminMapper">
+
+    <resultMap id="adminResultMap" type="com.example.authservice.entity.AdminMember">
+        <id property="adminId" column="admin_id"/>
+        <result property="adminEmail" column="admin_email"/>
+        <result property="adminPassword" column="admin_password"/>
+        <result property="adminNickname" column="admin_nickname"/>
+        <result property="adminName" column="admin_name"/>
+        <result property="adminPhoneNumber" column="admin_phone_number"/>
+        <result property="adminRefreshToken" column="admin_refresh_token"/>
+        <result property="adminIsDelete" column="admin_is_delete"/>
+        <result property="adminRole" column="admin_role"/>
+        <result property="adminCreatedAt" column="admin_created_at"/>
+        <result property="adminUpdatedAt" column="admin_updated_at"/>
+    </resultMap>
+
+    <update id="saveRefreshToken">
+        update admin
+        set admin_refresh_token = #{adminRefreshToken}
+        where admin_id = #{adminId};
+    </update>
+
+    <select id="findAdminByAdminEmail" resultMap="adminResultMap">
+        select
+            admin_id,
+            admin_email,
+            admin_password,
+            admin_nickname,
+            admin_is_delete,
+            admin_role
+        from admin
+        where admin_email = #{adminEmail}
+    </select>
+
+    <select id="findAdminByRefreshToken" resultMap="adminResultMap">
+        select
+            admin_id,
+            admin_email,
+            admin_role
+        from admin
+        where admin_refresh_token = #{adminRefreshToken};
+    </select>
+</mapper>

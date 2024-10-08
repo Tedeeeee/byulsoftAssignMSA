@@ -2,6 +2,8 @@ package com.example.adminservice.controller;
 
 import com.example.adminservice.commonApi.BodyResponse;
 import com.example.adminservice.dto.AdminRequestDto;
+import com.example.adminservice.dto.AdminListResponseDto;
+import com.example.adminservice.dto.AdminResponseDto;
 import com.example.adminservice.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,6 +44,24 @@ public class AdminController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(BodyResponse.createSuccess("회원가입이 완료되었습니다"));
+    }
+
+    // 개인 사용자
+    @GetMapping("/users/{memberId}")
+    public ResponseEntity<BodyResponse<AdminResponseDto>> getMemberProfile(@PathVariable int memberId) {
+        AdminResponseDto member = adminService.getMember(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BodyResponse.success(member));
+    }
+
+    // 전체 사용자....
+    @GetMapping("/users")
+    public ResponseEntity<BodyResponse<AdminListResponseDto>> getUsers() {
+        AdminListResponseDto memberList = adminService.getMemberList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BodyResponse.success(memberList));
     }
 
 }

@@ -11,7 +11,7 @@ public interface BoardMapper {
     void save(Board board);
     int countTotalBoards();
     List<Integer> getBoardIdsByBasic(SearchConditionDto searchConditionDto);
-    List<Board> getPostsByPostIdList(List<Integer> postIdList);
+    List<Board> getBoardsByBoardIdList(List<Integer> postIdList);
     Board findBoardByBoardId(int boardId);
     void updateBoard(Board board);
     void deleteBoard(int boardId);

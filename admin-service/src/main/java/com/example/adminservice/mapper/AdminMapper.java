@@ -1,11 +1,17 @@
 package com.example.adminservice.mapper;
 
-import com.example.adminservice.entity.Member;
+import com.example.adminservice.entity.AdminMember;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface AdminMapper {
-    int save(Member member);
-    boolean checkNickName(String memberNickName);
-    boolean checkEmail(String memberEmail);
+    int save(AdminMember adminMember);
+    boolean checkNickName(String adminNickName);
+    boolean checkEmail(String adminEmail);
+    List<AdminMember> getMembers();
+    Optional<AdminMember> getMemberByMemberId(int memberId);
+    int totalCount();
 }

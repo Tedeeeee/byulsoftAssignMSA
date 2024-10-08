@@ -30,21 +30,6 @@ spring:
             - RewritePath=/api/userService/(?<segment>.*), /${segment}
             - AuthorizationHeaderFilter
 
-        # 관리자 관련
-        - id: admin-service-register
-          uri: lb://ADMIN-SERVICE
-          predicates:
-            - Path=/api/adminService/admins/register, /api/adminService/admins/check-email, /api/adminService/admins/check-nickname
-          filters:
-            - RewritePath=/api/adminService/(?<segment>.*), /${segment}
-        - id: admin-service
-          uri: lb://ADMIN-SERVICE
-          predicates:
-            - Path=/api/adminService/**
-          filters:
-            - RewritePath=/api/adminService/(?<segment>.*), /${segment}
-            - AuthorizationHeaderFilter
-
         # 사용자 게시글 관련
         - id: user-board-service-findAll
           uri: lb://USER-BOARD-SERVICE
@@ -82,6 +67,39 @@ spring:
           filters:
             - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
             - AuthorizationHeaderFilter
+
+        # 관리자 관련
+        - id: admin-service-register
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/api/adminService/admins/register, /api/adminService/admins/check-email, /api/adminService/admins/check-nickname
+          filters:
+            - RewritePath=/api/adminService/(?<segment>.*), /${segment}
+        - id: admin-service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/api/adminService/**
+          filters:
+            - RewritePath=/api/adminService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilterForAdmin
+
+        # 관리자 게시판
+        - id: admin-board-service
+          uri: lb://ADMIN-BOARD-SERVICE
+          predicates:
+            - Path=/api/adminBoardService/**
+          filters:
+            - RewritePath=/api/adminBoardService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilterForAdmin
+
+        # 관리자 댓글
+        - id: admin-comment-service
+          uri: lb://ADMIN-COMMENT-SERVICE
+          predicates:
+            - Path=/api/adminCommentService/**
+          filters:
+            - RewritePath=/api/adminCommentService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilterForAdmin
 
 eureka:
   client:

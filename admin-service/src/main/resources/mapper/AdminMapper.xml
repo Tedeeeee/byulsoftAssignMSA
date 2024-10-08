@@ -5,54 +5,88 @@
 
 <mapper namespace="com.example.adminservice.mapper.AdminMapper">
 
-    <resultMap id="memberResultMap" type="com.example.adminservice.entity.Member">
-        <id property="memberId" column="member_id"/>
-        <result property="memberEmail" column="member_email"/>
-        <result property="memberPassword" column="member_password"/>
-        <result property="memberNickname" column="member_nickname"/>
-        <result property="memberName" column="member_name"/>
-        <result property="memberPhoneNumber" column="member_phone_number"/>
-        <result property="memberRefreshToken" column="member_refresh_token"/>
-        <result property="memberIsDelete" column="member_is_delete"/>
-        <result property="memberRole" column="member_role"/>
-        <result property="memberCreatedAt" column="member_created_at"/>
-        <result property="memberUpdatedAt" column="member_updated_at"/>
+    <resultMap id="adminResultMap" type="com.example.adminservice.entity.AdminMember">
+        <id property="adminId" column="admin_id"/>
+        <result property="adminEmail" column="admin_email"/>
+        <result property="adminPassword" column="admin_password"/>
+        <result property="adminNickname" column="admin_nickname"/>
+        <result property="adminName" column="admin_name"/>
+        <result property="adminPhoneNumber" column="admin_phone_number"/>
+        <result property="adminRefreshToken" column="admin_refresh_token"/>
+        <result property="adminIsDelete" column="admin_is_delete"/>
+        <result property="adminRole" column="admin_role"/>
+        <result property="adminCreatedAt" column="admin_created_at"/>
+        <result property="adminUpdatedAt" column="admin_updated_at"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.example.adminservice.entity.Member" >
-        INSERT INTO Member
+    <insert id="save" parameterType="com.example.adminservice.entity.AdminMember" >
+        INSERT INTO admin
         (
-            member_email,
-            member_password,
-            member_nickname,
-            member_name,
-            member_phone_number,
-            member_is_delete,
-            member_role
+            admin_email,
+            admin_password,
+            admin_nickname,
+            admin_name,
+            admin_phone_number,
+            admin_is_delete,
+            admin_role
         ) values (
-                     #{memberEmail},
-                     #{memberPassword},
-                     #{memberNickname},
-                     #{memberName},
-                     #{memberPhoneNumber},
-                     false,
-                     'ADMIN'
-                 )
+             #{adminEmail},
+             #{adminPassword},
+             #{adminNickname},
+             #{adminName},
+             #{adminPhoneNumber},
+             false,
+             'ADMIN'
+        )
     </insert>
 
     <select id="checkNickName" resultType="java.lang.Boolean">
         select exists(
             select 1
-            from member
-            where member_nickname = #{memberNickname}
+            from admin
+            where admin_nickname = #{memberNickname}
         );
     </select>
 
     <select id="checkEmail" resultType="java.lang.Boolean">
         select exists(
             select 1
-            from member
-            where member_email = #{memberEmail}
+            from admin
+            where admin_email = #{memberEmail}
         );
+    </select>
+
+    <select id="getMembers" resultMap="adminResultMap">
+        select
+            admin_id,
+            admin_email,
+            admin_nickname,
+            admin_name,
+            admin_created_at,
+            admin_is_delete
+        from admin
+        where admin_role = 'USER';
+    </select>
+
+    <select id="totalCount" resultType="java.lang.Integer">
+        select count(1)
+        from admin
+        where admin_role = 'USER';
+    </select>
+
+    <select id="getMemberByMemberId" resultMap="adminResultMap">
+        select
+            admin_id,
+            admin_email,
+            admin_password,
+            admin_nickname,
+            admin_name,
+            admin_phone_number,
+            admin_is_delete,
+            admin_role,
+            admin_created_at,
+            admin_updated_at
+        from admin
+        where admin_id = #{memberId}
     </select>
 </mapper>

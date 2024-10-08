@@ -59,17 +59,17 @@
         select board_id
         from board
         where board_is_delete = 0
-        <if test="searchType == '지역'">
+        <if test="'지역'.equals(searchType)">
             and board_region = #{searchText}
         </if>
-        <if test="searchType == '제목'">
+        <if test="'제목'.equals(searchType)">
             and board_title like CONCAT('%', #{searchText}, '%')
         </if>
         order by board_created_at desc
         limit 5 offset #{offset}
     </select>
 
-    <select id="getPostsByPostIdList" resultMap="boardResultMap">
+    <select id="getBoardsByBoardIdList" resultMap="boardResultMap">
         select b.board_id,
                 b.member_id,
                 b.board_title,

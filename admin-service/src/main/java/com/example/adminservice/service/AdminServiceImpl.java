@@ -1,11 +1,15 @@
 package com.example.adminservice.service;
 
 import com.example.adminservice.dto.AdminRequestDto;
-import com.example.adminservice.entity.Member;
+import com.example.adminservice.dto.AdminListResponseDto;
+import com.example.adminservice.dto.AdminResponseDto;
+import com.example.adminservice.entity.AdminMember;
 import com.example.adminservice.mapper.AdminMapper;
 import com.example.adminservice.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +42,28 @@ public class AdminServiceImpl implements AdminService {
     public void registerAdmin(AdminRequestDto adminRequestDto) {
         adminRequestDto.memberSignupValidator();
 
-        Member member = adminRequestDto.toEntity();
+        AdminMember adminMember = adminRequestDto.toEntity();
 
         try {
-            adminMapper.save(member);
+            adminMapper.save(adminMember);
         } catch (Exception e) {
             throw new RuntimeException("failed to save member");
         }
+    }
+
+    @Override
+    public AdminResponseDto getMember(int memberId) {
+        // Feign 사용해서 사용자 정보 가져오기
+
+        return null;
+    }
+
+    // 검색이 추가로 발생 할 수 있다
+    @Override
+    public AdminListResponseDto getMemberList() {
+        // Feign 사용해서 사용자 정보"들"
+        // total 인원 수
+
+        return null;
     }
 }
