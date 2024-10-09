@@ -27,7 +27,7 @@ public class AuthorizationHeaderFilterForAdmin extends AbstractGatewayFilterFact
 
     public static class Config {}
 
-    @Value("${jwt.secret.key}")
+    @Value("${jwt.secret.adminKey}")
     private String secretKey;
 
     public AuthorizationHeaderFilterForAdmin() {
@@ -47,10 +47,6 @@ public class AuthorizationHeaderFilterForAdmin extends AbstractGatewayFilterFact
 
             try {
                 SecretKey signature = createSignature();
-
-                if(!accessToken.isAdminCheck(signature)) {
-                    return onError(exchange, "권한이 없습니다", HttpStatus.FORBIDDEN);
-                }
 
                 accessToken.validationToken(signature);
 

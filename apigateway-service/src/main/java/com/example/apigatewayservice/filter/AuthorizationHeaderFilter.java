@@ -25,7 +25,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     public static class Config {}
 
-    @Value("${jwt.secret.key}")
+    @Value("${jwt.secret.userKey}")
     private String secretKey;
 
     public AuthorizationHeaderFilter() {

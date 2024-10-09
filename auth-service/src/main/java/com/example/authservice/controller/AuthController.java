@@ -39,12 +39,6 @@ public class AuthController {
                 .body(BodyResponse.success(tokenResponseDto.getAccessToken()));
     }
 
-    // 회원가입
-
-    // 이메일 체크
-
-    // 닉네임 체크
-
     private void addRefreshTokenToResponseCookie(HttpServletResponse response, String renewRefreshToken) {
         ResponseCookie refreshCookie = ResponseCookie.from(TokenCreateService.REFRESH_TOKEN_SUBJECT, renewRefreshToken)
                 .httpOnly(true)

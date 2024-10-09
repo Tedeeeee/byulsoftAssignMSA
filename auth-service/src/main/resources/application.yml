@@ -4,14 +4,9 @@ server:
 spring:
   application:
     name: auth-service
-  datasource1:
+  datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://localhost:3306/msa_member?serverTimezone=UTC&characterEncoding=utf8
-    username: root
-    password: 1234
-  datasource2:
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mysql://localhost:3306/msa_admin?serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:log4jdbc:mysql://localhost:3306/msa_auth?serverTimezone=UTC&characterEncoding=utf8
     username: root
     password: 1234
 
@@ -33,7 +28,8 @@ management:
 
 jwt:
   secret:
-    key: alksdhtkothklajnsgklvjhaskgbjhsbgamnkhabksjghjhdhbjkggnjfTlsejrlfrpaksemfdjdigksmszlfkspdyurmfotjdhfbrkrjffuTekspdy
+    userKey: ZDUxNzQ4NzY4MjQ4MDY0YjY4MjE3MzU2Y2RhNTc4Zjc2ZDg0NTkzNDFiZjAx
+    adminKey: aHR0cHM6Ly93d3cueW91dGhlc3Rvd2lsbG5vdC5jb20vYmFzZTY0IGlzIGdyZWF0
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml

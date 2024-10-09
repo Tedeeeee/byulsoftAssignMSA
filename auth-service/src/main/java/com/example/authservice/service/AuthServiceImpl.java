@@ -27,7 +27,6 @@ public class AuthServiceImpl implements AuthService {
         return TokenResponseDto.builder()
                 .accessToken(renewAccessToken)
                 .refreshToken(renewRefreshToken)
-                .memberNickname(member.getMemberNickname())
                 .build();
     }
 }

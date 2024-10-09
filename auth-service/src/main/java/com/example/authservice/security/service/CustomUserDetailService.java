@@ -1,16 +1,12 @@
 package com.example.authservice.security.service;
 
-import com.example.authservice.entity.AdminMember;
 import com.example.authservice.entity.Member;
-import com.example.authservice.mapper.AdminMapper;
 import com.example.authservice.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
@@ -20,8 +16,6 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberMapper.findMemberByMemberEmail(username);
-
-        adminMapper.findAdminByAdminEmail(username);
 
         if (member.isMemberIsDelete()) {
             throw new UsernameNotFoundException("탈퇴한 사용자 입니다");

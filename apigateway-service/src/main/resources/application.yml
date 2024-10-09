@@ -108,7 +108,8 @@ eureka:
 
 jwt:
   secret:
-    key: alksdhtkothklajnsgklvjhaskgbjhsbgamnkhabksjghjhdhbjkggnjfTlsejrlfrpaksemfdjdigksmszlfkspdyurmfotjdhfbrkrjffuTekspdy
+    userKey: ZDUxNzQ4NzY4MjQ4MDY0YjY4MjE3MzU2Y2RhNTc4Zjc2ZDg0NTkzNDFiZjAx
+    adminKey: aHR0cHM6Ly93d3cueW91dGhlc3Rvd2lsbG5vdC5jb20vYmFzZTY0IGlzIGdyZWF0
 
 management:
   endpoints:

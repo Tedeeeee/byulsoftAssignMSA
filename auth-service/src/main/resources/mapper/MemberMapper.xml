@@ -9,15 +9,29 @@
         <id property="memberId" column="member_id"/>
         <result property="memberEmail" column="member_email"/>
         <result property="memberPassword" column="member_password"/>
-        <result property="memberNickname" column="member_nickname"/>
-        <result property="memberName" column="member_name"/>
-        <result property="memberPhoneNumber" column="member_phone_number"/>
         <result property="memberRefreshToken" column="member_refresh_token"/>
         <result property="memberIsDelete" column="member_is_delete"/>
         <result property="memberRole" column="member_role"/>
-        <result property="memberCreatedAt" column="member_created_at"/>
-        <result property="memberUpdatedAt" column="member_updated_at"/>
     </resultMap>
+
+    <insert id="save" parameterType="com.example.authservice.entity.Member">
+        insert into member
+        (
+             member_email,
+             member_password,
+             member_refresh_token,
+             member_role,
+            member_is_delete
+        )
+        VALUES
+        (
+             #{memberEmail},
+             #{memberPassword},
+             null,
+             #{memberRole},
+             #{memberIsDelete}
+        )
+    </insert>
 
     <update id="saveRefreshToken">
         update member
@@ -26,13 +40,21 @@
     </update>
 
     <select id="findMemberByMemberEmail" resultMap="memberResultMap">
-        select member_id, member_email, member_password, member_nickname, member_is_delete, member_role
+        select
+            member_id,
+            member_email,
+            member_password,
+            member_is_delete,
+            member_role
         from member
         where member_email = #{memberEmail}
     </select>
 
     <select id="findMemberByRefreshToken" resultMap="memberResultMap">
-        select member_id, member_email, member_role
+        select
+            member_id,
+            member_email,
+            member_role
         from member
         where member_refresh_token = #{memberRefreshToken};
     </select>

@@ -1,6 +1,7 @@
 package com.example.authservice.security.service;
 
 import com.example.authservice.entity.Member;
+import com.example.authservice.entity.Role;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,12 +17,24 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TokenCreateService {
 
-    @Value("${jwt.secret.key}")
+    @Value("${jwt.secret.userKey}")
+    private String userSecretKey;
+
+    @Value("${jwt.secret.adminKey}")
+    private String adminSecretKey;
     private String secretKey;
 
     public static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     public static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     public static final int REFRESH_TOKEN_EXPIRES_IN = 604800;
+
+    public void setSecretKeyForRole(Role role) {
+        if (Role.ADMIN.equals(role)) {
+            this.secretKey = adminSecretKey;
+        } else {
+            this.secretKey = userSecretKey;
+        }
+    }
 
     public String createAccessToken(Member member) {
         JwtBuilder builder = Jwts.builder()
@@ -54,7 +67,6 @@ public class TokenCreateService {
         Map<String, String> claims = new HashMap<>();
 
         claims.put("memberEmail", member.getMemberEmail());
-        claims.put("role", member.getMemberRole().toString());
         return claims;
     }
 

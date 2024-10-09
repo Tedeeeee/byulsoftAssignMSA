@@ -43,12 +43,6 @@ public class Token {
             throw new RuntimeException("토큰 검증 중 예기치 못한 오류가 발생했습니다.");
         }
     }
-    public boolean isAdminCheck(SecretKey secretKey) {
-        String role = getClaims(secretKey)
-                .get("role", String.class);
-
-        return "ADMIN".equals(role);
-    }
 
     public String getMemberEmail(SecretKey secretKey) {
         Claims body = getClaims(secretKey);
