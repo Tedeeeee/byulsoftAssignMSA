@@ -19,7 +19,6 @@ import { ModalStore } from '@/stores/ModalState'
 
 defineProps<{
   message: string
-
 }>()
 
 const closeModal = () => {

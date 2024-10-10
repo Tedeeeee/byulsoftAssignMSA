@@ -38,3 +38,11 @@ export const checkNickname = async (nickname: string): Promise<boolean> => {
 export const login = async (loginData: LoginData) : Promise<number> => {
   return instance.post('/userService/login', loginData);
 }
+
+export const getBoardById = async (boardId: number) : Promise<BoardData> => {
+  return instance.get(`/userBoardService/boards/${boardId}`);
+}
+
+export const findCommentsByBoardId = async (boardId: number) => {
+  return instance.get(`/userCommentService/comments/posts/${boardId}`);
+};

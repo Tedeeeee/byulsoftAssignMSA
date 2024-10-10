@@ -13,6 +13,11 @@ export interface BoardData {
   memberNickname: string;
   boardRegion: string;
   boardCreatedAt: string;
-  boardStars: BoardStar[];
+  boardStars: BoardStarData[];
   boardView: number;
 }
+
+export type BoardListData = Omit<BoardData, 'boardStars'>;
+export type BoardSaveData = Omit<BoardData, 'boardId' | 'boardCreatedAt' | 'memberNickname' | 'boardView'>;
+export type BoardUpdateData = Pick<BoardData, 'boardId' | 'boardRegion' | 'boardTitle' | 'boardContent' | 'boardStars'>;
+export type BoardHeaderData = Pick<BoardData, 'boardId' | 'boardRegion' | 'boardTitle' | 'boardCreatedAt'>;

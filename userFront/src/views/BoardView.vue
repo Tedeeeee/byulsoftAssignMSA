@@ -24,21 +24,22 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { SearchBoard } from '@/type/SearchData'
-import type { BoardData } from '@/type/BoardData'
+import type { BoardData, BoardListData } from '@/type/BoardData'
 import SearchBar from '@/components/board/SearchBarComponent.vue'
 import CustomModal from '@/components/modal/AlertModalComponent.vue'
 import SortType from '@/components/board/SortTypeComponent.vue'
 import ResetSearchButton from '@/components/board/ResetSearchButtonComponent.vue'
 import PostCard from '@/components/board/PostCardComponent.vue'
+import { getBoardList } from '@/api/NoAuthRequiredApi'
 
 const router = useRouter();
 const route = useRoute();
 
 const currentPage = ref<number>(1);
 const totalPages = ref<number>(1);
-const Boards = ref<BoardData[]>([]);
+const Boards = ref<BoardListData[]>([]);
 
-const SearchConditionForBoard = ref<SearchBoard>({
+const searchConditionForBoard = ref<SearchBoard>({
   searchType: route.query.searchType || '',
   searchText: route.query.searchText || '',
   sortOrder: route.query.sortOrder || '',
@@ -51,13 +52,25 @@ const detailPost = (boardId: number): void => {
 }
 
 // 검색
-const sortPostList = () => {
+const sortPostList = async () => {
+  searchConditionForBoard.value.pageNumber = 1;
+  await fetchPosts();
 
+  await router.push({
+    name: 'Board',
+    query: {
+      searchType: searchConditionForBoard.value.searchType,
+      searchText: searchConditionForBoard.value.searchText,
+      sortOrder: searchConditionForBoard.value.sortOrder,
+      sortType: searchConditionForBoard.value.sortType,
+      pageNumber: 1,
+    },
+  });
 }
 
 // 검색 리셋
-const resetSearchBoard = () => {
-  SearchConditionForBoard.value = {
+const resetSearchBoard = async () => {
+  searchConditionForBoard.value = {
     searchType: '',
     searchText: '',
     sortOrder: '',
@@ -65,16 +78,37 @@ const resetSearchBoard = () => {
     pageNumber: 1,
   };
 
-
+  await fetchPosts()
 }
 
-const fetchPosts = async () => {
+const handlePageChange = async (page: number) => {
+  searchConditionForBoard.value.pageNumber = page;
+  currentPage.value = page;
 
+  await fetchPosts();
+
+  await router.push({
+    name: 'Board',
+    query: {
+      searchType: searchConditionForBoard.value.searchType,
+      searchText: searchConditionForBoard.value.searchText,
+      sortOrder: searchConditionForBoard.value.sortOrder,
+      sortType: searchConditionForBoard.value.sortType,
+      pageNumber: searchConditionForBoard.value.pageNumber,
+    },
+  });
+};
+
+const fetchPosts = async () => {
+  const response = await getBoardList(searchConditionForBoard.value);
+  console.log(response);
+  // posts.value = response.data.body.boards;
+  // totalPages.value = response.data.body.totalPages;
 }
 
 onMounted(async () => {
   currentPage.value = parseInt(route.query.pageNumber, 10) || 1;
-  searchBoard.value.pageNumber = parseInt(route.query.pageNumber, 10) || 1;
+  searchConditionForBoard.value.pageNumber = parseInt(route.query.pageNumber, 10) || 1;
   await fetchPosts();
 })
 
