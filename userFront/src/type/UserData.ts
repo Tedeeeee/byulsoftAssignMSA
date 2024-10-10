@@ -11,3 +11,5 @@ export interface UserRegisterData extends UserData {
   emailCheck: boolean;
   nicknameCheck: boolean;
 }
+
+export type LoginData = Pick<UserData, 'email' | 'password'>;

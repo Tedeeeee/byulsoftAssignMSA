@@ -67,13 +67,18 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(customAuthenticationProvider());
+    public AuthenticationManager authenticationManager(CustomAuthenticationProvider customAuthenticationProvider) {
+        return new ProviderManager(customAuthenticationProvider);
     }
 
     @Bean
-    public CustomAuthenticationProvider customAuthenticationProvider() {
+    public CustomAuthenticationProvider customUserAuthenticationProvider() {
         return new CustomAuthenticationProvider(customUserDetailService(), customPasswordEncoder());
+    }
+
+    @Bean
+    public CustomAuthenticationProvider customAdminAuthenticationProvider() {
+        return new CustomAuthenticationProvider(customAdminDetailService(), customPasswordEncoder());
     }
 
     @Bean
@@ -82,14 +87,22 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public CustomAdminDetailService customAdminDetailService() {
+        return new CustomAdminDetailService(memberMapper);
+    }
+
+    @Bean
     public CustomAuthenticationFilter customAuthenticationFilter() {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(), objectMapper);
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(customUserAuthenticationProvider()), objectMapper);
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler(memberMapper, tokenCreateService, objectMapper));
         customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler(objectMapper));
         customAuthenticationFilter.afterPropertiesSet();
         return customAuthenticationFilter;
     }
+
+    @Bean
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

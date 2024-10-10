@@ -11,7 +11,7 @@
       <div class="q-pa-md q-gutter-sm">
         <q-btn to="/" color="black" label="목록" />
         <template v-if="userStore.isLoggedIn">
-          <q-btn flat :label="userStore.userNickname" class="custom-link" />
+          <q-btn flat :label="nickname" class="custom-link" />
           <q-btn to="/insertPost" color="black" label="글쓰기" />
           <q-btn @click="handleLogout" color="black" label="로그아웃" />
         </template>
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { userStore } from '@/stores/userStore';
+import { userStore } from '@/stores/UserStore';
 
 
 </script>

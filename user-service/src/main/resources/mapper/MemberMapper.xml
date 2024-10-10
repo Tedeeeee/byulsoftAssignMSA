@@ -12,7 +12,6 @@
         <result property="memberNickname" column="member_nickname"/>
         <result property="memberName" column="member_name"/>
         <result property="memberPhoneNumber" column="member_phone_number"/>
-        <result property="memberRefreshToken" column="member_refresh_token"/>
         <result property="memberIsDelete" column="member_is_delete"/>
         <result property="memberRole" column="member_role"/>
         <result property="memberCreatedAt" column="member_created_at"/>

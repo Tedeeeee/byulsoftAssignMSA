@@ -18,7 +18,6 @@ public class Member {
     private String memberNickname;
     private String memberName;
     private String memberPhoneNumber;
-    private String memberRefreshToken;
     private boolean memberIsDelete;
     private Role memberRole;
     private LocalDateTime memberCreatedAt;
