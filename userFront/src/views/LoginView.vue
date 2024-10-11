@@ -38,6 +38,8 @@ import { login } from '@/api/NoAuthRequiredApi'
 import AlertModalComponent from '@/components/modal/AlertModalComponent.vue'
 import { ModalStore } from '@/stores/ModalState'
 import { useRouter } from 'vue-router'
+import { getUserData } from '@/api/AuthRequiredApi'
+import { userStore } from '@/stores/UserStore'
 
 const router = useRouter();
 const modalMessage = ref<string>('')
@@ -48,9 +50,16 @@ const loginData = ref<LoginData>({
 
 const handleSubmit = async () => {
   try {
-    const response = await login(loginData.value)
-    console.log(response)
+    const response = await login(loginData.value);
+    await localStorage.setItem('accessToken', response.data.AccessToken);
+    //LoginStore().tokenSetting(response.data.AccessToken);
+    console.log('storage : ' , localStorage.getItem('accessToken'));
+
+    const userResponse = await getUserData();
+    userStore().userDataSetting(userResponse.data.body)
+    console.log(userResponse)
     await router.push('/');
+    await router.push('/mainHeader');
   } catch (error) {
     modalMessage.value = '아이디 혹은 비밀번호가 틀렸습니다'
     ModalStore().openModal();

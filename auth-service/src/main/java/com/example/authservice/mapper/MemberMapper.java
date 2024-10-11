@@ -9,7 +9,7 @@ import java.util.Optional;
 @Mapper
 public interface MemberMapper {
     void save(Member member);
-    void saveRefreshToken(@Param("memberId") int memberId,@Param("memberRefreshToken") String refreshToken);
+    void saveRefreshToken(@Param("memberOriginalId") int memberOriginalId,@Param("memberRefreshToken") String refreshToken);
     Member findMemberByMemberEmail(String memberEmail);
     Optional<Member> findMemberByRefreshToken(String refreshToken);
 }

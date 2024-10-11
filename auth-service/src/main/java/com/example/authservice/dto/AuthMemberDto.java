@@ -12,6 +12,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthMemberDto {
+    private int memberId;
     private String memberEmail;
     private String memberPassword;
     private Role memberRole;
@@ -19,6 +20,7 @@ public class AuthMemberDto {
 
     public static AuthMemberDto fromMap(Map<String, Object> map) {
         return new AuthMemberDto(
+                (Integer) map.get("memberId"),
                 (String) map.get("memberEmail"),
                 (String) map.get("memberPassword"),
                 Role.valueOf((String) map.get("memberRole")),
@@ -28,7 +30,9 @@ public class AuthMemberDto {
 
     public Member toEntity() {
         return Member.builder()
+                .memberOriginalId(memberId)
                 .memberEmail(memberEmail)
+                .memberOriginalId(memberId)
                 .memberPassword(memberPassword)
                 .memberRole(memberRole)
                 .memberIsDelete(memberIsDelete)

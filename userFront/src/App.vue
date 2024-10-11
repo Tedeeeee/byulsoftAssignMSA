@@ -12,26 +12,32 @@
 import { RouterView } from 'vue-router'
 import MainFooter from '@/components/MainFooter.vue'
 import MainHeader from '@/components/MainHeader.vue'
+import { getAccessTokenApi, getUserData } from '@/api/AuthRequiredApi'
+import { userStore } from '@/stores/UserStore'
 import { onMounted } from 'vue'
-import { getAccessTokenApi } from '@/api/AuthRequiredApi'
 
 const settingToken = async () => {
   try {
-    const response = await getAccessTokenApi();
-    console.log(response)
-    // 토큰 셋팅
+    const tokenResponse = await getAccessTokenApi()
+    localStorage.setItem('accessToken', tokenResponse.data.message)
 
-    // 사용자 정보 입력하기 -> userApi 가져오기
-
+    const userResponse = await getUserData()
+    userStore().userDataSetting(userResponse.data.body)
+    console.log(userStore().user)
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 }
 
-onMounted(() => {
-  settingToken();
+onMounted( async () => {
+  const accessToken = localStorage.getItem('accessToken')
+  console.log(accessToken)
+  if (accessToken) {
+    const response = await getUserData();
+    userStore().userDataSetting(response.data.body)
+  }
+  await settingToken();
 })
-
 </script>
 
 <style scoped>

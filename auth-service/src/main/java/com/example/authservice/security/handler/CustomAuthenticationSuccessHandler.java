@@ -38,13 +38,14 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String refreshToken = tokenCreateService.createRefreshToken();
 
         // refreshToken 을 사용자의 DB에 저장
-        memberMapper.saveRefreshToken(member.getMemberId(), refreshToken);
+        memberMapper.saveRefreshToken(member.getMemberOriginalId(), refreshToken);
 
         // 응답에 토큰을 전달
         sendTokens(response, accessToken, refreshToken);
     }
 
     private void sendTokens(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
+
         ResponseCookie refreshCookie = ResponseCookie.from(TokenCreateService.REFRESH_TOKEN_SUBJECT, refreshToken)
                 .httpOnly(true)
                 .path("/")

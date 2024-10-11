@@ -1,9 +1,15 @@
 import { instanceWithAuth, instanceForAccessToken } from '@/api/Interceptors'
-import type { BoardSaveData, BoardStarData, BoardUpdateData } from '@/type/BoardData'
+import type { BoardSaveData, BoardUpdateData } from '@/type/BoardData'
 import type { CommentData } from '@/type/CommentData'
+import type { UserData } from '@/type/UserData'
 
-export const getAccessTokenApi = async (): Promise<string> => {
+export const getAccessTokenApi = async () => {
   return instanceForAccessToken.post('/authService/auth/token/renew');
+}
+
+export const getUserData = async () : Promise<UserData> => {
+  console.log('getUserData')
+  return instanceWithAuth.get('/userService/users');
 }
 
 export const insertBoard = async (boardInsertData: BoardSaveData): Promise<void> => {

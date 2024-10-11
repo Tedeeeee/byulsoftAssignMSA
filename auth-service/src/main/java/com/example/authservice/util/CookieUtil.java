@@ -11,7 +11,7 @@ public class CookieUtil {
     public static String getRefreshTokenInCookie(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            throw new RuntimeException("No cookies found in request");
+            throw new RuntimeException("요청에 쿠키가 담겨있지 않습니다");
         }
         return Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(cookieName))

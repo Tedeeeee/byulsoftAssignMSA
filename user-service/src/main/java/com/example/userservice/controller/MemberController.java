@@ -23,9 +23,9 @@ public class MemberController {
     }
 
     // API gateway를 통한 환경은 해당 메소드를 사용
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<BodyResponse<MemberResponseDto>> getUserInfo(HttpServletRequest request) {
-        String email = request.getHeader("email");
+        String email = request.getHeader("memberEmail");
         MemberResponseDto memberResponse = memberService.findUserByMemberEmail(email);
 
         return ResponseEntity.status(HttpStatus.OK)

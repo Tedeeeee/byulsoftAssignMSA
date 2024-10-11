@@ -5,13 +5,29 @@
       <div class="flex justify-center items-center" style="height: 30%">
         <div class="row q-gutter-sm" style="width: 100%">
           <div class="col-3 q-pa-sm">
-            <q-select filled v-model="searchType" :options="SelectCategory" label="카테고리" @update:model-value="changeSearchText" />
+            <q-select
+              filled
+              v-model="searchType"
+              :options="SelectCategory"
+              label="카테고리"
+              @update:model-value="changeSearchText"
+            />
           </div>
           <div v-if="searchType === SelectCategory[0]" class="col-7 q-pa-sm">
-            <q-input standout="bg-teal text-white" v-model="searchText" @keyup.enter="searchPost" label="검색" />
+            <q-input
+              standout="bg-teal text-white"
+              v-model="searchText"
+              @keyup.enter="searchPost"
+              label="검색"
+            />
           </div>
           <div v-else class="col-7 q-pa-sm">
-            <q-select filled v-model="searchText" @keyup.enter="searchPost" :options="RegionOptions" />
+            <q-select
+              filled
+              v-model="searchText"
+              @keyup.enter="searchPost"
+              :options="RegionOptions"
+            />
           </div>
           <div class="col-1 q-pa-sm">
             <q-btn @click="searchPost" color="primary" icon="search" size="lg" />
@@ -23,29 +39,29 @@
 </template>
 
 <script setup lang="ts">
-import { RegionOptions } from '@/type/UtilsData';
+import { RegionOptions } from '@/type/UtilsData'
 import { ref } from 'vue'
-import type { SelectCategory } from '@/type/UtilsData'
+import { SelectCategory } from '@/type/UtilsData'
 
-const SearchConditionForBoard = defineModel();
-const searchType = ref<string>(SearchConditionForBoard.value.searchType || '');
-const searchText = ref<string>(SearchConditionForBoard.value.searchText || SelectCategory[0]);
+const searchConditionForBoard = defineModel()
+const searchType = ref<string>(searchConditionForBoard.value.searchType || '')
+const searchText = ref<string>(searchConditionForBoard.value.searchText || SelectCategory[0])
 
 const emit = defineEmits<{
-  (e: 'searchPost'): void;
-}>();
+  (e: 'searchPost'): void
+}>()
 
 const searchPost = () => {
-  SearchConditionForBoard.value.searchType = searchType;
-  SearchConditionForBoard.value.searchText = searchText;
-  emit('searchPost');
+  searchConditionForBoard.value.searchType = searchType
+  searchConditionForBoard.value.searchText = searchText
+  emit('searchPost')
 }
 
 const changeSearchText = (newVal: string) => {
   if (newVal === SelectCategory[1]) {
-    searchText.value = RegionOptions[1];
+    searchText.value = RegionOptions[1]
   } else {
-    searchText.value = '';
+    searchText.value = ''
   }
 }
 </script>

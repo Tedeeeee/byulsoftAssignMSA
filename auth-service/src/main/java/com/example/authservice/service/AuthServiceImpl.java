@@ -7,6 +7,8 @@ import com.example.authservice.security.service.TokenCreateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -17,12 +19,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenResponseDto resetRefreshToken(String refreshToken) {
         Member member = memberMapper.findMemberByRefreshToken(refreshToken)
-                .orElseThrow(() -> new RuntimeException("refresh token not found"));
+                .orElseThrow(() -> new RuntimeException("refreshtoken이 올바르지 않습니다"));
 
         String renewAccessToken = tokenCreateService.createAccessToken(member);
         String renewRefreshToken = tokenCreateService.createRefreshToken();
 
-        memberMapper.saveRefreshToken(member.getMemberId(), renewRefreshToken);
+        memberMapper.saveRefreshToken(member.getMemberOriginalId(), renewRefreshToken);
 
         return TokenResponseDto.builder()
                 .accessToken(renewAccessToken)

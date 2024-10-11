@@ -19,7 +19,7 @@
         <result property="adminUpdatedAt" column="admin_updated_at"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.example.adminservice.entity.AdminMember" >
+    <insert id="save" parameterType="com.example.adminservice.entity.AdminMember" useGeneratedKeys="true" keyProperty="adminId">
         INSERT INTO admin
         (
             admin_email,

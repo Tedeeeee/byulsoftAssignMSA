@@ -16,6 +16,7 @@
       </div>
       <div class="flex flex-center">
         <div class="row q-gutter-sm">
+          <template v-for="(label, value) in SortOptions" :key="value">
           <q-btn
             flat
             :label="label + '↓'"
@@ -23,6 +24,7 @@
             :color="isActive(SortOrder[0], value) ? 'orange' : 'primary'"
             class="q-mr-xs"
           />
+          </template>
         </div>
       </div>
     </q-card>
@@ -30,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import type { SortOrder, SortOptions } from '@/type/UtilsData'
+import { SortOrder, SortOptions } from '@/type/UtilsData'
 import { onMounted } from 'vue'
 
 const searchBoard = defineModel();

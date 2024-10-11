@@ -30,7 +30,7 @@ public class BodyResponse<T> {
         return new BodyResponse<>(null, message);
     }
 
-    public static <T> BodyResponse<T> fail(final T body, final String errorMessage) {
-        return new BodyResponse<>(body, errorMessage);
+    public static <T> BodyResponse<T> fail(final String errorMessage) {
+        return new BodyResponse<>(null, errorMessage);
     }
 }

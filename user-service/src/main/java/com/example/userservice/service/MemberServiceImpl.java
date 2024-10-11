@@ -20,8 +20,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto findUserByMemberEmail(String memberEmail) {
-
-        System.out.println(memberEmail);
         Member member = memberMapper.findUserByMemberEmail(memberEmail)
                 .orElseThrow(() -> new RuntimeException("사용자가 확인되지 않습니다."));
 
@@ -63,8 +61,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void registerMember(MemberRequestDto memberRequestDto) {
-        // 중복 검사에서는 nickname 자체를 검사하는데 여기선 memberRequestDto 가 검사를 한다.
-        // 어떻게 하면 좋을까?
         memberRequestDto.memberSignupValidator();
 
         Member member = memberRequestDto.toEntity();

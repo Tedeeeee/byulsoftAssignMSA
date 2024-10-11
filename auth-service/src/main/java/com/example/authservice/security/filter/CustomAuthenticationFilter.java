@@ -3,6 +3,7 @@ package com.example.authservice.security.filter;
 import com.example.authservice.entity.Member;
 import com.example.authservice.security.service.MemberValidationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +36,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) throws IOException {
-        Member member = objectMapper.readValue(request.getReader(), Member.class);
+        Member member = objectMapper.readValue(request.getInputStream(), Member.class);
 
         MemberValidationService.loginDataValidation(member.getMemberEmail(),member.getMemberPassword());
 

@@ -77,18 +77,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public CustomAuthenticationProvider customAdminAuthenticationProvider() {
-        return new CustomAuthenticationProvider(customAdminDetailService(), customPasswordEncoder());
-    }
-
-    @Bean
     public CustomUserDetailService customUserDetailService() {
         return new CustomUserDetailService(memberMapper);
-    }
-
-    @Bean
-    public CustomAdminDetailService customAdminDetailService() {
-        return new CustomAdminDetailService(memberMapper);
     }
 
     @Bean
@@ -102,12 +92,9 @@ public class WebSecurityConfig {
     }
 
     @Bean
-
-
-    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5713", "http://localhost:5714"));
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

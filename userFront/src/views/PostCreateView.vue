@@ -43,7 +43,7 @@ const submitForm = async () => {
     const response = await insertBoard(postContents.value)
     console.log(response)
     positiveNotify('게시글이 등록되었습니다.')
-    await router.push('/');
+    // await router.push('/');
   } catch (error) {
     console.log(error)
   }

@@ -10,8 +10,8 @@
 
       <div class="q-pa-md q-gutter-sm">
         <q-btn to="/" color="black" label="목록" />
-        <template v-if="userStore.isLoggedIn">
-          <q-btn flat :label="nickname" class="custom-link" />
+        <template v-if="userStore().isLoggedIn">
+          <q-btn flat :label="userStore().getMemberNickname()" class="custom-link" />
           <q-btn to="/insertPost" color="black" label="글쓰기" />
           <q-btn @click="handleLogout" color="black" label="로그아웃" />
         </template>
@@ -25,9 +25,19 @@
 </template>
 
 <script setup lang="ts">
-import { userStore } from '@/stores/UserStore';
+import { userStore } from '@/stores/UserStore'
+import { useRouter } from 'vue-router'
+import logo from '@/assets/로고.png'
 
+const router = useRouter()
 
+const goHome = () => {
+  router.push('/')
+}
+
+const handleLogout = () => {
+  console.log('처리 준비')
+}
 </script>
 
 <style scoped>

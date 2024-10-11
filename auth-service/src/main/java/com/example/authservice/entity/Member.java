@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Member {
     private int memberId;
+    private int memberOriginalId;
     private String memberEmail;
     private String memberPassword;
     private String memberRefreshToken;
@@ -19,19 +20,7 @@ public class Member {
 
     public void checkIfMemberIsDeleted () {
         if (memberIsDelete) {
-            throw new RuntimeException("memberIsDelete");
-        }
-    }
-
-    public void validateAdminRole () {
-        if (memberRole == Role.ADMIN) {
-            throw new RuntimeException("ADMIN 입니다");
-        }
-    }
-
-    public void validateUserRole () {
-        if (memberRole == Role.USER) {
-            throw new RuntimeException("USER 입니다");
+            throw new RuntimeException("탈퇴한 사용자입니다");
         }
     }
 }

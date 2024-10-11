@@ -18,7 +18,7 @@
         <result property="memberUpdatedAt" column="member_updated_at"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.example.userservice.entity.Member" >
+    <insert id="save" parameterType="com.example.userservice.entity.Member" useGeneratedKeys="true" keyProperty="memberId">
         INSERT INTO Member
         (
             member_email,
@@ -49,9 +49,9 @@
         select
             member_id,
             member_email,
+            member_name,
             member_nickname,
             member_phone_number,
-            member_refresh_token,
             member_is_delete,
             member_role,
             member_created_at,

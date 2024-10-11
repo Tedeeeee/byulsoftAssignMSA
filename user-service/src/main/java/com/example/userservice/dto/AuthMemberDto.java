@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AuthMemberDto {
+    private int memberId;
     private String memberEmail;
     private String memberPassword;
     private Role memberRole;
@@ -19,6 +20,7 @@ public class AuthMemberDto {
 
     public static AuthMemberDto from(Member member) {
         return AuthMemberDto.builder()
+                .memberId(member.getMemberId())
                 .memberEmail(member.getMemberEmail())
                 .memberPassword(member.getMemberPassword())
                 .memberRole(Role.USER)

@@ -1,7 +1,6 @@
 <template>
-  <custom-modal/>
-  <search-bar v-model="SearchConditionForBoard" />
-  <sort-type v-model="SearchConditionForBoard" @sort="sortPostList"/>
+  <search-bar-component v-model="searchConditionForBoard" />
+  <sort-type v-model="searchConditionForBoard" @sort="sortPostList"/>
   <reset-search-button @reset-search-condition="resetSearchBoard"/>
   <q-page padding>
     <div class="q-gutter-md">
@@ -24,13 +23,12 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { SearchBoard } from '@/type/SearchData'
-import type { BoardData, BoardListData } from '@/type/BoardData'
-import SearchBar from '@/components/board/SearchBarComponent.vue'
-import CustomModal from '@/components/modal/AlertModalComponent.vue'
+import type { BoardListData } from '@/type/BoardData'
+import { getBoardList } from '@/api/NoAuthRequiredApi'
 import SortType from '@/components/board/SortTypeComponent.vue'
+import SearchBarComponent from '@/components/board/SearchBarComponent.vue'
 import ResetSearchButton from '@/components/board/ResetSearchButtonComponent.vue'
 import PostCard from '@/components/board/PostCardComponent.vue'
-import { getBoardList } from '@/api/NoAuthRequiredApi'
 
 const router = useRouter();
 const route = useRoute();
