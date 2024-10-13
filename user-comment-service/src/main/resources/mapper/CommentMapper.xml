@@ -25,7 +25,7 @@
             #{boardId},
             #{memberId},
             #{commentContent},
-            0
+            false
         )
     </insert>
 

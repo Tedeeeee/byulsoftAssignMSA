@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -43,16 +45,22 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentResponseDto> getCommentsByBoardId(int boardId) {
         List<Comment> comments = commentMapper.findCommentsByBoardId(boardId);
 
-        if (comments.isEmpty()) {
-            throw new RuntimeException("No comments found");
-        }
+        if (!comments.isEmpty()) {
+            // 데이터를 가져올때 사용자의 닉네임을 클라이언트를 통해 가져와야한다.
+            List<Integer> memberList = comments.stream().map(Comment::getMemberId).toList();
+            Map<Integer, String> memberNicknamesByMemberIdList = memberServiceClient.getMemberNicknamesByMemberIdList(memberList);
 
-        return comments.stream().map(CommentResponseDto::from).toList();
+            return comments.stream()
+                    .map(comment -> {
+                        return CommentResponseDto.from(comment, memberNicknamesByMemberIdList.get(comment.getMemberId()));
+                    }).toList();
+        }
+        return null;
     }
 
     @Override
     @Transactional
-    public CommentResponseDto updateComment(CommentRequestDto commentRequestDto, String memberEmail) {
+    public void updateComment(CommentRequestDto commentRequestDto, String memberEmail) {
         commentRequestDto.validationCheck();
 
         MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
@@ -61,10 +69,6 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRequestDto.toEntity();
 
         commentMapper.updateComment(comment);
-        Comment renewComment = commentMapper.findCommentByCommentId(comment.getCommentId())
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
-
-        return CommentResponseDto.from(renewComment);
     }
 
     @Override

@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { LoginStore } from '@/stores/LoginStore'
+import { accessToken } from '@/stores/UserStore'
 
 export const setInterceptors = instance => {
   instance.interceptors.request.use(
     config=> {
-      config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+      config.headers.Authorization = 'Bearer ' + localStorage.getItem(accessToken);
       return config;
     },
     error => {
@@ -14,6 +14,7 @@ export const setInterceptors = instance => {
 
   instance.interceptors.response.use(
     response => {
+      // 유효기간이 종료된 이후 refreshToken 넣기
       return response;
     },
     error => {
@@ -33,7 +34,6 @@ export const createInstance = () => {
 }
 
 export const createInstanceWithAuth = () => {
-  console.log('asdfasdfasdf')
   const instance = axios.create({
     baseURL: `/api`,
   })

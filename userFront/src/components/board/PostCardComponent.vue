@@ -17,9 +17,9 @@
         </div>
         <q-separator />
         <div class="row q-col-gutter-ms q-mt-md">
-          <div v-for="(starType, idx) in post.boardStars" :key="idx" class="col">
-            <span>{{ SortOptions[starType.boardStarType] }}</span>
-            <q-rating v-model="starType.boardStarRating" max="5" readonly class="black-stars" />
+          <div v-for="(star, idx) in post.boardStars" :key="idx" class="col">
+            <span>{{ SortOptions[star.boardStarType] }}</span>
+            <q-rating v-model="star.boardStarRating" max="5" readonly class="black-stars" />
             <q-separator vertical />
           </div>
         </div>
@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import type { BoardData } from '@/type/BoardData'
-import type { SortOptions } from '@/type/UtilsData'
+import { SortOptions } from '@/type/UtilsData'
 
 const props = defineProps<{
   post: BoardData

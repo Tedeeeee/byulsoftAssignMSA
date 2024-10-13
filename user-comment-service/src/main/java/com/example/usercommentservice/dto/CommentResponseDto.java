@@ -11,15 +11,17 @@ import lombok.*;
 public class CommentResponseDto {
     private int commentId;
     private int memberId;
+    private String memberNickname;
     private int boardId;
     private String commentContent;
     private String commentCreatedAt;
     private String commentUpdatedAt;
 
-    public static CommentResponseDto from(Comment comment) {
+    public static CommentResponseDto from(Comment comment, String memberNickname) {
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .memberId(comment.getMemberId())
+                .memberNickname(memberNickname)
                 .boardId(comment.getBoardId())
                 .commentContent(comment.getCommentContent())
                 .commentCreatedAt(TimeChangerUtil.timeChange(comment.getCommentCreatedAt()))

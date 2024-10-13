@@ -25,16 +25,16 @@
       />
     </div>
   </div>
-  <div v-for="(type, idx) in postContents.boardStars" :key="idx">
+  <div v-for="(star, idx) in postContents.boardStars" :key="idx">
     <div class="q-gutter-md flex items-center">
       <div class="q-mr-md" style="flex: 2">
-        <div class="title">{{ SortOptions[type.boardStarType] }}</div>
+        <div class="title">{{ SortOptions[star.boardStarType] }}</div>
       </div>
       <div style="flex: 8">
-        <q-rating v-model="type.boardStarRating" max="5" color="amber" icon="star" label="별점" />
+        <q-rating v-model="star.boardStarRating" max="5" color="amber" icon="star" label="별점" />
       </div>
     </div>
-    <q-input maxlength="100" v-model="type.boardStarShortReview" class="contentsText" label="한줄평" filled />
+    <q-input maxlength="100" v-model="star.boardStarShortReview" class="contentsText" label="한줄평" filled />
   </div>
 
   <div class="title">총평</div>

@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface MemberMapper {
     void save(Member member);
     void saveRefreshToken(@Param("memberOriginalId") int memberOriginalId,@Param("memberRefreshToken") String refreshToken);
-    Member findMemberByMemberEmail(String memberEmail);
+    Optional<Member> findMemberByMemberEmail(String memberEmail);
     Optional<Member> findMemberByRefreshToken(String refreshToken);
+    void logout(String memberEmail);
 }

@@ -25,7 +25,7 @@
     </resultMap>
 
     <insert id="save" parameterType="com.example.userboardservice.entity.Board" useGeneratedKeys="true" keyProperty="boardId">
-        INSERT INTO msa_board.board
+        INSERT INTO board
         (
             member_id,
             board_title,

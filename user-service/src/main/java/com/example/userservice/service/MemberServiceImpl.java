@@ -11,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -74,5 +78,14 @@ public class MemberServiceImpl implements MemberService {
         } catch (Exception e) {
             throw new RuntimeException("failed to save member");
         }
+    }
+
+    @Override
+    public Map<Integer, String> findUserNicknamesByMemberList(List<Integer> memberIdList) {
+        // 여기서 list 순서대로 가져와야 한다.
+        List<Member> findMemberList = memberMapper.findMemberNicknameByMemberIdList(memberIdList);
+
+        return findMemberList.stream()
+                        .collect(Collectors.toMap(Member::getMemberId, Member::getMemberNickname));
     }
 }

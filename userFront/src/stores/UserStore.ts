@@ -16,7 +16,6 @@ export const userStore = defineStore('user', () => {
   const isLoggedIn = computed(() => localStorage.getItem(accessToken));
 
   const userDataSetting = (userData: UserData) => {
-    console.log('set : ' , userData);
     user.value.memberId = userData.memberId;
     user.value.memberEmail = userData.memberEmail;
     user.value.memberName = userData.memberName;
@@ -24,9 +23,5 @@ export const userStore = defineStore('user', () => {
     user.value.memberPhoneNumber = userData.memberPhoneNumber;
   }
 
-  const getMemberNickname = () :string => {
-    return user.value.memberNickname;
-  }
-
-  return { user, userDataSetting, isLoggedIn, getMemberNickname };
+  return { user, userDataSetting, isLoggedIn };
 })

@@ -26,7 +26,7 @@ public interface CommentService {
      * @since : 2024.10.07
      * @author : T.S YUN
      */
-    CommentResponseDto updateComment(CommentRequestDto commentRequestDto, String memberEmail);
+    void updateComment(CommentRequestDto commentRequestDto, String memberEmail);
 
     /**
      * 설명 : 댓글 삭제 (soft)

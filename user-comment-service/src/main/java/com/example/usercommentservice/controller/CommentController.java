@@ -35,7 +35,7 @@ public class CommentController {
         commentService.addComment(commentRequestDto, memberEmail);
         List<CommentResponseDto> comments = commentService.getCommentsByBoardId(commentRequestDto.getBoardId());
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                BodyResponse.success(comments)
+                BodyResponse.success(comments, "댓글이 등록되었습니다")
         );
     }
 
@@ -49,13 +49,14 @@ public class CommentController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<BodyResponse<CommentResponseDto>> updateComment(@RequestBody @Valid CommentRequestDto commentRequestDto,
+    public ResponseEntity<BodyResponse<List<CommentResponseDto>>> updateComment(@RequestBody @Valid CommentRequestDto commentRequestDto,
                                                               HttpServletRequest request) {
         String memberEmail = request.getHeader("memberEmail");
-        CommentResponseDto commentResponseDto = commentService.updateComment(commentRequestDto, memberEmail);
+        commentService.updateComment(commentRequestDto, memberEmail);
+        List<CommentResponseDto> commentsByBoardId = commentService.getCommentsByBoardId(commentRequestDto.getBoardId());
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                BodyResponse.success(commentResponseDto));
+                BodyResponse.success(commentsByBoardId, "댓글이 수정되었습니다"));
     }
 
     @PostMapping("/delete/{commentId}")

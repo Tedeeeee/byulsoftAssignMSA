@@ -14,6 +14,7 @@
     </q-dialog>
   </div>
   <div class="comment-section q-mt-lg">
+    {{comments}}
     <h5>댓글</h5>
     <div class="q-mt-md">
       <q-card v-for="(comment, idx) in comments" :key="idx" flat bordered class="q-pa-md comment-card">

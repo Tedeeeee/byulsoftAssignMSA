@@ -16,7 +16,6 @@ public class CommentRequestDto {
 
     @NotNull
     private int boardId;
-
     @NotBlank
     private String commentContent;
 

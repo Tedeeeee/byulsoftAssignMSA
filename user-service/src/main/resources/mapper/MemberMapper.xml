@@ -75,4 +75,16 @@
             where member_email = #{memberEmail}
         );
     </select>
+
+    <select id="findMemberNicknameByMemberIdList" resultMap="memberResultMap">
+        select
+            member_id,
+            member_nickname
+        from member
+        where member_is_delete = 0 and member_id in
+        <foreach collection="list" item="arr" index="idx"
+                 open="(" separator="," close=")">
+            #{arr}
+        </foreach>
+    </select>
 </mapper>

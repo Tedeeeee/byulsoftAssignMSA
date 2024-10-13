@@ -2,6 +2,7 @@ import { instance } from '@/api/Interceptors'
 import type { SearchBoard } from '@/type/SearchData'
 import type { BoardData } from '@/type/BoardData'
 import type { LoginData, UserData } from '@/type/UserData'
+import type { CommentData } from '@/type/CommentData'
 
 export const getBoardList = async (searchBoard: SearchBoard) : Promise<BoardData[]> => {
   return instance.get('/userBoardService/boards', {
@@ -43,6 +44,6 @@ export const getBoardById = async (boardId: number) : Promise<BoardData> => {
   return instance.get(`/userBoardService/boards/${boardId}`);
 }
 
-export const findCommentsByBoardId = async (boardId: number) => {
-  return instance.get(`/userCommentService/comments/posts/${boardId}`);
-};
+export const getCommentById = async (boardId: number) : Promise<CommentData> => {
+  return instance.get(`/userCommentService/comments/boards/${boardId}`);
+}

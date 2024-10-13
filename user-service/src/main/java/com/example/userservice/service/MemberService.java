@@ -3,6 +3,9 @@ package com.example.userservice.service;
 import com.example.userservice.dto.MemberRequestDto;
 import com.example.userservice.dto.MemberResponseDto;
 
+import java.util.List;
+import java.util.Map;
+
 public interface MemberService {
 
     /**
@@ -40,4 +43,11 @@ public interface MemberService {
      * @since : 2024.10.04
      */
     void registerMember(MemberRequestDto memberRequestDto);
+
+    /**
+     * 설명 : 댓글 member list
+     * @author : T.S YUN
+     * @since : 2024.10.04
+     */
+    Map<Integer, String> findUserNicknamesByMemberList(List<Integer> memberIdList);
 }

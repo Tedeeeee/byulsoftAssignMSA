@@ -5,6 +5,9 @@ import com.example.userservice.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/feign")
@@ -17,8 +20,13 @@ public class FeignController {
         return memberService.findUserByMemberEmail(memberEmail);
     }
 
-    @GetMapping("{memberId}/nickname")
+    @GetMapping("/{memberId}/nickname")
     String getMemberNickname(@PathVariable("memberId") int memberId) {
         return memberService.findUserNicknameByMemberId(memberId);
+    }
+
+    @GetMapping("/nicknames")
+    Map<Integer, String> getMemberNicknamesByMemberIdList(@RequestParam List<Integer> memberIdList) {
+        return memberService.findUserNicknamesByMemberList(memberIdList);
     }
 }

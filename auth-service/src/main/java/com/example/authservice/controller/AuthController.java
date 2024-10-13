@@ -41,11 +41,31 @@ public class AuthController {
                 .body(BodyResponse.success(tokenResponseDto.getAccessToken()));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<BodyResponse<String>> logout(HttpServletRequest request, HttpServletResponse response) {
+        String memberEmail = request.getHeader("memberEmail");
+        authService.logout(memberEmail);
+
+        deleteRefreshTokenToResponseCookie(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(BodyResponse.success("로그아웃되었습니다"));
+    }
+
     private void addRefreshTokenToResponseCookie(HttpServletResponse response, String renewRefreshToken) {
         ResponseCookie refreshCookie = ResponseCookie.from(TokenCreateService.REFRESH_TOKEN_SUBJECT, renewRefreshToken)
                 .httpOnly(true)
                 .path("/")
                 .maxAge(TokenCreateService.REFRESH_TOKEN_EXPIRES_IN)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+    }
+
+    private void deleteRefreshTokenToResponseCookie(HttpServletResponse response) {
+        ResponseCookie refreshCookie = ResponseCookie.from(TokenCreateService.REFRESH_TOKEN_SUBJECT, "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());

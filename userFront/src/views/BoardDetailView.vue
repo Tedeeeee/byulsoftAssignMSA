@@ -27,7 +27,7 @@
       </div>
       <!-- 여기서 nickname을 확인하고 컴포넌트를 띄워주면 된다     -->
       <board-edit-delete-actions-component
-        v-if="postHeadData.memberNickname === useUserStore().userNickname"
+        v-if="postHeadData.memberNickname === userStore().user.memberNickname"
         @update-modal="showModal"
         @delete-modal="showModal"
       />
@@ -63,7 +63,7 @@ import type { BoardData, BoardHeaderData, BoardStarData } from '@/type/BoardData
 import { useRouter } from 'vue-router';
 import { userStore } from '@/stores/UserStore'
 import { useNotifications } from '@/common/CommonNotify';
-import { findCommentsByBoardId, getBoardById } from '@/api/NoAuthRequiredApi'
+import { getBoardById, getCommentById } from '@/api/NoAuthRequiredApi'
 import { deleteBoard, insertComment, updateComment, deleteComment } from '@/api/AuthRequiredApi'
 import BoardDetailHeadContentsComponent from '@/components/boardDetail/BoardDetailHeadContentsComponent.vue'
 import ReviewStarComponent from '@/components/boardDetail/ReviewStarComponent.vue'
@@ -77,8 +77,12 @@ const props = defineProps<{
   boardId: string;
 }>();
 const boardId = parseInt(props.boardId);
-const postHeadData = ref<BoardHeaderData> | undefined>({
-  boardId: boardId
+const postHeadData = ref<BoardHeaderData | undefined>({
+  boardId: 0,
+  memberNickname: '',
+  boardRegion: '',
+  boardTitle: '',
+  boardCreatedAt: '',
 });
 const boardStars = ref<BoardStarData[] | undefined>([]);
 const comments = ref<CommentData[] | undefined>([]);
@@ -104,7 +108,7 @@ const transformToBoardStar = (responseData: BoardStarData): Omit<BoardStarData, 
   };
 };
 
-const transformToComment = (responseData: CommentData) => {
+const transformToComment = (responseData: CommentData) : CommentData => {
   return {
     commentId: responseData.commentId,
     memberId: responseData.memberId,
@@ -130,7 +134,8 @@ const closeModal = () => {
 const deletePost = async (boardId: number) => {
   try {
     const response = await deleteBoard(boardId);
-    positiveNotify(response.message);
+    console.log(response)
+    positiveNotify(response.data.message);
     await router.push('/');
   } catch (error) {
     negativeNotify(error.message);
@@ -146,12 +151,12 @@ const addComment = async (content: string) => {
 
   try {
     const response = await insertComment({
-      commentContent: content,
+      memberId: userStore().user.memberId,
       boardId: boardId,
-      memberNickname: userStore().user.memberNickname,
+      commentContent: content,
     });
 
-    positiveNotify(response.message);
+    positiveNotify(response.data.message);
     comments.value = response.data.body.map(transformToComment);
   } catch (error) {
     if (error.status == 401) {
@@ -163,24 +168,35 @@ const addComment = async (content: string) => {
 
 /* 댓글 수정 */
 const editComment = async (content: string, id: number) => {
-  const response = await updateComment({
-    commentContent: content,
-    commentId: id,
-    boardId: boardId,
-  });
-  positiveNotify(response.message);
-  comments.value = response.data.body.map(transformToComment);
+  try {
+    const response = await updateComment({
+      commentContent: content,
+      commentId: id,
+      boardId: boardId,
+      memberId: userStore().user.memberId
+    });
+
+    console.log(response)
+    positiveNotify(response.data.message);
+    if (response.data.body) {
+      comments.value = response.data.body.map(transformToComment);
+    }
+  } catch (error) {
+    negativeNotify(error);
+  }
+
 };
 
 /* 댓글 삭제 */
 const deletedComment = async (commentId: number) => {
+  console.log(commentId)
   try {
     const response = await deleteComment(commentId);
-    positiveNotify(response.message);
+    positiveNotify(response.data.message);
 
     /*삭제 후 해당 보드의 댓글 다시 로드*/
-    const responseComment = await findCommentsByBoardId(boardId);
-    comments.value = responseComment.body.map(transformToComment);
+    const responseComment = await getCommentById(boardId);
+    comments.value = responseComment.data.body.map(transformToComment);
   } catch (error) {
     negativeNotify(error.message);
   }
@@ -190,7 +206,12 @@ const fetchContentDetails = async () => {
   const response = await getBoardById(boardId);
   postHeadData.value = transformToPostHeadData(response.data.body);
   boardStars.value = response.data.body.boardStars.map(transformToBoardStar);
-  comments.value = response.data.body.comments.map(transformToComment);
+
+  // 댓글 따로 가져오기
+  const commentResponse = await getCommentById(boardId)
+  if (commentResponse.data.body) {
+    comments.value = commentResponse.data.body.map(transformToComment);
+  }
 };
 
 onMounted(() => {

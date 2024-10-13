@@ -20,4 +20,4 @@ export interface BoardData {
 export type BoardListData = Omit<BoardData, 'boardStars'>;
 export type BoardSaveData = Omit<BoardData, 'boardId' | 'boardCreatedAt' | 'memberNickname' | 'boardView'>;
 export type BoardUpdateData = Pick<BoardData, 'boardId' | 'boardRegion' | 'boardTitle' | 'boardContent' | 'boardStars'>;
-export type BoardHeaderData = Pick<BoardData, 'boardId' | 'boardRegion' | 'boardTitle' | 'boardCreatedAt'>;
+export type BoardHeaderData = Pick<BoardData, 'boardId' | 'boardRegion' | 'boardTitle' | 'boardCreatedAt' | 'memberNickname'>;

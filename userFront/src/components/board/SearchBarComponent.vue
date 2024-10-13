@@ -44,8 +44,8 @@ import { ref } from 'vue'
 import { SelectCategory } from '@/type/UtilsData'
 
 const searchConditionForBoard = defineModel()
-const searchType = ref<string>(searchConditionForBoard.value.searchType || '')
-const searchText = ref<string>(searchConditionForBoard.value.searchText || SelectCategory[0])
+const searchText = ref<string>(searchConditionForBoard.value.searchText || '')
+const searchType = ref<string>(searchConditionForBoard.value.searchType || SelectCategory[0])
 
 const emit = defineEmits<{
   (e: 'searchPost'): void
@@ -59,7 +59,7 @@ const searchPost = () => {
 
 const changeSearchText = (newVal: string) => {
   if (newVal === SelectCategory[1]) {
-    searchText.value = RegionOptions[1]
+    searchText.value = RegionOptions[0]
   } else {
     searchText.value = ''
   }

@@ -1,10 +1,11 @@
 <template>
   <search-bar-component v-model="searchConditionForBoard" />
-  <sort-type v-model="searchConditionForBoard" @sort="sortPostList"/>
+  <sort-type-component v-model="searchConditionForBoard" @sort="sortPostList"/>
   <reset-search-button @reset-search-condition="resetSearchBoard"/>
+  {{ userStore().user}}
   <q-page padding>
     <div class="q-gutter-md">
-      <post-card v-for="(post, idx) in Boards" :key="idx" :post="post" @detail-post="detailPost" />
+      <post-card-component v-for="(post, idx) in boards" :key="idx" :post="post" @detail-post="detailPost" />
       <div class="q-pa-lg flex flex-center">
         <q-pagination
           v-model="currentPage"
@@ -25,17 +26,18 @@ import { useRoute, useRouter } from 'vue-router'
 import type { SearchBoard } from '@/type/SearchData'
 import type { BoardListData } from '@/type/BoardData'
 import { getBoardList } from '@/api/NoAuthRequiredApi'
-import SortType from '@/components/board/SortTypeComponent.vue'
 import SearchBarComponent from '@/components/board/SearchBarComponent.vue'
 import ResetSearchButton from '@/components/board/ResetSearchButtonComponent.vue'
-import PostCard from '@/components/board/PostCardComponent.vue'
+import PostCardComponent from '@/components/board/PostCardComponent.vue'
+import { userStore } from '@/stores/UserStore'
+import SortTypeComponent from '@/components/board/SortTypeComponent.vue'
 
 const router = useRouter();
 const route = useRoute();
 
 const currentPage = ref<number>(1);
 const totalPages = ref<number>(1);
-const Boards = ref<BoardListData[]>([]);
+const boards = ref<BoardListData[]>([]);
 
 const searchConditionForBoard = ref<SearchBoard>({
   searchType: route.query.searchType || '',
@@ -99,9 +101,8 @@ const handlePageChange = async (page: number) => {
 
 const fetchPosts = async () => {
   const response = await getBoardList(searchConditionForBoard.value);
-  console.log(response);
-  // posts.value = response.data.body.boards;
-  // totalPages.value = response.data.body.totalPages;
+  boards.value = response.data.body.boards;
+  totalPages.value = response.data.body.totalPages;
 }
 
 onMounted(async () => {
@@ -112,4 +113,9 @@ onMounted(async () => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.q-page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+</style>

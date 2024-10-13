@@ -8,7 +8,6 @@ export const getAccessTokenApi = async () => {
 }
 
 export const getUserData = async () : Promise<UserData> => {
-  console.log('getUserData')
   return instanceWithAuth.get('/userService/users');
 }
 
@@ -29,7 +28,7 @@ export const insertComment = async (CommentInsertData: CommentData) => {
 };
 
 export const updateComment = async (data: CommentData) => {
-  return instanceWithAuth.put('/userCommentService/comments/update', data);
+  return instanceWithAuth.post('/userCommentService/comments/update', data);
 };
 
 export const deleteComment = async (id: number) => {
@@ -37,5 +36,5 @@ export const deleteComment = async (id: number) => {
 };
 
 export const logout = () => {
-  return instanceWithAuth.delete('members/logout');
+  return instanceWithAuth.post('/authService/auth/logout');
 };

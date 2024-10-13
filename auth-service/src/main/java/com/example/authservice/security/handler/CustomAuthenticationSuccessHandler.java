@@ -30,7 +30,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String email = extractUsername(authentication);
-        Member member = memberMapper.findMemberByMemberEmail(email);
+        Member member = memberMapper.findMemberByMemberEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
 
         tokenCreateService.setSecretKeyForRole(member.getMemberRole());
 

@@ -31,4 +31,14 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(renewRefreshToken)
                 .build();
     }
+
+    @Override
+    public void logout(String memberEmail) {
+        memberMapper.findMemberByMemberEmail(memberEmail)
+                .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
+
+        memberMapper.logout(memberEmail);
+    }
+
+
 }

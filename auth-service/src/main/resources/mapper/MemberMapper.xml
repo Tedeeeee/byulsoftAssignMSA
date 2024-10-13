@@ -62,4 +62,10 @@
         from member
         where member_refresh_token = #{memberRefreshToken};
     </select>
+
+    <update id="logout">
+        update member
+        set member_refresh_token = null
+        where member_email = #{memberEmail}
+    </update>
 </mapper>

@@ -104,7 +104,7 @@ const registerData = ref<UserRegisterData>({
   name: '',
   nickname: '',
   nicknameCheck: false,
-  phoneNum: ''
+  phoneNumber: ''
 })
 
 const signUpData = ref<UserRegisterData>({
@@ -112,7 +112,7 @@ const signUpData = ref<UserRegisterData>({
   memberPassword: '',
   memberName: '',
   memberNickname: '',
-  memberPhoneNum: ''
+  memberPhoneNumber: ''
 })
 
 const emailRules = [
@@ -193,7 +193,7 @@ const transformSignupData = (registerData: UserRegisterData): UserData => {
   signUpData.value.memberPassword = registerData.password
   signUpData.value.memberName = registerData.name
   signUpData.value.memberNickname = registerData.nickname
-  signUpData.value.memberPhoneNum = registerData.phoneNumber.replace(/-/g, '')
+  signUpData.value.memberPhoneNumber = registerData.phoneNumber.replace(/-/g, '')
 }
 
 const handleSubmit = async () => {
@@ -240,7 +240,6 @@ const handleSubmit = async () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #f5f5f5;
 }
 
 .sign-up-card {

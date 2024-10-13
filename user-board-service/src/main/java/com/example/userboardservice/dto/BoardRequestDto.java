@@ -2,6 +2,7 @@ package com.example.userboardservice.dto;
 
 import com.example.userboardservice.entity.Board;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardRequestDto {
     private int boardId;
+    @NotNull(message = "작성자의 정보가 입력되지 않았습니다")
     private int memberId;
 
     @NotBlank(message = "제목을 입력해주세요")
