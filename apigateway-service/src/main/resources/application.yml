@@ -33,7 +33,7 @@ spring:
               - OPTIONS
       routes:
         # 인증, 인가 관련
-        - id: auth-service
+        - id: auth-service-logout
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/api/authService/auth/logout
@@ -48,13 +48,13 @@ spring:
             - RewritePath=/api/authService/(?<segment>.*), /${segment}
 
         # 사용자 관련
-        - id: user-service-register
+        - id: user-service-noAuth
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/api/userService/feign/**, /api/userService/users/register, /api/userService/users/check-nickname, /api/userService/users/check-email
+            - Path=/api/userService/noAuth/**
           filters:
             - RewritePath=/api/userService/(?<segment>.*), /${segment}
-        - id: user-service
+        - id: user-service-withAuth
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/userService/**
@@ -63,33 +63,25 @@ spring:
             - AuthorizationHeaderFilter
 
         # 사용자 게시글 관련
-        - id: user-board-service-findAll
+        - id: user-board-service-noAuth
           uri: lb://USER-BOARD-SERVICE
           predicates:
-            - Path=/api/userBoardService/**
-            - Method=POST
+            - Path=/api/userBoardService/noAuth/**
           filters:
             - RewritePath=/api/userBoardService/(?<segment>.*), /${segment}
-            - AuthorizationHeaderFilter
         - id: user-board-service
           uri: lb://USER-BOARD-SERVICE
           predicates:
             - Path=/api/userBoardService/**
           filters:
             - RewritePath=/api/userBoardService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter
 
         # 사용자 댓글 관련
-        - id: user-comment-service-findAll
+        - id: user-comment-service-noAuth
           uri: lb://USER-COMMENT-SERVICE
           predicates:
-            - Path=/api/userCommentService/**
-            - Method=GET
-          filters:
-            - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
-        - id: user-comment-service-feign
-          uri: lb://USER-COMMENT-SERVICE
-          predicates:
-            - Path=/api/userCommentService/feign/**
+            - Path=/api/userCommentService/noAuth/**
           filters:
             - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
         - id: user-comment-service
@@ -100,11 +92,26 @@ spring:
             - RewritePath=/api/userCommentService/(?<segment>.*), /${segment}
             - AuthorizationHeaderFilter
 
+        # 사용자 신고 관련
+        - id: user-report-service-noAuth-with-feign
+          uri: lb://USER-REPORT-SERVICE
+          predicates:
+            - Path=/api/userReportService/noAuth/**
+          filters:
+            - RewritePath=/api/userReportService/(?<segment>.*), /${segment}
+        - id: user-report-service
+          uri: lb://USER-REPORT-SERVICE
+          predicates:
+            - Path=/api/userReportService/**
+          filters:
+            - RewritePath=/api/userReportService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilter
+
         # 관리자 관련
-        - id: admin-service-register
+        - id: admin-service-noAuth
           uri: lb://ADMIN-SERVICE
           predicates:
-            - Path=/api/adminService/admins/register, /api/adminService/admins/check-email, /api/adminService/admins/check-nickname
+            - Path=/api/adminService/noAuth/**
           filters:
             - RewritePath=/api/adminService/(?<segment>.*), /${segment}
         - id: admin-service
@@ -133,6 +140,14 @@ spring:
             - RewritePath=/api/adminCommentService/(?<segment>.*), /${segment}
             - AuthorizationHeaderFilterForAdmin
 
+        # 관리자 신고 관련
+        - id: admin-report-service
+          uri: lb://ADMIN-REPORT-SERVICE
+          predicates:
+            - Path=/api/adminReportService/**
+          filters:
+            - RewritePath=/api/adminReportService/(?<segment>.*), /${segment}
+            - AuthorizationHeaderFilterForAdmin
 eureka:
   client:
     register-with-eureka: true

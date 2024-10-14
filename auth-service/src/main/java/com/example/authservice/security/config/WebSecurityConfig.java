@@ -4,8 +4,11 @@ package com.example.authservice.security.config;
 import com.example.authservice.mapper.MemberMapper;
 import com.example.authservice.security.filter.CustomAuthenticationFilter;
 import com.example.authservice.security.handler.CustomAuthenticationFailureHandler;
-import com.example.authservice.security.handler.CustomAuthenticationSuccessHandler;
-import com.example.authservice.security.provider.CustomAuthenticationProvider;
+import com.example.authservice.security.handler.CustomAuthenticationSuccessHandlerForAdmin;
+import com.example.authservice.security.handler.CustomAuthenticationSuccessHandlerForUser;
+import com.example.authservice.security.provider.CustomAuthenticationProviderForAdmin;
+import com.example.authservice.security.provider.CustomAuthenticationProviderForUser;
+import com.example.authservice.security.service.CustomAdminDetailService;
 import com.example.authservice.security.service.CustomPasswordEncoder;
 import com.example.authservice.security.service.CustomUserDetailService;
 import com.example.authservice.security.service.TokenCreateService;
@@ -13,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,7 +56,8 @@ public class WebSecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .addFilterAfter(customAuthenticationFilter(), LogoutFilter.class);
+                .addFilterAfter(customUserAuthenticationFilter(), LogoutFilter.class)
+                .addFilterAfter(customAdminAuthenticationFilter(), LogoutFilter.class);
         return http.build();
     }
 
@@ -67,25 +72,41 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(CustomAuthenticationProvider customAuthenticationProvider) {
-        return new ProviderManager(customAuthenticationProvider);
+    @Primary
+    public AuthenticationManager authenticationManagerForUser(CustomAuthenticationProviderForUser customAuthenticationProviderForUser) {
+        return new ProviderManager(customAuthenticationProviderForUser);
     }
 
     @Bean
-    public CustomAuthenticationProvider customUserAuthenticationProvider() {
-        return new CustomAuthenticationProvider(customUserDetailService(), customPasswordEncoder());
+    public CustomAuthenticationProviderForUser customUserAuthenticationProvider() {
+        return new CustomAuthenticationProviderForUser(new CustomUserDetailService(memberMapper), customPasswordEncoder());
     }
 
     @Bean
-    public CustomUserDetailService customUserDetailService() {
-        return new CustomUserDetailService(memberMapper);
+    public CustomAuthenticationFilter customUserAuthenticationFilter() {
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerForUser(customUserAuthenticationProvider()), objectMapper);
+        customAuthenticationFilter.setFilterProcessesUrl("/user/login");
+        customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandlerForUser(memberMapper, tokenCreateService, objectMapper));
+        customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler(objectMapper));
+        customAuthenticationFilter.afterPropertiesSet();
+        return customAuthenticationFilter;
     }
 
     @Bean
-    public CustomAuthenticationFilter customAuthenticationFilter() {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(customUserAuthenticationProvider()), objectMapper);
-        customAuthenticationFilter.setFilterProcessesUrl("/login");
-        customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandler(memberMapper, tokenCreateService, objectMapper));
+    public CustomAuthenticationProviderForAdmin customAdminAuthenticationProvider() {
+        return new CustomAuthenticationProviderForAdmin(new CustomAdminDetailService(memberMapper), customPasswordEncoder());
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManagerForAdmin(CustomAuthenticationProviderForAdmin customAuthenticationProviderForAdmin) {
+        return new ProviderManager(customAuthenticationProviderForAdmin);
+    }
+
+    @Bean
+    public CustomAuthenticationFilter customAdminAuthenticationFilter() {
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerForAdmin(customAdminAuthenticationProvider()), objectMapper);
+        customAuthenticationFilter.setFilterProcessesUrl("/admin/login");
+        customAuthenticationFilter.setAuthenticationSuccessHandler(new CustomAuthenticationSuccessHandlerForAdmin(memberMapper, tokenCreateService, objectMapper));
         customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler(objectMapper));
         customAuthenticationFilter.afterPropertiesSet();
         return customAuthenticationFilter;

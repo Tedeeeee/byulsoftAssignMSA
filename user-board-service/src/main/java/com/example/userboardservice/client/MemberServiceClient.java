@@ -13,7 +13,7 @@ public interface MemberServiceClient {
      * @since : 2024.10.07
      * @author : T.S YUN
      */
-    @GetMapping("/api/userService/feign")
+    @GetMapping("/api/userService/noAuth/users/feign")
     MemberResponseDto getMemberByMemberEmail(@RequestParam String memberEmail);
 
     /**
@@ -21,6 +21,6 @@ public interface MemberServiceClient {
      * @since : 2024.10.07
      * @author : T.S YUN
      */
-    @GetMapping("/api/userService/feign/{memberId}/nickname")
+    @GetMapping("/api/userService/noAuth/users/feign/{memberId}/nickname")
     String getMemberNicknameByMemberId(@PathVariable int memberId);
 }

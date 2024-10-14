@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "userBoardServiceClient", url = "http://localhost:8888")
 public interface BoardServiceClient {
 
-    @GetMapping("/api/userBoardService/feign/boards/{boardId}")
+    @GetMapping("/api/userBoardService/noAuth/boards/feign/{boardId}")
     boolean getBoardByBoardId(@PathVariable int boardId);
 }

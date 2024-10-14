@@ -25,7 +25,7 @@ const props = defineProps<{
 const boardId = parseInt(props.boardId);
 const postContents = ref<BoardUpdateData>({
   boardId: boardId,
-  memberId: userStore.use.memberId,
+  memberId: userStore().user.memberId,
   boardRegion: '',
   boardTitle: '',
   boardContent: '',
@@ -35,7 +35,7 @@ const postContents = ref<BoardUpdateData>({
 const transformToPost = (serverData: BoardData) => {
   return {
     boardId: boardId,
-    memberId: userStore.user.memberId,
+    memberId: userStore().user.memberId,
     boardTitle: serverData.boardTitle,
     boardContent: serverData.boardContent,
     boardRegion: serverData.boardRegion,
@@ -54,8 +54,8 @@ const submitForm = async () => {
     const response = await updateBoard(postContents.value);
     console.log(response)
 
-    //positiveNotify(response.message);
-    //await router.push(`/${boardId}`);
+    positiveNotify(response.data.message);
+    await router.push(`/${boardId}`);
   } catch (error) {
     console.log(error)
     negativeNotify(error.message);

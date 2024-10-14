@@ -65,13 +65,13 @@
             admin_created_at,
             admin_is_delete
         from admin
-        where admin_role = 'USER';
+        where admin_role = 'ADMIN';
     </select>
 
     <select id="totalCount" resultType="java.lang.Integer">
         select count(1)
         from admin
-        where admin_role = 'USER';
+        where admin_role = 'ADMIN';
     </select>
 
     <select id="getMemberByMemberId" resultMap="adminResultMap">

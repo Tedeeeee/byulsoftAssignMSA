@@ -79,6 +79,9 @@ public class BoardServiceImpl implements BoardService{
     public BoardListResponseDto getPostsByCondition(SearchConditionDto searchConditionDto) {
         List<Integer> postList = getFilteredPostIdsByCondition(searchConditionDto);
 
+        if (postList.isEmpty()) {
+            throw new RuntimeException("검색 조건이 없습니다");
+        }
         List<Board> postsByPostIdList = boardMapper.getBoardsByBoardIdList(postList);
 
         Map<Integer, Board> postListMapping = getPostMappingByPostIdList(postsByPostIdList);

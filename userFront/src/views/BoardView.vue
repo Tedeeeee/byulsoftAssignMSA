@@ -1,8 +1,7 @@
 <template>
-  <search-bar-component v-model="searchConditionForBoard" />
+  <search-bar-component v-model="searchConditionForBoard" @search-post="sortPostList" />
   <sort-type-component v-model="searchConditionForBoard" @sort="sortPostList"/>
-  <reset-search-button @reset-search-condition="resetSearchBoard"/>
-  {{ userStore().user}}
+  <reset-search-button @reset-search-board="resetSearchBoard"/>
   <q-page padding>
     <div class="q-gutter-md">
       <post-card-component v-for="(post, idx) in boards" :key="idx" :post="post" @detail-post="detailPost" />
@@ -26,12 +25,13 @@ import { useRoute, useRouter } from 'vue-router'
 import type { SearchBoard } from '@/type/SearchData'
 import type { BoardListData } from '@/type/BoardData'
 import { getBoardList } from '@/api/NoAuthRequiredApi'
+import { useNotifications } from '@/common/CommonNotify'
 import SearchBarComponent from '@/components/board/SearchBarComponent.vue'
 import ResetSearchButton from '@/components/board/ResetSearchButtonComponent.vue'
 import PostCardComponent from '@/components/board/PostCardComponent.vue'
-import { userStore } from '@/stores/UserStore'
 import SortTypeComponent from '@/components/board/SortTypeComponent.vue'
 
+const {negativeNotify} = useNotifications();
 const router = useRouter();
 const route = useRoute();
 
@@ -54,18 +54,24 @@ const detailPost = (boardId: number): void => {
 // 검색
 const sortPostList = async () => {
   searchConditionForBoard.value.pageNumber = 1;
-  await fetchPosts();
 
-  await router.push({
-    name: 'Board',
-    query: {
-      searchType: searchConditionForBoard.value.searchType,
-      searchText: searchConditionForBoard.value.searchText,
-      sortOrder: searchConditionForBoard.value.sortOrder,
-      sortType: searchConditionForBoard.value.sortType,
-      pageNumber: 1,
-    },
-  });
+  try {
+    await fetchPosts();
+
+    await router.push({
+      name: 'Board',
+      query: {
+        searchType: searchConditionForBoard.value.searchType,
+        searchText: searchConditionForBoard.value.searchText,
+        sortOrder: searchConditionForBoard.value.sortOrder,
+        sortType: searchConditionForBoard.value.sortType,
+        pageNumber: 1,
+      },
+    });
+  } catch (error) {
+    negativeNotify(error.response.data.message)
+    await router.push({ name: 'Board' });
+  }
 }
 
 // 검색 리셋
@@ -77,6 +83,8 @@ const resetSearchBoard = async () => {
     sortType: '',
     pageNumber: 1,
   };
+
+  await router.push({ name: 'Board' });
 
   await fetchPosts()
 }

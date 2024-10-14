@@ -14,14 +14,13 @@
     </q-dialog>
   </div>
   <div class="comment-section q-mt-lg">
-    {{comments}}
     <h5>댓글</h5>
     <div class="q-mt-md">
       <q-card v-for="(comment, idx) in comments" :key="idx" flat bordered class="q-pa-md comment-card">
         <div class="comment-header row items-center q-mb-md">
           <strong class="col">{{ comment.memberNickname }}</strong>
           <span>{{ comment.commentUpdatedAt }}</span>
-          <div v-if="comment.memberNickname === nickname" class="comment-actions col-auto">
+          <div v-if="comment.memberNickname === userStore().user.memberNickname" class="comment-actions col-auto">
             <q-btn flat label="수정" @click="openEditComment(comment.commentId)" color="primary" class="q-mr-xs" />
             <q-btn flat label="삭제" @click="checkIfDelete(comment.commentId)" color="negative" class="q-mr-xs" />
           </div>
@@ -47,7 +46,6 @@ import { useNotifications } from '@/common/CommonNotify';
 import { CommentData } from '@/type/CommentData'
 
 const { negativeNotify } = useNotifications();
-const nickname = userStore().user.memberNickname;
 
 const newComment = ref<string>('');
 const newUpdateComment = ref<string>('');

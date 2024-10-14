@@ -15,7 +15,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberMapper.findMemberByMemberEmail(username)
+        Member member = memberMapper.findMemberByMemberEmailForUser(username)
                 .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
 
         member.checkIfMemberIsDeleted();

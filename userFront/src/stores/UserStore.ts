@@ -23,5 +23,13 @@ export const userStore = defineStore('user', () => {
     user.value.memberPhoneNumber = userData.memberPhoneNumber;
   }
 
-  return { user, userDataSetting, isLoggedIn };
+  const userDataReset = () => {
+    user.value.memberId = 0;
+    user.value.memberEmail = '';
+    user.value.memberName = '';
+    user.value.memberNickname = '';
+    user.value.memberPhoneNumber = '';
+  }
+
+  return { user, isLoggedIn, userDataSetting, userDataReset };
 })

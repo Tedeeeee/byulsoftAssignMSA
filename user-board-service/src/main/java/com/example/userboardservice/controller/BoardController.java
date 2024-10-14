@@ -32,27 +32,6 @@ public class BoardController {
         );
     }
 
-    @GetMapping("")
-    public ResponseEntity<BodyResponse<BoardListResponseDto>> getBoards(@RequestParam(name = "searchType") String searchType,
-                                                                          @RequestParam(name = "searchText") String searchText,
-                                                                          @RequestParam(name = "sortOrder") String sortOrder,
-                                                                          @RequestParam(name = "sortType") String sortType,
-                                                                          @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
-        SearchConditionDto searchConditionDto = new SearchConditionDto(sortOrder, sortType, searchType, searchText, pageNumber);
-        BoardListResponseDto postsByCondition = boardService.getPostsByCondition(searchConditionDto);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(BodyResponse.success(postsByCondition));
-    }
-
-    @GetMapping("/{boardId}")
-    public ResponseEntity<BodyResponse<BoardResponseDto>> getBoard(@PathVariable int boardId) {
-        BoardResponseDto boardResponseDto = boardService.findBoardById(boardId);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(BodyResponse.success(boardResponseDto));
-    }
-
     @PostMapping("/update")
     public ResponseEntity<BodyResponse<BoardResponseDto>> updateBoard(@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request) {
         String memberEmail = request.getHeader("memberEmail");
@@ -70,6 +49,4 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BodyResponse.success("삭제가 되었습니다"));
     }
-
-
 }

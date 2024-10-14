@@ -20,6 +20,7 @@
       </q-card>
     </q-dialog>
   </div>
+
   <q-page padding>
     <div class="q-gutter-md" v-if="postHeadData">
       <div class="post-card">
@@ -69,6 +70,7 @@ import BoardDetailHeadContentsComponent from '@/components/boardDetail/BoardDeta
 import ReviewStarComponent from '@/components/boardDetail/ReviewStarComponent.vue'
 import BoardEditDeleteActionsComponent from '@/components/boardDetail/BoardEditDeleteActionsComponent.vue'
 import CommentFormComponent from '@/components/boardDetail/CommentFormComponent.vue'
+import DeclarationModalComponent from '@/components/modal/DeclarationModalComponent.vue'
 
 const { negativeNotify, positiveNotify } = useNotifications();
 const router = useRouter();
@@ -176,7 +178,6 @@ const editComment = async (content: string, id: number) => {
       memberId: userStore().user.memberId
     });
 
-    console.log(response)
     positiveNotify(response.data.message);
     if (response.data.body) {
       comments.value = response.data.body.map(transformToComment);
@@ -204,6 +205,7 @@ const deletedComment = async (commentId: number) => {
 
 const fetchContentDetails = async () => {
   const response = await getBoardById(boardId);
+  console.log(response.data)
   postHeadData.value = transformToPostHeadData(response.data.body);
   boardStars.value = response.data.body.boardStars.map(transformToBoardStar);
 

@@ -8,11 +8,10 @@
         요방어때
       </q-toolbar-title>
 
-      {{ userStore().user }}
       <div class="q-pa-md q-gutter-sm">
         <q-btn to="/" color="black" label="목록" />
-        <template v-if="userStore().isLoggedIn">
-          <q-btn flat :label="userStore().user.memberNickname" class="custom-link" />
+        <template v-if="userLoginState">
+          <q-btn flat :label="userStore().user.memberNickname" to="/myPage" class="custom-link" />
           <q-btn to="/insertPost" color="black" label="글쓰기" />
           <q-btn @click="handleLogout" color="black" label="로그아웃" />
         </template>
@@ -29,7 +28,7 @@
 import { accessToken, userStore } from '@/stores/UserStore'
 import { useRouter } from 'vue-router'
 import logo from '@/assets/로고.png'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getUserData, logout } from '@/api/AuthRequiredApi'
 import { useNotifications } from '@/common/CommonNotify'
 
@@ -39,20 +38,26 @@ const goHome = () => {
   router.push('/')
 }
 
+const userLoginState = ref<boolean>(!!localStorage.getItem(accessToken))
+
 const handleLogout = async () => {
   try {
     const response = await logout();
     positiveNotify(response.data.message)
     localStorage.removeItem(accessToken);
+    userLoginState.value = false
+    userStore().userDataReset()
+    await router.push("/");
   } catch (error) {
     console.log(error)
   }
-
 }
 
 onMounted(async () => {
-  const response = await getUserData();
-  userStore().userDataSetting(response.data.body);
+  if (localStorage.getItem(accessToken)) {
+    const response = await getUserData();
+    userStore().userDataSetting(response.data.body);
+  }
 })
 </script>
 

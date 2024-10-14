@@ -48,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
 
         boolean checkEmail = memberMapper.checkEmail(email);
         if (checkEmail) {
-            throw new RuntimeException("email already in use");
+            throw new RuntimeException("이미 존재하는 이메일 입니다");
         }
     }
 
@@ -58,14 +58,15 @@ public class MemberServiceImpl implements MemberService {
 
         boolean checkNickName = memberMapper.checkNickName(nickname);
         if (checkNickName) {
-            throw new RuntimeException("nickname already in use");
+            throw new RuntimeException("이미 존재하는 닉네임입니다");
         }
     }
 
     @Override
     @Transactional
     public void registerMember(MemberRequestDto memberRequestDto) {
-        memberRequestDto.memberSignupValidator();
+        checkEmail(memberRequestDto.getMemberEmail());
+        checkNickname(memberRequestDto.getMemberNickname());
 
         Member member = memberRequestDto.toEntity();
 
@@ -76,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
             // 해당 회원가입도 되지 않아야 한다.
             kafkaProducerSendService.send("register-topic", authMember);
         } catch (Exception e) {
-            throw new RuntimeException("failed to save member");
+            throw new RuntimeException("회원가입 실패" + e.getMessage());
         }
     }
 

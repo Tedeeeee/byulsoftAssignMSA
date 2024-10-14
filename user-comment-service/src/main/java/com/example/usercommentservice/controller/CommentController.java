@@ -39,15 +39,6 @@ public class CommentController {
         );
     }
 
-    // 게시글의 댓글 가져오기
-    @GetMapping("/boards/{boardId}")
-    public ResponseEntity<BodyResponse<List<CommentResponseDto>>> getAllComments(@PathVariable int boardId) {
-        List<CommentResponseDto> comments = commentService.getCommentsByBoardId(boardId);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                BodyResponse.success(comments));
-    }
-
     @PostMapping("/update")
     public ResponseEntity<BodyResponse<List<CommentResponseDto>>> updateComment(@RequestBody @Valid CommentRequestDto commentRequestDto,
                                                               HttpServletRequest request) {

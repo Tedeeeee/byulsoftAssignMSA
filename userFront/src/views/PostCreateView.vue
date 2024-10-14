@@ -51,8 +51,4 @@ const submitForm = async () => {
 </script>
 
 <style scoped>
-.q-page {
-  max-width: 700px;
-  margin: 0 auto;
-}
 </style>

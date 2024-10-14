@@ -42,7 +42,7 @@
         where member_original_id = #{memberOriginalId};
     </update>
 
-    <select id="findMemberByMemberEmail" resultMap="memberResultMap">
+    <select id="findMemberByMemberEmailForUser" resultMap="memberResultMap">
         select
             member_original_id,
             member_email,
@@ -52,6 +52,18 @@
         from member
         where member_email = #{memberEmail}
         and member_role = 'USER';
+    </select>
+
+    <select id="findMemberByMemberEmailForAdmin" resultMap="memberResultMap">
+        select
+            member_original_id,
+            member_email,
+            member_password,
+            member_is_delete,
+            member_role
+        from member
+        where member_email = #{memberEmail}
+          and member_role = 'ADMIN';
     </select>
 
     <select id="findMemberByRefreshToken" resultMap="memberResultMap">

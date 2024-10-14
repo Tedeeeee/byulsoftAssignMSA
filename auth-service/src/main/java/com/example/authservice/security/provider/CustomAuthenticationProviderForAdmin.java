@@ -1,7 +1,7 @@
 package com.example.authservice.security.provider;
 
+import com.example.authservice.security.service.CustomAdminDetailService;
 import com.example.authservice.security.service.CustomPasswordEncoder;
-import com.example.authservice.security.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,9 +11,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @RequiredArgsConstructor
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProviderForAdmin implements AuthenticationProvider {
 
-    private final CustomUserDetailService customUserDetailService;
+    private final CustomAdminDetailService customAdminDetailService;
     private final CustomPasswordEncoder customPasswordEncoder;
 
     @Override
@@ -21,7 +21,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String memberEmail = authentication.getName();
         String memberPassword = authentication.getCredentials().toString();
 
-        UserDetails user = customUserDetailService.loadUserByUsername(memberEmail);
+        UserDetails user = customAdminDetailService.loadUserByUsername(memberEmail);
 
         if (!customPasswordEncoder.match(memberPassword, user.getPassword())) {
             throw new BadCredentialsException("Bad credentials");

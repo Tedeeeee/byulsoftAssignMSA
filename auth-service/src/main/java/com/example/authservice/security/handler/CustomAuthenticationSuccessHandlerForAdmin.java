@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandlerForAdmin extends SimpleUrlAuthenticationSuccessHandler {
 
     private final MemberMapper memberMapper;
     private final TokenCreateService tokenCreateService;
@@ -30,10 +30,10 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String email = extractUsername(authentication);
-        Member member = memberMapper.findMemberByMemberEmail(email)
+        Member member = memberMapper.findMemberByMemberEmailForAdmin(email)
                 .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
 
-        tokenCreateService.setSecretKeyForRole(member.getMemberRole());
+        tokenCreateService.setSecretKeyForAdmin();
 
         String accessToken = tokenCreateService.createAccessToken(member);
         String refreshToken = tokenCreateService.createRefreshToken();

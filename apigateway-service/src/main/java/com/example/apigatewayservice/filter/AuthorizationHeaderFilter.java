@@ -64,6 +64,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     private ServerHttpRequest getNewRequest(ServerHttpRequest request, String memberEmail) {
+        // postman 에서 memberEmail key 값을 헤더에 실어서 보내면 문제가 된다.
         return request.mutate().header("memberEmail", memberEmail).build();
     }
 

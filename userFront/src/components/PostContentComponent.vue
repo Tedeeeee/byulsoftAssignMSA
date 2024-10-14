@@ -14,7 +14,7 @@
     </div>
     <div style="flex: 7">
       <q-input
-        maxlength="40"
+        maxlength="100"
         v-model="postContents.boardTitle"
         label="제목"
         filled

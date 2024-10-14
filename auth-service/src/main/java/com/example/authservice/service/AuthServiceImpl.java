@@ -2,6 +2,7 @@ package com.example.authservice.service;
 
 import com.example.authservice.dto.TokenResponseDto;
 import com.example.authservice.entity.Member;
+import com.example.authservice.entity.Role;
 import com.example.authservice.mapper.MemberMapper;
 import com.example.authservice.security.service.TokenCreateService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String memberEmail) {
-        memberMapper.findMemberByMemberEmail(memberEmail)
+        memberMapper.findMemberByMemberEmailForUser(memberEmail)
                 .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
 
         memberMapper.logout(memberEmail);

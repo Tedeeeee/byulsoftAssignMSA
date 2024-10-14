@@ -28,12 +28,12 @@ public class TokenCreateService {
     public static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     public static final int REFRESH_TOKEN_EXPIRES_IN = 604800;
 
-    public void setSecretKeyForRole(Role role) {
-        if (Role.ADMIN.equals(role)) {
-            this.secretKey = adminSecretKey;
-        } else {
-            this.secretKey = userSecretKey;
-        }
+    public void setSecretKeyForUser() {
+        this.secretKey = userSecretKey;
+    }
+
+    public void setSecretKeyForAdmin() {
+        this.secretKey = adminSecretKey;
     }
 
     public String createAccessToken(Member member) {
