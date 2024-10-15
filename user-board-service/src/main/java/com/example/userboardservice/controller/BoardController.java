@@ -28,7 +28,7 @@ public class BoardController {
         boardService.addBoard(boardRequestDto, memberEmail);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BodyResponse.createSuccess("게시글이 등록되었습니다")
+                .body(BodyResponse.success("게시글이 등록되었습니다")
         );
     }
 
@@ -48,5 +48,14 @@ public class BoardController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BodyResponse.success("삭제가 되었습니다"));
+    }
+
+    @GetMapping
+    public ResponseEntity<BodyResponse<List<BoardResponseDto>>> getMyBoards(HttpServletRequest request) {
+        String memberEmail = request.getHeader("memberEmail");
+        List<BoardResponseDto> myBoards = boardService.getMyBoards(memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BodyResponse.success(myBoards));
     }
 }

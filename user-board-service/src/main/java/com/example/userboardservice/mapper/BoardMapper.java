@@ -16,4 +16,6 @@ public interface BoardMapper {
     void updateBoard(Board board);
     void deleteBoard(int boardId);
     boolean checkBoardExist(int boardId);
+    List<Board> getMyBoard(int memberId);
+
 }

@@ -26,10 +26,6 @@ public class BodyResponse<T> {
         return new BodyResponse<>(body, null);
     }
 
-    public static <T> BodyResponse<T> createSuccess(final String message) {
-        return new BodyResponse<>(null, message);
-    }
-
     public static <T> BodyResponse<T> fail(final String errorMessage) {
         return new BodyResponse<>(null, errorMessage);
     }

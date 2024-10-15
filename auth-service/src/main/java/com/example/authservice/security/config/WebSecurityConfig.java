@@ -1,6 +1,7 @@
 package com.example.authservice.security.config;
 
 
+import com.example.authservice.entity.Role;
 import com.example.authservice.mapper.MemberMapper;
 import com.example.authservice.security.filter.CustomAuthenticationFilter;
 import com.example.authservice.security.handler.CustomAuthenticationFailureHandler;

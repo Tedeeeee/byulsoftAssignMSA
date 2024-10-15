@@ -72,7 +72,7 @@ public class TokenCreateService {
 
     private Date createAccessTokenExpiredDate() {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.HOUR, 6);
+        c.add(Calendar.HOUR, 1);
         return c.getTime();
     }
 

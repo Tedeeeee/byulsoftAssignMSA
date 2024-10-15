@@ -36,4 +36,21 @@ public class KafkaConsumerService {
 
         memberMapper.save(member);
     }
+
+    @KafkaListener(topics = "newPassword-topic")
+    public void changePassword(String kafkaMessage) {
+        Map<String, Object> map = new HashMap<>();
+
+        try {
+            map = objectMapper.readValue(kafkaMessage, new TypeReference<Map<String, Object>>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        AuthMemberDto authMemberDto = AuthMemberDto.fromMap(map);
+
+        Member member = authMemberDto.toEntity();
+
+        memberMapper.changePassword(member);
+    }
 }

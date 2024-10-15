@@ -31,5 +31,9 @@ export const userStore = defineStore('user', () => {
     user.value.memberPhoneNumber = '';
   }
 
-  return { user, isLoggedIn, userDataSetting, userDataReset };
+  const setUserNickname = (nickname: string) => {
+    user.value.memberNickname = nickname;
+  }
+
+  return { user, isLoggedIn, userDataSetting, userDataReset, setUserNickname };
 })

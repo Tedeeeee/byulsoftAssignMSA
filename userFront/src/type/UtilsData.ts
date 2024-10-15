@@ -11,3 +11,9 @@ export const SortOptions: Record<string, string> = {
   HORROR: '공포도',
   ACTIVITY: '활동성',
 }
+
+export const ReportState: Record<string, string> = {
+  RECEIVED: '처리 중',
+  COMPLETE: '처리 완료',
+  REVOKE: '취소'
+}

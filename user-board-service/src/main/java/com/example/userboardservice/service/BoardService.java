@@ -51,4 +51,11 @@ public interface BoardService {
      * @author : T.S YUN
      */
     boolean existBoardByBoardId(int boardId);
+
+    /**
+     * 설명 : 내가 작성한 board 찾기
+     * @since : 2024.10.15
+     * @author : T.S YUN
+     */
+    List<BoardResponseDto> getMyBoards(String memberEmail);
 }

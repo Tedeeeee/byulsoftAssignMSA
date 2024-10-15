@@ -113,6 +113,15 @@ public class BoardServiceImpl implements BoardService{
         return boardMapper.checkBoardExist(boardId);
     }
 
+    @Override
+    public List<BoardResponseDto> getMyBoards(String memberEmail) {
+        MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
+
+        List<Board> myBoard = boardMapper.getMyBoard(member.getMemberId());
+
+        return myBoard.stream().map(BoardResponseDto::myBoardFrom).toList();
+    }
+
     private List<BoardResponseDto> getBoardResponseDtoListByPostMapping(List<Integer> postList, Map<Integer, Board> postListMapping) {
         return postList.stream()
                 .map(boardId -> {
@@ -151,6 +160,7 @@ public class BoardServiceImpl implements BoardService{
         boardStarRequestDtoList.forEach(BoardStarRequestDto::validationCheck);
 
         List<BoardStar> boardStarList = new ArrayList<>();
+
         int size = boardStarRequestDtoList.size();
         for (int i = 0; i < size; i++) {
             BoardStar boardStar = boardStarRequestDtoList.get(i).toEntity(boardId, i + 1);

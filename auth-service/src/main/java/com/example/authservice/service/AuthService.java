@@ -15,5 +15,5 @@ public interface AuthService {
      * @author : T.S YUN
      * @since : 2024.10.04
      */
-    void logout(String memberEmail);
+    void logout(String refreshToken);
 }

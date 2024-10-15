@@ -19,7 +19,7 @@
       <q-card v-for="(comment, idx) in comments" :key="idx" flat bordered class="q-pa-md comment-card">
         <div class="comment-header row items-center q-mb-md">
           <strong class="col">{{ comment.memberNickname }}</strong>
-          <span>{{ comment.commentUpdatedAt }}</span>
+          <span>{{ comment.commentCreatedAt }}</span>
           <div v-if="comment.memberNickname === userStore().user.memberNickname" class="comment-actions col-auto">
             <q-btn flat label="수정" @click="openEditComment(comment.commentId)" color="primary" class="q-mr-xs" />
             <q-btn flat label="삭제" @click="checkIfDelete(comment.commentId)" color="negative" class="q-mr-xs" />

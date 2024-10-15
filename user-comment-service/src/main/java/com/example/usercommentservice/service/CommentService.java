@@ -42,4 +42,11 @@ public interface CommentService {
      * @author : T.S YUN
      */
     void deleteAllCommentsByBoardId(int boardId);
+
+    /**
+     * 설명 : 내가 작성한 댓글 가져오기
+     * @since : 2024.10.15
+     * @author : T.S YUN
+     */
+    List<CommentResponseDto> getMyComments(String memberEmail);
 }

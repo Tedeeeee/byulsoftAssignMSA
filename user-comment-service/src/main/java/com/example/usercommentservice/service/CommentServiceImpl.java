@@ -90,4 +90,14 @@ public class CommentServiceImpl implements CommentService {
     public void deleteAllCommentsByBoardId(int boardId) {
         commentMapper.deleteCommentByBoardId(boardId);
     }
+
+    @Override
+    public List<CommentResponseDto> getMyComments(String memberEmail) {
+        MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
+
+        List<Comment> myComment = commentMapper.getMyComment(member.getMemberId());
+
+        return myComment.stream()
+                .map(CommentResponseDto::myCommentFrom).toList();
+    }
 }

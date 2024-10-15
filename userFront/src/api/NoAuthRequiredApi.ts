@@ -21,7 +21,7 @@ export const register = (userData: UserData) : Promise<UserData> => {
 }
 
 export const checkEmail = async (email: string): Promise<boolean> => {
-  return instance.get('/userService/users/check-email', {
+  return instance.get('/userService/noAuth/users/check-email', {
     params: {
       email: email,
     },

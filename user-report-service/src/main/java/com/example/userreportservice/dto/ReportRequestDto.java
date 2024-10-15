@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReportRequestDto {
-    @NotNull( message = "신고 당한 사람 입력이 없습니다")
+    @NotNull( message = "신고한 사람 입력이 없습니다")
     private int reporterMemberId;
 
-    @NotNull( message = "신고한 사람 입력이 없습니다")
-    private int reportedMemberId;
+    @NotBlank( message = "신고 당한 사람 입력이 없습니다")
+    private String reportedMemberNickname;
 
     @NotBlank( message = "신고 내용 입력이 없습니다")
     private String reportContent;
@@ -27,10 +27,10 @@ public class ReportRequestDto {
     @NotNull( message = "신고 타입의 ID가 없습니다")
     private int reportTypeId;
 
-    public Report toEntity() {
+    public Report toEntity(int memberId) {
         return Report.builder()
                 .reporterMemberId(reporterMemberId)
-                .reportedMemberId(reportedMemberId)
+                .reportedMemberId(memberId)
                 .reportContent(reportContent)
                 .reportType(reportType)
                 .reportTypeId(reportTypeId)

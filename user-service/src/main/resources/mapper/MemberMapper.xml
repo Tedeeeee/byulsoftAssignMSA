@@ -43,12 +43,21 @@
         select member_nickname
         from member
         where member_id = #{memberId}
+        and member_is_delete = false;
+    </select>
+
+    <select id="findMemberIdByMemberNickname" resultType="java.lang.Integer">
+        select member_id
+        from member
+        where member_nickname = #{memberNickname}
+        and member_is_delete = false;
     </select>
 
     <select id="findUserByMemberEmail" resultMap="memberResultMap">
         select
             member_id,
             member_email,
+            member_password,
             member_name,
             member_nickname,
             member_phone_number,
@@ -67,6 +76,18 @@
             where member_nickname = #{memberNickname}
         );
     </select>
+
+    <update id="changeMemberNickname">
+        update member
+        set member_nickname = #{memberNickname}
+        where member_id = #{memberId};
+    </update>
+
+    <update id="changeMemberPassword">
+        update member
+        set member_password = #{memberPassword}
+        where member_id = #{memberId};
+    </update>
 
     <select id="checkEmail" resultType="java.lang.Boolean">
         select exists(

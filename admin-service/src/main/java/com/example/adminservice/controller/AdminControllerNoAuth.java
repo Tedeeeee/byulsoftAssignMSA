@@ -41,6 +41,6 @@ public class AdminControllerNoAuth {
         adminService.registerAdmin(adminRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BodyResponse.createSuccess("회원가입이 완료되었습니다"));
+                .body(BodyResponse.success("회원가입이 완료되었습니다"));
     }
 }

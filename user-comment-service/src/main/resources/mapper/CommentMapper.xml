@@ -70,4 +70,14 @@
         set comment_is_delete = 1
         where board_id = #{boardId};
     </update>
+
+    <select id="getMyComment" resultMap="commentResultMap">
+        select
+            board_id,
+            comment_content,
+            comment_created_at
+        from comment
+        where member_id = #{memberId}
+        and comment_is_delete = 0
+    </select>
 </mapper>

@@ -14,4 +14,5 @@ public interface CommentMapper {
     Optional<Comment> findCommentByCommentId(int commentId);
     void deleteCommentByCommentId(int commentId);
     void deleteCommentByBoardId(int boardId);
+    List<Comment> getMyComment(int memberId);
 }

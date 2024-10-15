@@ -28,4 +28,12 @@ public class CommentResponseDto {
                 .commentUpdatedAt(TimeChangerUtil.timeChange(comment.getCommentUpdatedAt()))
                 .build();
     }
+
+    public static CommentResponseDto myCommentFrom(Comment comment) {
+        return CommentResponseDto.builder()
+                .boardId(comment.getBoardId())
+                .commentContent(comment.getCommentContent())
+                .commentCreatedAt(TimeChangerUtil.timeChange(comment.getCommentCreatedAt()))
+                .build();
+    }
 }

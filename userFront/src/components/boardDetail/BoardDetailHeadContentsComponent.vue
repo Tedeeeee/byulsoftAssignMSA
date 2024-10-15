@@ -1,15 +1,25 @@
 <template>
-  <declaration-modal-component v-if="isDeclarationModalOpen" :member-nickname="postHeadData.memberNickname" @report-user="reportPost" @close-modal="isDeclarationModalOpen = false"/>
+  <declaration-modal-component
+    v-if="isDeclarationModalOpen"
+    :member-nickname="postHeadData.memberNickname"
+    @report-user="reportPost"
+    @close-modal="isDeclarationModalOpen = false"
+  />
   <q-card flat bordered class="q-pa-md">
     <div class="row">
       <div class="left-section q-mr-md">
         <div>
-        <span style="font-size: 100px; font-weight: bold;">{{ postHeadData.boardId }}</span>
+          <span style="font-size: 100px; font-weight: bold">{{ postHeadData.boardId }}</span>
         </div>
-        <q-separator vertical/>
-        <div>
-        <q-btn v-if="userStore().user.memberNickname !== postHeadData.memberNickname" label="신고하기" color="negative" @click="openDeclarationModal" />
-      </div>
+        <q-btn
+          v-if="
+            userStore().user.memberNickname != '' &&
+            userStore().user.memberNickname !== postHeadData.memberNickname
+          "
+          label="신고하기"
+          color="negative"
+          @click="openDeclarationModal"
+        />
       </div>
 
       <q-separator vertical />
@@ -41,24 +51,40 @@
 
 <script setup lang="ts">
 import type { BoardHeaderData } from '@/type/BoardData'
+import type { reportData } from '@/type/ReportData'
 import DeclarationModalComponent from '@/components/modal/DeclarationModalComponent.vue'
 import { ref } from 'vue'
 import { userStore } from '@/stores/UserStore'
+import { report } from '@/api/AuthRequiredApi'
+import { useNotifications } from '@/common/CommonNotify'
 
-defineProps<{
-  postHeadData: BoardHeaderData;
-}>();
+const {negativeNotify, positiveNotify} = useNotifications();
+const props = defineProps<{
+  postHeadData: BoardHeaderData
+}>()
 
-const isDeclarationModalOpen = ref<boolean>(false);
+const isDeclarationModalOpen = ref<boolean>(false)
 
 const openDeclarationModal = () => {
-  isDeclarationModalOpen.value = true;
+  isDeclarationModalOpen.value = true
 }
 
-const reportPost = (reportContent : string) => {
-  // 실제로 리폿하는곳
+const reportPost = async (reportContent: string) => {
+  const reportInputData: reportData = {
+    reporterMemberId: userStore().user.memberId,
+    reportedMemberNickname: props.postHeadData.memberNickname,
+    reportContent: reportContent,
+    reportType: 'BOARD',
+    reportTypeId: props.postHeadData.boardId
+  }
 
-
+  try {
+    const response = await report(reportInputData)
+    positiveNotify(response.data.message)
+  } catch (error) {
+    negativeNotify(error.response.data.message)
+  }
+  isDeclarationModalOpen.value = false
 }
 </script>
 

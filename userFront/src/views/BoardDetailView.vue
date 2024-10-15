@@ -70,7 +70,6 @@ import BoardDetailHeadContentsComponent from '@/components/boardDetail/BoardDeta
 import ReviewStarComponent from '@/components/boardDetail/ReviewStarComponent.vue'
 import BoardEditDeleteActionsComponent from '@/components/boardDetail/BoardEditDeleteActionsComponent.vue'
 import CommentFormComponent from '@/components/boardDetail/CommentFormComponent.vue'
-import DeclarationModalComponent from '@/components/modal/DeclarationModalComponent.vue'
 
 const { negativeNotify, positiveNotify } = useNotifications();
 const router = useRouter();
@@ -115,6 +114,7 @@ const transformToComment = (responseData: CommentData) : CommentData => {
     commentId: responseData.commentId,
     memberId: responseData.memberId,
     memberNickname: responseData.memberNickname,
+    commentCreatedAt: responseData.commentCreatedAt,
     commentUpdatedAt: responseData.commentUpdatedAt,
     commentContent: responseData.commentContent,
     showReplyForm: false,

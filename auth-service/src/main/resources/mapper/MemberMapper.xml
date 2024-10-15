@@ -39,7 +39,8 @@
     <update id="saveRefreshToken">
         update member
         set member_refresh_token = #{memberRefreshToken}
-        where member_original_id = #{memberOriginalId};
+        where member_original_id = #{memberOriginalId}
+        and member_role = #{memberRole}
     </update>
 
     <select id="findMemberByMemberEmailForUser" resultMap="memberResultMap">
@@ -70,6 +71,7 @@
         select
             member_original_id,
             member_email,
+            member_refresh_token,
             member_role
         from member
         where member_refresh_token = #{memberRefreshToken};
@@ -78,6 +80,14 @@
     <update id="logout">
         update member
         set member_refresh_token = null
-        where member_email = #{memberEmail}
+        where member_refresh_token = #{memberRefreshToken}
+        and member_role = #{memberRole};
+    </update>
+
+    <update id="changePassword">
+        update member
+        set member_password = #{memberPassword}
+        where member_original_id = #{memberOriginalId}
+        and member_role = #{memberRole}
     </update>
 </mapper>

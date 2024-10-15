@@ -2,6 +2,7 @@ package com.example.authservice.controller;
 
 import com.example.authservice.commonApi.BodyResponse;
 import com.example.authservice.dto.TokenResponseDto;
+import com.example.authservice.entity.Role;
 import com.example.authservice.security.service.TokenCreateService;
 import com.example.authservice.service.AuthService;
 import com.example.authservice.util.CookieUtil;
@@ -43,8 +44,8 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<BodyResponse<String>> logout(HttpServletRequest request, HttpServletResponse response) {
-        String memberEmail = request.getHeader("memberEmail");
-        authService.logout(memberEmail);
+        String refreshToken = CookieUtil.getRefreshTokenInCookie(request, TokenCreateService.REFRESH_TOKEN_SUBJECT);
+        authService.logout(refreshToken);
 
         deleteRefreshTokenToResponseCookie(response);
         return ResponseEntity.status(HttpStatus.CREATED)

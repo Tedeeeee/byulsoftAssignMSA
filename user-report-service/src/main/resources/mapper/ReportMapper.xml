@@ -35,9 +35,45 @@
             )
     </insert>
 
+    <select id="getReportById" resultMap="reportMap">
+        select
+            report_id,
+            reporter_member_id,
+            reported_member_id,
+            report_content,
+            report_type,
+            report_type_id,
+            report_status,
+            report_created_at,
+            report_updated_at
+        from report
+        where report_id = #{reportId};
+    </select>
+
+    <select id="getMyReport" resultMap="reportMap">
+        select
+            report_id,
+            reported_member_id,
+            report_content,
+            report_status,
+            report_created_at
+        from report
+        where reporter_member_id = #{memberId}
+    </select>
+
     <update id="revokeReport">
         update report
-        set report_type = 'REVOKE'
+        set report_status = 'REVOKE'
         where report_id = #{reportId};
     </update>
+
+    <select id="isReportExist" resultType="java.lang.Boolean">
+        select exists(
+            select 1
+            from report
+            where reported_member_id = #{reportedMemberId}
+            and report_type = #{reportType}
+            and report_type_id = #{reportTypeId}
+        )
+    </select>
 </mapper>

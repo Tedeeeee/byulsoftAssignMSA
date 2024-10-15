@@ -58,4 +58,13 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BodyResponse.success("댓글이 삭제되었습니다"));
     }
+
+    @GetMapping
+    public ResponseEntity<BodyResponse<List<CommentResponseDto>>> getComments(HttpServletRequest request) {
+        String memberEmail = request.getHeader("memberEmail");
+        List<CommentResponseDto> myComments = commentService.getMyComments(memberEmail);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BodyResponse.success(myComments));
+    }
 }

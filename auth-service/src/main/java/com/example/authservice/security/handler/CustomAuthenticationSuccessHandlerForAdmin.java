@@ -39,7 +39,7 @@ public class CustomAuthenticationSuccessHandlerForAdmin extends SimpleUrlAuthent
         String refreshToken = tokenCreateService.createRefreshToken();
 
         // refreshToken 을 사용자의 DB에 저장
-        memberMapper.saveRefreshToken(member.getMemberOriginalId(), refreshToken);
+        memberMapper.saveRefreshToken(member.getMemberOriginalId(), member.getMemberRole(),refreshToken);
 
         // 응답에 토큰을 전달
         sendTokens(response, accessToken, refreshToken);

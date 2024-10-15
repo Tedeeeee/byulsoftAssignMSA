@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
         String renewAccessToken = tokenCreateService.createAccessToken(member);
         String renewRefreshToken = tokenCreateService.createRefreshToken();
 
-        memberMapper.saveRefreshToken(member.getMemberOriginalId(), renewRefreshToken);
+        memberMapper.saveRefreshToken(member.getMemberOriginalId(), member.getMemberRole(), renewRefreshToken);
 
         return TokenResponseDto.builder()
                 .accessToken(renewAccessToken)
@@ -34,11 +34,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(String memberEmail) {
-        memberMapper.findMemberByMemberEmailForUser(memberEmail)
-                .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
+    public void logout(String refreshToken) {
+        Member member = memberMapper.findMemberByRefreshToken(refreshToken)
+                .orElseThrow(() -> new RuntimeException("refreshtoken이 올바르지 않습니다"));
 
-        memberMapper.logout(memberEmail);
+        memberMapper.logout(member);
     }
 
 

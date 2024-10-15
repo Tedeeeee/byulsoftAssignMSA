@@ -36,4 +36,12 @@ public class BoardResponseDto {
                 .boardStars(board.getStars())
                 .build();
     }
+
+    public static BoardResponseDto myBoardFrom(Board board) {
+        return BoardResponseDto.builder()
+                .boardId(board.getBoardId())
+                .boardTitle(board.getBoardTitle())
+                .boardCreatedAt(TimeChangerUtil.timeChange(board.getBoardCreatedAt()))
+                .build();
+    }
 }

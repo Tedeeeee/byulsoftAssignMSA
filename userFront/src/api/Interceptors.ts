@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { accessToken } from '@/stores/UserStore'
+import { login } from '@/api/NoAuthRequiredApi'
 
 export const setInterceptors = instance => {
   instance.interceptors.request.use(
@@ -17,8 +18,27 @@ export const setInterceptors = instance => {
       // 유효기간이 종료된 이후 refreshToken 넣기
       return response;
     },
-    error => {
-      return Promise.reject(error);
+    async error => {
+      console.log(error.status)
+
+      if (error.status === 401) {
+        try {
+          const refreshToken = await axios.post('/api/authService/auth/token/renew', {
+            withCredentials: true,
+          })
+          console.log(refreshToken.data);
+          const newAccessToken = refreshToken.data.message;
+          await localStorage.setItem(accessToken, refreshToken.data.message);
+
+          error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          return axios(error.config)
+        } catch (refreshTokenError) {
+          console.log(refreshTokenError)
+          return Promise.reject(error);
+        }
+      } else {
+        return Promise.reject(error);
+      }
     }
   );
 

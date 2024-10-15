@@ -46,7 +46,7 @@ public class MemberControllerNoAuth {
         memberService.registerMember(memberRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(BodyResponse.createSuccess("회원가입이 완료되었습니다"));
+                .body(BodyResponse.success("회원가입이 완료되었습니다"));
     }
 
 
@@ -64,5 +64,10 @@ public class MemberControllerNoAuth {
     @GetMapping("/feign/nicknames")
     Map<Integer, String> getMemberNicknamesByMemberIdList(@RequestParam List<Integer> memberIdList) {
         return memberService.findUserNicknamesByMemberList(memberIdList);
+    }
+
+    @GetMapping("/feign/{memberNickname}")
+    int getMemberNickname(@PathVariable("memberNickname") String memberNickname) {
+        return memberService.findMemberIdByMemberNickname(memberNickname);
     }
 }
