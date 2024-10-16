@@ -66,7 +66,7 @@ public class AuthorizationHeaderFilterForAdmin extends AbstractGatewayFilterFact
     }
 
     private ServerHttpRequest getNewRequest(ServerHttpRequest request, String memberEmail) {
-        return request.mutate().header("memberEmail", memberEmail).build();
+        return request.mutate().header("adminEmail", memberEmail).build();
     }
 
     private Token getAccessToken(ServerHttpRequest request) {

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -130,6 +131,23 @@ public class MemberServiceImpl implements MemberService {
         List<Member> findMemberList = memberMapper.findMemberNicknameByMemberIdList(memberIdList);
 
         return findMemberList.stream()
-                        .collect(Collectors.toMap(Member::getMemberId, Member::getMemberNickname));
+                        .collect(Collectors.toMap(Member::getMemberId,
+                                member -> Optional.ofNullable(member.getMemberNickname()).orElse("탈퇴 회원")));
+    }
+
+    @Override
+    public List<MemberResponseDto> findMemberAll() {
+        List<Member> memberAll = memberMapper.findMemberAll();
+
+        return memberAll.stream()
+                .map(MemberResponseDto::from).toList();
+    }
+
+    @Override
+    public MemberResponseDto findMemberByMemberId(int memberId) {
+        Member member = memberMapper.findMemberById(memberId)
+                .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
+
+        return MemberResponseDto.from(member);
     }
 }

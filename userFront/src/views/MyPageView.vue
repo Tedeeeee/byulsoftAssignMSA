@@ -353,7 +353,7 @@ const nicknameRules = [
 
 const checkNicknameAvailability = async () => {
   try {
-    const response = await checkNickname(changeNicknameData.value.memberNickname);
+    const response = await checkNickname(changeNicknameData.value.newNickname);
     positiveNotify(response.data.message)
     changeNicknameData.value.confirmNickname = true;
   } catch (error) {
@@ -364,9 +364,10 @@ const checkNicknameAvailability = async () => {
 
 const changeUserNickname = async () => {
   try {
-    const response = await changeNickname(changeNicknameData.value.memberNickname);
+    const response = await changeNickname(changeNicknameData.value.newNickname);
     positiveNotify(response.data.message)
-    userStore().setUserNickname(changeNicknameData.value.memberNickname);
+    userStore().setUserNickname(changeNicknameData.value.newNickname);
+    await router.push('/');
   } catch (error) {
     console.log(error)
     negativeNotify(error.response.data.message)

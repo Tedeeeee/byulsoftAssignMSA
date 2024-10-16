@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -27,16 +28,17 @@ public class CustomAuthenticationSuccessHandlerForAdmin extends SimpleUrlAuthent
     private final TokenCreateService tokenCreateService;
     private final ObjectMapper objectMapper;
 
+    @Value("${jwt.secret.adminKey}")
+    private String adminSecretKey;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String email = extractUsername(authentication);
         Member member = memberMapper.findMemberByMemberEmailForAdmin(email)
                 .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
 
-        tokenCreateService.setSecretKeyForAdmin();
-
         String accessToken = tokenCreateService.createAccessToken(member);
-        String refreshToken = tokenCreateService.createRefreshToken();
+        String refreshToken = tokenCreateService.createRefreshToken(member.getMemberRole());
 
         // refreshToken 을 사용자의 DB에 저장
         memberMapper.saveRefreshToken(member.getMemberOriginalId(), member.getMemberRole(),refreshToken);

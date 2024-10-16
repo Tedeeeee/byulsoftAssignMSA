@@ -1,9 +1,7 @@
 package com.example.adminservice.service;
 
-import com.example.adminservice.dto.AdminRequestDto;
-import com.example.adminservice.dto.AdminListResponseDto;
-import com.example.adminservice.dto.AdminResponseDto;
-import com.example.adminservice.dto.AuthMemberDto;
+import com.example.adminservice.client.MemberServiceClient;
+import com.example.adminservice.dto.*;
 import com.example.adminservice.entity.AdminMember;
 import com.example.adminservice.kafka.service.KafkaProducerSendService;
 import com.example.adminservice.mapper.AdminMapper;
@@ -19,8 +17,8 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
 
     private final AdminMapper adminMapper;
+    private final MemberServiceClient memberServiceClient;
     private final KafkaProducerSendService kafkaProducerSendService;
-
 
     @Override
     public void checkEmail(String email) {
@@ -28,7 +26,7 @@ public class AdminServiceImpl implements AdminService {
 
         boolean checkEmail = adminMapper.checkEmail(email);
         if (checkEmail) {
-            throw new RuntimeException("email already in use");
+            throw new RuntimeException("이미 사용중인 이메일 입니다");
         }
     }
 
@@ -38,7 +36,7 @@ public class AdminServiceImpl implements AdminService {
 
         boolean checkNickName = adminMapper.checkNickName(nickname);
         if (checkNickName) {
-            throw new RuntimeException("nickname already in use");
+            throw new RuntimeException("이미 사용중인 닉네임 입니다");
         }
     }
 
@@ -63,18 +61,25 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminResponseDto getMember(int memberId) {
-        // Feign 사용해서 사용자 정보 가져오기
+    public AdminResponseDto getAdmin(String adminEmail) {
+        AdminMember admin = adminMapper.getAdminByEmail(adminEmail)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 관리자 입니다"));
 
-        return null;
+        return AdminResponseDto.from(admin);
+    }
+
+    @Override
+    public MemberResponseDto getMember(int memberId) {
+        // Feign 사용해서 사용자 정보 가져오기
+        return memberServiceClient.getMemberByMemberId(memberId);
     }
 
     // 검색이 추가로 발생 할 수 있다
     @Override
-    public AdminListResponseDto getMemberList() {
+    public MemberListResponseDto getMemberList() {
         // Feign 사용해서 사용자 정보"들"
-        // total 인원 수
+        List<MemberResponseDto> memberAll = memberServiceClient.getMemberAll();
 
-        return null;
+        return MemberListResponseDto.from(memberAll, memberAll.size());
     }
 }

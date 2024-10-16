@@ -164,7 +164,7 @@ const emailCheckDuplicate = async () => {
     emailInput.value.resetValidation()
   } catch (error) {
     console.log(error)
-    negativeNotify('실패')
+    negativeNotify(error.response.data.message)
     registerData.value.emailCheck = false
   }
 }
@@ -183,7 +183,7 @@ const nicknameCheckDuplicate = async () => {
     nicknameInput.value.resetValidation()
   } catch (error) {
     console.log(error)
-    negativeNotify('실패')
+    negativeNotify(error.response.data.message)
     registerData.value.nicknameCheck = false
   }
 }

@@ -11,7 +11,5 @@ public interface AdminMapper {
     int save(AdminMember adminMember);
     boolean checkNickName(String adminNickName);
     boolean checkEmail(String adminEmail);
-    List<AdminMember> getMembers();
-    Optional<AdminMember> getMemberByMemberId(int memberId);
-    int totalCount();
+    Optional<AdminMember> getAdminByEmail(String adminEmail);
 }

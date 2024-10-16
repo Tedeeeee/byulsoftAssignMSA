@@ -22,37 +22,40 @@ public class TokenCreateService {
 
     @Value("${jwt.secret.adminKey}")
     private String adminSecretKey;
-    private String secretKey;
 
     public static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     public static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     public static final int REFRESH_TOKEN_EXPIRES_IN = 604800;
 
-    public void setSecretKeyForUser() {
-        this.secretKey = userSecretKey;
-    }
-
-    public void setSecretKeyForAdmin() {
-        this.secretKey = adminSecretKey;
-    }
-
     public String createAccessToken(Member member) {
+        String secretKey = generateSecretKeyByRole(member.getMemberRole());
+
         JwtBuilder builder = Jwts.builder()
                 .setHeader(createHeader())
                 .setClaims(createClaims(member))
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .setExpiration(createAccessTokenExpiredDate())
-                .signWith(createSignature(), SignatureAlgorithm.HS256);
+                .signWith(createSignature(secretKey), SignatureAlgorithm.HS256);
         return builder.compact();
     }
 
-    public String createRefreshToken() {
+    public String createRefreshToken(Role role) {
+        String secretKey = generateSecretKeyByRole(role);
+
         JwtBuilder builder = Jwts.builder()
                 .setHeader(createHeader())
                 .setSubject(REFRESH_TOKEN_SUBJECT)
                 .setExpiration(createRefreshTokenExpiredDate())
-                .signWith(createSignature(), SignatureAlgorithm.HS256);
+                .signWith(createSignature(secretKey), SignatureAlgorithm.HS256);
         return builder.compact();
+    }
+
+    private String generateSecretKeyByRole(Role role) {
+        if (Role.USER.equals(role)) {
+            return userSecretKey;
+        } else {
+            return adminSecretKey;
+        }
     }
 
     private Map<String, Object> createHeader() {
@@ -82,7 +85,7 @@ public class TokenCreateService {
         return c.getTime();
     }
 
-    public Key createSignature() {
+    public Key createSignature(String secretKey) {
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }

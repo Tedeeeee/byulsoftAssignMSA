@@ -19,8 +19,6 @@ public class AdminResponseDto {
     private String adminNickname;
     private String adminName;
     private String adminPhoneNumber;
-    private String adminRefreshToken;
-    private boolean adminIsDelete;
     private Role adminRole;
     private String adminCreatedAt;
     private String adminUpdatedAt;

@@ -108,4 +108,35 @@
             #{arr}
         </foreach>
     </select>
+
+    <select id="findMemberAll" resultMap="memberResultMap">
+        select
+            member_id,
+            member_email,
+            member_password,
+            member_name,
+            member_nickname,
+            member_phone_number,
+            member_is_delete,
+            member_role,
+            member_created_at,
+            member_updated_at
+        from member
+    </select>
+
+    <select id="findMemberById" resultMap="memberResultMap">
+        select
+            member_id,
+            member_email,
+            member_password,
+            member_name,
+            member_nickname,
+            member_phone_number,
+            member_is_delete,
+            member_role,
+            member_created_at,
+            member_updated_at
+        from member
+        where member_id = #{memberId}
+    </select>
 </mapper>

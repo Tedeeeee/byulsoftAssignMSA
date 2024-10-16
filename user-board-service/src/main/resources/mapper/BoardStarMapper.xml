@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.userboardservice.mapper.BoardStarMapper">
+
+    <resultMap id="commentResultMap" type="com.example.userboardservice.entity.BoardStar">
+        <id property="boardStarId" column="board_star_id"/>
+        <result property="boardId" column="board_id"/>
+        <result property="boardStarType" column="board_star_type"/>
+        <result property="boardStarShortReview" column="board_star_short_review"/>
+        <result property="boardStarRating" column="board_star_rating"/>
+        <result property="sortNo" column="sort_no"/>
+    </resultMap>
+
+    <insert id="boardStarSaveAll" parameterType="com.example.userboardservice.entity.BoardStar">
+        insert into board_star
+        (
+        board_id,
+        board_star_type,
+        board_star_short_review,
+        board_star_rating,
+        sort_no
+        ) values
+        <foreach collection="boardStars" index="idx" item="item" separator=",">
+            (
+            #{item.boardId},
+            #{item.boardStarType},
+            #{item.boardStarShortReview},
+            #{item.boardStarRating},
+            #{item.sortNo}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getBoardIdsBySortType" resultType="java.lang.Integer">
+        select board_id
+        from board_star
+        where board_star_type = #{sortType}
+        and exists(
+        select 1
+        from board b
+        where b.board_is_delete = 0
+        and b.board_id = board_star.board_id
+        <if test="'지역'.equals(searchType)">
+            and b.board_region = #{searchText}
+        </if>
+        <if test="'제목'.equals(searchType)">
+            and board_title like CONCAT('%', #{searchText}, '%')
+        </if>
+        )
+        <if test="'desc'.equals(sortOrder)">
+            order by board_star_rating desc
+        </if>
+        <if test="'asc'.equals(sortOrder)">
+            order by board_star_rating
+        </if>
+        limit 5 offset #{offset}
+    </select>
+
+    <delete id="deleteBoardStarByBoardId">
+        delete from msa_board.board_star
+        where board_id = #{boardId}
+    </delete>
+</mapper>

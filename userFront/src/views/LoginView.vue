@@ -1,5 +1,4 @@
 <template>
-  <AlertModalComponent :message="modalMessage" />
   <q-page class="login-page">
     <q-card class="login-card" flat bordered>
       <q-card-section class="q-pt-none">
@@ -35,7 +34,6 @@
 import type { LoginData } from '@/type/UserData'
 import { ref } from 'vue'
 import { login } from '@/api/NoAuthRequiredApi'
-import AlertModalComponent from '@/components/modal/AlertModalComponent.vue'
 import { ModalStore } from '@/stores/ModalState'
 import { useRouter } from 'vue-router'
 import { getUserData } from '@/api/AuthRequiredApi'

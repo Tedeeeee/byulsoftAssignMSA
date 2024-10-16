@@ -16,7 +16,7 @@ public interface MemberServiceClient {
      * @since : 2024.10.15
      * @author : T.S YUN
      */
-    @GetMapping("/api/userService/noAuth/users/feign/{memberNickname}")
+    @GetMapping("/api/userService/noAuth/users/feign/nickname/{memberNickname}")
     int getMemberIdByMemberNickname(@PathVariable String memberNickname);
 
     /**

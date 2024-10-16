@@ -44,7 +44,7 @@
         select exists(
             select 1
             from admin
-            where admin_nickname = #{memberNickname}
+            where admin_nickname = #{adminNickName}
         );
     </select>
 
@@ -52,41 +52,22 @@
         select exists(
             select 1
             from admin
-            where admin_email = #{memberEmail}
+            where admin_email = #{adminEmail}
         );
     </select>
 
-    <select id="getMembers" resultMap="adminResultMap">
+    <select id="getAdminByEmail" resultMap="adminResultMap">
         select
             admin_id,
             admin_email,
-            admin_nickname,
-            admin_name,
-            admin_created_at,
-            admin_is_delete
-        from admin
-        where admin_role = 'ADMIN';
-    </select>
-
-    <select id="totalCount" resultType="java.lang.Integer">
-        select count(1)
-        from admin
-        where admin_role = 'ADMIN';
-    </select>
-
-    <select id="getMemberByMemberId" resultMap="adminResultMap">
-        select
-            admin_id,
-            admin_email,
-            admin_password,
             admin_nickname,
             admin_name,
             admin_phone_number,
-            admin_is_delete,
-            admin_role,
             admin_created_at,
-            admin_updated_at
+            admin_updated_at,
+            admin_is_delete
         from admin
-        where admin_id = #{memberId}
+        where admin_email = #{adminEmail}
+        and admin_role = 'ADMIN';
     </select>
 </mapper>

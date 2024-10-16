@@ -2,6 +2,7 @@ package com.example.userservice.dto;
 
 import com.example.userservice.entity.Member;
 import com.example.userservice.entity.Role;
+import com.example.userservice.util.TimeChangerUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,20 +23,20 @@ public class MemberResponseDto {
     private String memberPhoneNumber;
     private boolean memberIsDelete;
     private Role memberRole;
-    private LocalDateTime memberCreatedAt;
-    private LocalDateTime memberUpdatedAt;
+    private String memberCreatedAt;
+    private String memberUpdatedAt;
 
     public static MemberResponseDto from(Member member) {
         return MemberResponseDto.builder()
                 .memberId(member.getMemberId())
                 .memberEmail(member.getMemberEmail())
-                .memberPassword(member.getMemberPassword())
                 .memberNickname(member.getMemberNickname())
                 .memberName(member.getMemberName())
                 .memberPhoneNumber(member.getMemberPhoneNumber())
+                .memberIsDelete(member.isMemberIsDelete())
                 .memberRole(member.getMemberRole())
-                .memberCreatedAt(member.getMemberCreatedAt())
-                .memberUpdatedAt(member.getMemberUpdatedAt())
+                .memberCreatedAt(TimeChangerUtil.timeChange(member.getMemberCreatedAt()))
+                .memberUpdatedAt(TimeChangerUtil.timeChange(member.getMemberUpdatedAt()))
                 .build();
     }
 }

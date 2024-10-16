@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 public class BoardResponseDto {
     private int boardId;
+    private int memberId;
+    @Setter
     private String memberNickname;
     private String boardTitle;
     private String boardRegion;
@@ -23,10 +25,10 @@ public class BoardResponseDto {
     private String boardUpdatedAt;
     private List<BoardStar> boardStars = new ArrayList<>();
 
-    public static BoardResponseDto from(Board board, String memberNickname) {
+    public static BoardResponseDto from(Board board) {
         return BoardResponseDto.builder()
                 .boardId(board.getBoardId())
-                .memberNickname(memberNickname)
+                .memberId(board.getMemberId())
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
                 .boardRegion(board.getBoardRegion())

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @AllArgsConstructor
@@ -21,6 +22,14 @@ public class Member {
     public void checkIfMemberIsDeleted () {
         if (memberIsDelete) {
             throw new RuntimeException("탈퇴한 사용자입니다");
+        }
+    }
+
+    public String mySecretKey(String adminSecretKey, String userSecretKey) {
+        if (Role.USER.equals(memberRole)) {
+            return userSecretKey;
+        } else {
+            return adminSecretKey;
         }
     }
 }

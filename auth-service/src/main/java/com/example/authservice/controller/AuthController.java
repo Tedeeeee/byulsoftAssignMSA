@@ -2,7 +2,6 @@ package com.example.authservice.controller;
 
 import com.example.authservice.commonApi.BodyResponse;
 import com.example.authservice.dto.TokenResponseDto;
-import com.example.authservice.entity.Role;
 import com.example.authservice.security.service.TokenCreateService;
 import com.example.authservice.service.AuthService;
 import com.example.authservice.util.CookieUtil;
@@ -15,20 +14,12 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-
-    @GetMapping()
-    public ResponseEntity<String> hello() {
-        System.out.println("hello");
-        return new ResponseEntity<>("성공", HttpStatus.OK);
-    }
 
     @PostMapping("/token/renew")
     public ResponseEntity<BodyResponse<String>> renewToken(HttpServletRequest request, HttpServletResponse response) {

@@ -46,12 +46,13 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public BoardResponseDto findBoardById(int boardId) {
         Board board = boardMapper.findBoardByBoardId(boardId);
+        BoardResponseDto boardResponseDto = BoardResponseDto.from(board);
 
         // board의 id를 통해 사용자 정보 가져오기
         String nickname = memberServiceClient.getMemberNicknameByMemberId(board.getMemberId());
+        boardResponseDto.setMemberNickname(nickname);
 
-        // 사용자 정보 가져와서 memberNickname 셋팅
-        return BoardResponseDto.from(board, nickname);
+        return boardResponseDto;
     }
 
     @Override
@@ -123,13 +124,23 @@ public class BoardServiceImpl implements BoardService{
     }
 
     private List<BoardResponseDto> getBoardResponseDtoListByPostMapping(List<Integer> postList, Map<Integer, Board> postListMapping) {
-        return postList.stream()
+        List<BoardResponseDto> list = postList.stream()
                 .map(boardId -> {
                     Board board = postListMapping.get(boardId);
-                    // 사용자 닉네임 가져오기
-                    String nickname = memberServiceClient.getMemberNicknameByMemberId(board.getMemberId());
+                    return BoardResponseDto.from(board);
+                }).toList();
 
-                    return BoardResponseDto.from(board, nickname);
+        return mapMemberNicknamesToBoardResponseDtoList(list);
+    }
+
+    private List<BoardResponseDto> mapMemberNicknamesToBoardResponseDtoList(List<BoardResponseDto> boardResponseDtoList) {
+        List<Integer> memberIdList = boardResponseDtoList.stream().map(BoardResponseDto::getMemberId).toList();
+        Map<Integer, String> memberNicknamesByMemberIdList = memberServiceClient.getMemberNicknamesByMemberIdList(memberIdList);
+        return boardResponseDtoList.stream()
+                .peek(boardResponseDto -> {
+                    String nickname = memberNicknamesByMemberIdList.get(boardResponseDto.getMemberId());
+
+                    boardResponseDto.setMemberNickname(nickname);
                 }).toList();
     }
 

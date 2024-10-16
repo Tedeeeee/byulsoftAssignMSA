@@ -78,4 +78,18 @@ public interface MemberService {
      * @since : 2024.10.04
      */
     Map<Integer, String> findUserNicknamesByMemberList(List<Integer> memberIdList);
+
+    /**
+     * 설명 : 사용자 전체 가져오기
+     * @since : 2024.10.16
+     * @author : T.S YUN
+     */
+    List<MemberResponseDto> findMemberAll();
+
+    /**
+     * 설명 : ID 기반으로 사용자 정보 가져오기
+     * @since : 2024.10.16
+     * @author : T.S YUN
+     */
+    MemberResponseDto findMemberByMemberId(int memberId);
 }

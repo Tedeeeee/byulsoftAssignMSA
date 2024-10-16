@@ -18,4 +18,6 @@ public interface MemberMapper {
     boolean checkEmail(String memberEmail);
     List<Member> findMemberNicknameByMemberIdList(List<Integer> memberIdList);
     Optional<Integer> findMemberIdByMemberNickname(String memberNickname);
+    List<Member> findMemberAll();
+    Optional<Member> findMemberById(int memberId);
 }

@@ -4,7 +4,6 @@ import com.example.userservice.commonApi.BodyResponse;
 import com.example.userservice.dto.MemberRequestDto;
 import com.example.userservice.dto.MemberResponseDto;
 import com.example.userservice.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,8 +65,18 @@ public class MemberControllerNoAuth {
         return memberService.findUserNicknamesByMemberList(memberIdList);
     }
 
-    @GetMapping("/feign/{memberNickname}")
+    @GetMapping("/feign/nickname/{memberNickname}")
     int getMemberNickname(@PathVariable("memberNickname") String memberNickname) {
         return memberService.findMemberIdByMemberNickname(memberNickname);
+    }
+
+    @GetMapping("/feign/all")
+    List<MemberResponseDto> getAllMembers() {
+        return memberService.findMemberAll();
+    }
+
+    @GetMapping("/feign/{memberId}")
+    MemberResponseDto getMemberById(@PathVariable("memberId") int memberId) {
+        return memberService.findMemberByMemberId(memberId);
     }
 }

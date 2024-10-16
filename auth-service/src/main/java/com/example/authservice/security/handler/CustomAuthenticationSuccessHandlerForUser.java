@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -33,10 +34,8 @@ public class CustomAuthenticationSuccessHandlerForUser extends SimpleUrlAuthenti
         Member member = memberMapper.findMemberByMemberEmailForUser(email)
                 .orElseThrow(() -> new RuntimeException("사용자의 정보가 존재하지 않습니다"));
 
-        tokenCreateService.setSecretKeyForUser();
-
         String accessToken = tokenCreateService.createAccessToken(member);
-        String refreshToken = tokenCreateService.createRefreshToken();
+        String refreshToken = tokenCreateService.createRefreshToken(member.getMemberRole());
 
         // refreshToken 을 사용자의 DB에 저장
         memberMapper.saveRefreshToken(member.getMemberOriginalId(), member.getMemberRole(), refreshToken);
@@ -46,7 +45,6 @@ public class CustomAuthenticationSuccessHandlerForUser extends SimpleUrlAuthenti
     }
 
     private void sendTokens(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
-
         ResponseCookie refreshCookie = ResponseCookie.from(TokenCreateService.REFRESH_TOKEN_SUBJECT, refreshToken)
                 .httpOnly(true)
                 .path("/")

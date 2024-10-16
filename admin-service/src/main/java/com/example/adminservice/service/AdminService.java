@@ -1,8 +1,9 @@
 package com.example.adminservice.service;
 
 import com.example.adminservice.dto.AdminRequestDto;
-import com.example.adminservice.dto.AdminListResponseDto;
 import com.example.adminservice.dto.AdminResponseDto;
+import com.example.adminservice.dto.MemberListResponseDto;
+import com.example.adminservice.dto.MemberResponseDto;
 
 public interface AdminService {
 
@@ -27,12 +28,14 @@ public interface AdminService {
      */
     void registerAdmin(AdminRequestDto adminRequestDto);
 
+    AdminResponseDto getAdmin(String adminEmail);
+
     /**
      * 설명 : 개인 사용자 정보 가져오기
      * @author : T.S YUN
      * @since : 2024.10.08
      */
-    AdminResponseDto getMember(int memberId);
+    MemberResponseDto getMember(int memberId);
 
     /**
      * 설명 : 사용자 전체 데이터 가져오기
@@ -40,5 +43,5 @@ public interface AdminService {
      * @since : 2024.10.08
      * @author : T.S YUN
      */
-    AdminListResponseDto getMemberList();
+    MemberListResponseDto getMemberList();
 }
