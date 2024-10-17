@@ -66,8 +66,13 @@ public class MemberControllerNoAuth {
     }
 
     @GetMapping("/feign/nickname/{memberNickname}")
-    int getMemberNickname(@PathVariable("memberNickname") String memberNickname) {
+    MemberResponseDto getMemberNickname(@PathVariable("memberNickname") String memberNickname) {
         return memberService.findMemberIdByMemberNickname(memberNickname);
+    }
+
+    @GetMapping("/feign/members/nickname")
+    List<MemberResponseDto> getMembersByNickname(@RequestParam("memberNickname") String memberNickname) {
+        return memberService.findMembersByMemberEmail(memberNickname);
     }
 
     @GetMapping("/feign/all")

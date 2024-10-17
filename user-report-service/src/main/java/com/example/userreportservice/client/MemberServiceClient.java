@@ -17,7 +17,7 @@ public interface MemberServiceClient {
      * @author : T.S YUN
      */
     @GetMapping("/api/userService/noAuth/users/feign/nickname/{memberNickname}")
-    int getMemberIdByMemberNickname(@PathVariable String memberNickname);
+    MemberResponseDto getMemberIdByMemberNickname(@PathVariable String memberNickname);
 
     /**
      * 설명 : user service 로부터 사용자 정보 가져오기

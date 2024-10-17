@@ -82,4 +82,11 @@ public class AdminServiceImpl implements AdminService {
 
         return MemberListResponseDto.from(memberAll, memberAll.size());
     }
+
+    @Override
+    public MemberListResponseDto getMemberListByMemberNickname(String memberNickname) {
+        List<MemberResponseDto> memberList = memberServiceClient.getMemberByNickname(memberNickname);
+
+        return MemberListResponseDto.from(memberList, memberList.size());
+    }
 }

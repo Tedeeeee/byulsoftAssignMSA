@@ -1,4 +1,6 @@
 <template>
+  {{contentsType}}
+  <alert-modal-component label-message="닫기" message="검색 결과가 존재하지 않습니다" />
   <q-page class="q-pa-md row justify-center">
     <div class="col-4">
       <q-card>
@@ -8,13 +10,15 @@
             filled
             borderless
             dense
+            label="닉네임 검색"
             debounce="300"
             color="primary"
             v-model="searchUser"
+            @keyup.enter="searchUserList(searchUser)"
             class="q-pa-md"
           >
             <template v-slot:append>
-              <q-icon name="search" />
+              <q-icon name="search" @click="searchUserList(searchUser)" />
             </template>
           </q-input>
           <q-list bordered>
@@ -37,7 +41,7 @@
           <div class="q-pa-sm flex flex-center">
             <q-pagination
               v-model="currentPage"
-              :max="5"
+              :max="userTotalPage"
               max-pages="5"
               boundary-numbers
               class="q-mt-md"
@@ -48,32 +52,38 @@
     </div>
     <q-space class="custom-space" />
     <div class="col-6">
-      <q-card>
+      <q-card v-if="searchData.memberId !== 0">
         <q-card-section class="text-center">
-          <h4>{{userDetailData.memberNickname}}</h4>
-          <h6>{{userDetailData.memberEmail}}</h6>
+          <h4>{{ userDetailData.memberNickname }}</h4>
+          <h6>{{ userDetailData.memberEmail }}</h6>
           <div class="info-section q-mb-md">
             <div class="row q-col-gutter-ms q-mt-md">
               <div class="col">
                 <span style="font-weight: bold">이름</span><br />
-                <span class="col-2">{{userDetailData.memberName}}</span>
+                <span class="col-2">{{ userDetailData.memberName }}</span>
               </div>
               <q-separator vertical />
               <div class="col">
                 <span style="font-weight: bold">가입 일자</span><br />
-                <span class="col-3">{{userDetailData.memberCreatedAt}}</span>
+                <span class="col-3">{{ userDetailData.memberCreatedAt }}</span>
               </div>
               <q-separator vertical />
               <div class="col">
                 <span style="font-weight: bold">신고누적횟수</span><br />
-                <span class="col-3">{{userDetailData.memberReportTotalCount}}</span>
+                <span class="col-3">{{
+                  userDetailData.memberReportTotalCount
+                }}</span>
               </div>
             </div>
           </div>
         </q-card-section>
       </q-card>
 
-      <q-card class="q-mt-lg" style="min-height: 300px">
+      <q-card
+        class="q-mt-lg"
+        style="min-height: 300px"
+        v-if="searchData.memberId !== 0"
+      >
         <q-card-section class="flex justify-center">
           <q-btn
             color="primary"
@@ -89,45 +99,24 @@
           />
           <q-btn color="primary" label="신고" @click="getReportByMemberId" />
         </q-card-section>
-
-        <div class="q-pa-md">
-          <q-table
-            flat
-            bordered
-            title="Treats"
-            :rows="rows"
-            :columns="columns"
-            row-key="name"
-            hide-header
-            hide-bottom
-            @row-click="onRowClick"
-          >
-            <template v-slot:top>
-              <h4 style="font-weight: bold">게시글</h4>
-              <q-space />
-              <q-input
-                filled
-                borderless
-                dense
-                debounce="300"
-                color="primary"
-                v-model="searchText"
-              >
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </template>
-          </q-table>
-          <div class="flex justify-center">
-            <q-pagination
-              v-model="currentPage"
-              :max="Math.ceil(rows.length / itemsPerPage)"
-              boundary-numbers
-              class="q-mt-md"
-            />
-          </div>
-        </div>
+        <user-report-component
+          v-if="contentsType === '신고'"
+          v-model="searchData"
+          :contents-type="contentsType"
+          :report-list="reportList"
+          :total-page="totalPage"
+          :reporterMemberNickname="userDetailData.memberNickname"
+        />
+        <user-board-and-comment-component
+          v-if="contentsType !== '신고'"
+          v-model="searchData"
+          :contents-type="contentsType"
+          :board-list="boardList"
+          :comment-list="commentList"
+          :total-page="totalPage"
+          @page-move="pageHandle"
+          @boardPageView="boardDetail"
+        />
       </q-card>
     </div>
   </q-page>
@@ -136,61 +125,29 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import type { UserData, UserListData } from '@/type/UserData'
-import { getUserDataAll, getUserDataDetail } from '@/api/AuthRequiredApi'
+import {
+  callApi,
+  getUserBoards, getUserByNickname, getUserComments,
+  getUserDataAll,
+  getUserReportCount, getUserReports
+} from '@/api/AuthRequiredApi'
+import type { SearchData } from '@/type/SearchData'
+import UserBoardAndCommentComponent from '@/components/mainPage/UserBoardAndCommentComponent.vue'
+import type { BoardData } from '@/type/BoardData'
+import { ModalStore } from '@/stores/ModalStore'
+import AlertModalComponent from '@/components/modal/AlertModalComponent.vue'
+import type { CommentData } from '@/type/CommentData'
+import { useRouter } from 'vue-router'
+import UserReportComponent from '@/components/mainPage/UserReportComponent.vue'
+import type { ReportData } from '@/type/ReportData'
 
-const columns = [
-  {
-    name: 'title',
-    required: true,
-    label: 'title',
-    align: 'left',
-    field: row => row.name,
-    format: val => `${val}`,
-    sortable: true,
-    width: '40%',
-  },
-  { name: 'author', label: 'author', field: 'carbs', width: '30%' },
-  { name: 'date', label: 'date', field: 'protein', width: '30%' },
-]
-
-const rows = [
-  { name: 'Lollipop', author: 'John Doe', date: '2024-01-01' },
-  { name: 'Honeycomb', author: 'Jane Smith', date: '2024-01-02' },
-  { name: 'Donut', author: 'Alice Johnson', date: '2024-01-03' },
-  { name: 'KitKat', author: 'Bob Brown', date: '2024-01-04' },
-  { name: 'Frozen Yogurt', author: 'Charlie Black', date: '2024-01-05' },
-  { name: 'Ice Cream Sandwich', author: 'David White', date: '2024-01-06' },
-  { name: 'Eclair', author: 'Eva Green', date: '2024-01-07' },
-  { name: 'Cupcake', author: 'Frank Blue', date: '2024-01-08' },
-  { name: 'Gingerbread', author: 'Grace Yellow', date: '2024-01-09' },
-  { name: 'Jelly Bean', author: 'Henry Red', date: '2024-01-10' },
-]
-
-const searchUser = ref<string>('')
-const searchText = ref<string>('')
+const router = useRouter();
 const currentPage = ref<number>(1)
-const itemsPerPage = 10
+const totalPage = ref<number>(1)
+const userTotalPage = ref<number>(1)
+const contentsType = ref<string>('')
+
 const userList = ref<UserListData[] | undefined>([])
-
-const transformToUserList = (response: UserData): UserListData => {
-  return {
-    memberId: response.memberId,
-    memberEmail: response.memberEmail,
-    memberNickname: response.memberNickname,
-    memberIsDelete: response.memberIsDelete,
-  }
-}
-
-const getUserList = async () => {
-  try {
-    const response = await getUserDataAll()
-    userList.value =
-      response.data.body.memberResponseDtoList.map(transformToUserList)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 const userDetailData = ref<UserData>({
   memberId: 0,
   memberEmail: '',
@@ -198,7 +155,34 @@ const userDetailData = ref<UserData>({
   memberName: '',
   memberCreatedAt: '',
   memberReportTotalCount: 0,
+  memberIsDelete: false,
 })
+const searchUser = ref<string>('')
+
+const boardList = ref<BoardData>([])
+const commentList = ref<CommentData>([])
+const reportList = ref<ReportData>([])
+const searchData = ref<SearchData>({
+  searchType: '',
+  searchText: '',
+  startDate: '',
+  endDate: '',
+  pageNumber: 1,
+  memberId: 0,
+})
+
+const resetSearchData = () => {
+  searchData.value = {
+    searchType: '',
+    searchText: '',
+    startDate: '',
+    endDate: '',
+    pageNumber: 1,
+    memberId: 0,
+  }
+
+  contentsType.value = ''
+}
 
 const transformToUser = (response: UserData): UserData => {
   return {
@@ -211,35 +195,121 @@ const transformToUser = (response: UserData): UserData => {
   }
 }
 
+const transformToUserList = (response: UserData): UserListData => {
+  return {
+    memberId: response.memberId,
+    memberEmail: response.memberEmail,
+    memberNickname: response.memberNickname,
+    memberIsDelete: response.memberIsDelete,
+  }
+}
+
+const transformToBoardList = (response: BoardData): BoardData => {
+  return {
+    boardId: response.boardId,
+    memberNickname: response.memberNickname,
+    boardTitle: response.boardTitle,
+    boardCreatedAt: response.boardCreatedAt,
+    boardIsDelete: response.boardIsDelete,
+  }
+}
+
 const getUser = async (memberId: number): UserData => {
   try {
-    // 사용자 정보
-    const response = await getUserDataDetail(memberId)
-    // 신고한 누적 횟수
+    resetSearchData();
+    searchData.value.memberId = memberId
 
-    console.log(response)
+    const response = await callApi(`/adminService/admins/users/${memberId}`, {});
+
     userDetailData.value = transformToUser(response.data.body, 0)
-    console.log(userDetailData.value)
+
+    const reportResponse = await getUserReportCount(memberId)
+    userDetailData.value.memberReportTotalCount = reportResponse.data.body;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const getUserList = async () => {
+  try {
+    const response = await getUserDataAll()
+    userTotalPage.value = Math.ceil(response.data.body.totalMembers / 20  )
+    userList.value = response.data.body.memberResponseDtoList.map(transformToUserList)
   } catch (error) {
     console.log(error)
   }
 }
 
-const onRowClick = () => {
-  // 클릭하면 해당 게시글 띄우기
-  console.log('hi')
+const searchUserList = async (memberNickname: string) : UserData => {
+  try {
+    const response = await getUserByNickname(memberNickname);
+    console.log(response.data.body.memberResponseDtoList.length)
+
+    if (response.data.body.memberResponseDtoList.length === 0) {
+      ModalStore().openModal()
+      return
+    }
+    userList.value = response.data.body.memberResponseDtoList;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-const getBoardByMemberId = () => {
-  console.log('사용자의 게시글 가져오기')
+const getBoardByMemberId = async () => {
+  boardList.value = [];
+  contentsType.value = '게시글'
+  try {
+    // 가져와서 데이터 넣기
+    const response = await getUserBoards(searchData.value)
+    totalPage.value = response.data.body.totalPages
+    boardList.value = response.data.body.boards.map(transformToBoardList)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-const getCommentByMemberId = () => {
-  console.log('사용자의 댓글 가져오기')
+const getCommentByMemberId = async () => {
+  commentList.value = [];
+  contentsType.value = '댓글'
+  try {
+    const response = await getUserComments(searchData.value)
+    console.log(response)
+    commentList.value = response.data.body.commentResponseDtoList;
+    console.log(commentList.value)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-const getReportByMemberId = () => {
-  console.log('사용자의 신고글 가져오기')
+const getReportByMemberId = async () => {
+  reportList.value = [];
+  contentsType.value = '신고'
+  try {
+    const response = await getUserReports(searchData.value.memberId)
+    console.log(response)
+    reportList.value = response.data.body;
+    console.log(reportList.value)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const boardDetail = async (boardId: number) => {
+  console.log(boardId)
+  await router.push({name: 'boardDetail', params: {boardId}});
+}
+
+
+
+const pageHandle = async () => {
+  // 변경된 페이지로 인한 데이터 새롭게 전달
+  try {
+    const response = await getUserBoards(searchData.value)
+    console.log(response)
+    boardList.value = response.data.body.boards.map(transformToBoardList)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 onMounted(async () => {

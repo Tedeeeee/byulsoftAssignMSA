@@ -28,7 +28,7 @@ public interface MemberService {
      * @since : 2024.10.07
      * @author : T.S YUN
      */
-    int findMemberIdByMemberNickname(String memberNickname);
+    MemberResponseDto findMemberIdByMemberNickname(String memberNickname);
 
     /**
      * 설명 : 이메일 유효성 검사와 중복 체크
@@ -92,4 +92,11 @@ public interface MemberService {
      * @author : T.S YUN
      */
     MemberResponseDto findMemberByMemberId(int memberId);
+
+    /**
+     * 설명 : Nickname 기반으로 사용자 정보 가져오기
+     * @since : 2024.10.17
+     * @author : T.S YUN
+     */
+    List<MemberResponseDto> findMembersByMemberEmail(String memberEmail);
 }

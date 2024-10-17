@@ -39,7 +39,6 @@
                 and b.board_created_at between #{startDate} and #{endDate}
             </if>
         </where>
-        order by b.board_created_at desc
     </sql>
 
     <select id="getAllBoard" resultMap="boardResultMap">
@@ -51,6 +50,7 @@
                sub.board_view,
                sub.board_updated_at,
                sub.board_created_at,
+               sub.board_is_delete,
                bs.board_star_type,
                bs.board_star_short_review,
                bs.board_star_rating
@@ -63,9 +63,11 @@
                 b.board_region,
                 b.board_view,
                 b.board_updated_at,
-                b.board_created_at
+                b.board_created_at,
+                b.board_is_delete
             from board b
             <include refid="searchConditionWhere"/>
+            order by b.board_created_at desc
             limit #{pageSize} offset #{offset}
              ) sub
         join board_star bs on sub.board_id = bs.board_id;
@@ -75,6 +77,7 @@
         select count(1)
         from board b
         <include refid="searchConditionWhere"/>
+        order by b.board_created_at desc
     </select>
 
     <update id="softDeleteBoard">

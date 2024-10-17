@@ -44,4 +44,12 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BodyResponse.success(memberList));
     }
+
+    @GetMapping("/users/nickname")
+    public ResponseEntity<BodyResponse<MemberListResponseDto>> getMemberNickname(@RequestParam String memberNickname) {
+        MemberListResponseDto memberList = adminService.getMemberListByMemberNickname(memberNickname);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BodyResponse.success(memberList));
+    }
 }

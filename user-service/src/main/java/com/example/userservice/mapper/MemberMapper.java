@@ -17,7 +17,8 @@ public interface MemberMapper {
     void changeMemberPassword(@Param("memberPassword") String memberPassword, @Param("memberId") int memberId);
     boolean checkEmail(String memberEmail);
     List<Member> findMemberNicknameByMemberIdList(List<Integer> memberIdList);
-    Optional<Integer> findMemberIdByMemberNickname(String memberNickname);
+    Optional<Member> findMemberIdByMemberNickname(String memberNickname);
     List<Member> findMemberAll();
     Optional<Member> findMemberById(int memberId);
+    List<Member> findMembersByMemberNickname(String memberNickname);
 }

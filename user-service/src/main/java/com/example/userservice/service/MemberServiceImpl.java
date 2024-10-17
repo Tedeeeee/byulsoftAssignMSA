@@ -44,9 +44,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public int findMemberIdByMemberNickname(String memberNickname) {
-        return memberMapper.findMemberIdByMemberNickname(memberNickname)
+    public MemberResponseDto findMemberIdByMemberNickname(String memberNickname) {
+        Member member = memberMapper.findMemberIdByMemberNickname(memberNickname)
                 .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
+
+        return MemberResponseDto.from(member);
     }
 
     @Override
@@ -149,5 +151,13 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
 
         return MemberResponseDto.from(member);
+    }
+
+    @Override
+    public List<MemberResponseDto> findMembersByMemberEmail(String memberEmail) {
+        List<Member> memberList = memberMapper.findMembersByMemberNickname(memberEmail);
+
+        return memberList.stream()
+                .map(MemberResponseDto::from).toList();
     }
 }

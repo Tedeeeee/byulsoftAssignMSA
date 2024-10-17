@@ -10,6 +10,6 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
     List<Board> getAllBoard(SearchConditionDto searchConditionDto);
-    int countTotalBoards();
+    int countTotalBoards(SearchConditionDto searchConditionDto);
     void softDeleteBoard(int boardId);
 }

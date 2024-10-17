@@ -36,7 +36,7 @@
 import { ref } from 'vue'
 import type { LoginData } from '@/type/AdminData'
 import { login } from '@/api/NoAuthRequiredApi'
-import { accessToken, adminStore } from '@/stores/AdminStore'
+import { accessToken, AdminStore } from '@/stores/AdminStore'
 import { getAdminData } from '@/api/AuthRequiredApi'
 import { useRouter } from 'vue-router'
 import AlertModalComponent from '@/components/modal/AlertModalComponent.vue'
@@ -57,7 +57,7 @@ const handleSubmit = async () => {
     const adminResponse = await getAdminData();
     console.log(adminResponse)
 
-    adminStore().adminDataSetting(adminResponse.data.body);
+    AdminStore().adminDataSetting(adminResponse.data.body);
     await router.push('/');
   } catch (error) {
     ModalStore().openModal()

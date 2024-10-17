@@ -44,4 +44,6 @@ public interface AdminService {
      * @author : T.S YUN
      */
     MemberListResponseDto getMemberList();
+
+    MemberListResponseDto getMemberListByMemberNickname(String memberNickname);
 }

@@ -4,7 +4,7 @@ import type { AdminData } from '@/type/AdminData'
 
 export const accessToken = 'accessToken';
 
-export const adminStore = defineStore('admin', () => {
+export const AdminStore = defineStore('admin', () => {
   const admin = ref<AdminData>({
     adminId: 0,
     adminEmail: '',

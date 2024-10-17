@@ -8,10 +8,9 @@
         요방어때 - 관리자
       </q-toolbar-title>
 
-      {{LoginStore().token}}
       <div class="q-pa-md q-gutter-sm">
         <template v-if="userLoginState">
-          <q-btn flat :label="adminStore().admin.adminNickname" to="/myPage" class="custom-link" />
+          <q-btn flat :label="AdminStore().admin.adminNickname" class="custom-link" />
           <q-btn @click="handleLogout" color="black" label="로그아웃" />
         </template>
         <template v-else>
@@ -24,12 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import { accessToken, adminStore } from '@/stores/AdminStore'
+import { accessToken, AdminStore } from '@/stores/AdminStore'
 import { useRouter } from 'vue-router'
 import logo from '@/assets/로고.png'
 import { onMounted, ref } from 'vue'
 import { useNotifications } from '@/common/CommonNotify'
-import { LoginStore } from '@/stores/LoginStore'
+import { getAdminData } from '@/api/AuthRequiredApi'
 
 const { positiveNotify } = useNotifications();
 const router = useRouter()
@@ -45,7 +44,7 @@ const handleLogout = async () => {
     positiveNotify(response.data.message)
     localStorage.removeItem(accessToken);
     userLoginState.value = false
-    adminStore().userDataReset()
+    AdminStore().userDataReset()
     await router.push("/");
   } catch (error) {
     console.log(error)
@@ -54,8 +53,8 @@ const handleLogout = async () => {
 
 onMounted(async () => {
   if (localStorage.getItem(accessToken)) {
-    const response = await getUserData();
-    adminStore().adminDataSetting(response.data.body);
+    const response = await getAdminData();
+    AdminStore().adminDataSetting(response.data.body);
   }
 })
 </script>

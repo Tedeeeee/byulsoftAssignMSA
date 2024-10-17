@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.adminreportservice.mapper.ReportMapper">
-    <resultMap id="reportMap" type="com.example.adminreportservice.entity.Report">
+    <resultMap id="reportResultMap" type="com.example.adminreportservice.entity.Report">
         <id property="reportId" column="report_id"/>
         <result property="reporterMemberId" column="reporter_member_id"/>
         <result property="reportedMemberId" column="reported_member_id"/>
@@ -46,4 +46,23 @@
         set report_type = 'REVOKE'
         where report_id = #{reportId};
     </update>
+
+    <select id="totalCountByMemberId" resultType="java.lang.Integer">
+        select count(1)
+        from report
+        where reporter_member_id = #{memberId};
+    </select>
+
+    <select id="getReportsByMemberId" resultMap="reportResultMap">
+        select
+            report_id,
+            reported_member_id,
+            report_content,
+            report_type,
+            report_type_id,
+            report_status,
+            report_created_at
+        from report
+        where reporter_member_id = #{memberId}
+    </select>
 </mapper>

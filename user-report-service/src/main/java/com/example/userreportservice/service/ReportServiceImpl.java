@@ -36,8 +36,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void createReport(ReportRequestDto reportRequestDto) {
-        int memberId = memberServiceClient.getMemberIdByMemberNickname(reportRequestDto.getReportedMemberNickname());
-        Report report = reportRequestDto.toEntity(memberId);
+        MemberResponseDto member = memberServiceClient.getMemberIdByMemberNickname(reportRequestDto.getReportedMemberNickname());
+        Report report = reportRequestDto.toEntity(member.getMemberId());
 
         if (reportMapper.isReportExist(report)) {
             throw new RuntimeException("중복 신고는 불가능 합니다");
