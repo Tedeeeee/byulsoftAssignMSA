@@ -8,6 +8,7 @@ import java.util.List;
 @Mapper
 public interface ReportMapper {
     void save(Report report);
+    Boolean checkReport(int reportId);
     void completeReport(int reportId);
     void revokeReport(int reportId);
     Integer totalCountByMemberId(int memberId);

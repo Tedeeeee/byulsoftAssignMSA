@@ -1,5 +1,6 @@
 package com.example.usercommentservice.service;
 
+import com.example.usercommentservice.client.AdminServiceClient;
 import com.example.usercommentservice.client.BoardServiceClient;
 import com.example.usercommentservice.client.MemberServiceClient;
 import com.example.usercommentservice.dto.CommentRequestDto;
@@ -22,6 +23,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final MemberServiceClient memberServiceClient;
     private final BoardServiceClient boardServiceClient;
+    private final AdminServiceClient adminServiceClient;
 
     @Override
     @Transactional
@@ -47,12 +49,18 @@ public class CommentServiceImpl implements CommentService {
 
         if (!comments.isEmpty()) {
             // 데이터를 가져올때 사용자의 닉네임을 클라이언트를 통해 가져와야한다.
+            List<Integer> adminList = comments.stream().map(Comment::getAdminId).toList();
             List<Integer> memberList = comments.stream().map(Comment::getMemberId).toList();
+
+            Map<Integer, String> adminNicknamesByAdminIdList = adminServiceClient.getAdminNicknamesByAdminIdList(adminList);
             Map<Integer, String> memberNicknamesByMemberIdList = memberServiceClient.getMemberNicknamesByMemberIdList(memberList);
 
             return comments.stream()
                     .map(comment -> {
-                        return CommentResponseDto.from(comment, memberNicknamesByMemberIdList.get(comment.getMemberId()));
+                        if (comment.getMemberId() != 0) {
+                            return CommentResponseDto.from(comment, memberNicknamesByMemberIdList.get(comment.getMemberId()));
+                        }
+                        return CommentResponseDto.from(comment, adminNicknamesByAdminIdList.get(comment.getAdminId()));
                     }).toList();
         }
         return null;

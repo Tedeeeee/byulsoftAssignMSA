@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { AdminData } from '@/type/AdminData'
 
 export const accessToken = 'accessToken';
@@ -12,6 +12,9 @@ export const AdminStore = defineStore('admin', () => {
     adminNickname: '',
     adminPhoneNumber: ''
   })
+  const loginCheck = computed(() => {
+    return !!admin.value.adminEmail;
+  })
 
   const adminDataSetting = (adminData: AdminData) => {
     admin.value.adminId = adminData.adminId
@@ -21,5 +24,13 @@ export const AdminStore = defineStore('admin', () => {
     admin.value.adminPhoneNumber = adminData.adminPhoneNumber
   }
 
-  return { admin, adminDataSetting }
+  const adminDataReset = () => {
+    admin.value.adminId = 0;
+    admin.value.adminEmail = '';
+    admin.value.adminName = '';
+    admin.value.adminNickname = '';
+    admin.value.adminPhoneNumber = '';
+  }
+
+  return { admin, loginCheck, adminDataSetting, adminDataReset }
 })

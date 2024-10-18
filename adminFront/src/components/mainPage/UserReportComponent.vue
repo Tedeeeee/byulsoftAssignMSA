@@ -4,7 +4,6 @@
     <q-table
       flat
       bordered
-      title="Treats"
       :rows="reportList"
       :columns="reportColumns"
       row-key="boardId"
@@ -14,7 +13,7 @@
       <template v-slot:top>
         <h4 style="font-weight: bold">{{ contentsType }}</h4>
         <q-space />
-        <div class="row q-gutter-sm q-mt-md justify-between">
+<!--        <div class="row q-gutter-sm q-mt-md justify-between">
           <div class="col">
             <q-input
               filled
@@ -71,7 +70,7 @@
               <q-btn color="primary" label="검색" @click="searchReports" />
             </div>
           </div>
-        </div>
+        </div>-->
       </template>
     </q-table>
     <div class="flex justify-center">

@@ -9,7 +9,10 @@ import java.util.List;
 
 @Mapper
 public interface CommentMapper {
+    void save(Comment comment);
+    List<Comment> findCommentsByBoardId(int boardId);
     List<Comment> getAllComment(SearchConditionDto searchConditionDto);
     int countTotalComments();
     void softDeleteComment(int commentId);
+    void updateComment(Comment comment);
 }

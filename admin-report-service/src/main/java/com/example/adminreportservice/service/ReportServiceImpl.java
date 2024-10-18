@@ -27,12 +27,20 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public void completeReport(int reportId) {
+        if (!reportMapper.checkReport(reportId)) {
+            throw new RuntimeException("존재하지 않는 신고입니다");
+        }
 
+        reportMapper.completeReport(reportId);
     }
 
     @Override
     public void revokeReport(int reportId) {
+        if (!reportMapper.checkReport(reportId)) {
+            throw new RuntimeException("존재하지 않는 신고입니다");
+        }
 
+        reportMapper.revokeReport(reportId);
     }
 
     @Override
@@ -46,6 +54,10 @@ public class ReportServiceImpl implements ReportService {
 
         List<Integer> list = reportList.stream()
                 .map(Report::getReportedMemberId).toList();
+
+        if (list.isEmpty()) {
+            throw new RuntimeException("신고 기록이 존재하지 않습니다");
+        }
 
         Map<Integer, String> memberNicknameMap = memberServiceClient.getMemberNicknamesByMemberIdList(list);
 

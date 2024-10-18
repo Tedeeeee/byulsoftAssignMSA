@@ -14,7 +14,7 @@ export const ReportType: Record<string, string> = {
 }
 
 export const ReportState: Record<string, string> = {
-  RECEIVED : '접수',
-  COMPLETED: '처리 완료',
+  RECEIVE : '접수',
+  COMPLETE: '처리 완료',
   REVOKE: '취소'
 }

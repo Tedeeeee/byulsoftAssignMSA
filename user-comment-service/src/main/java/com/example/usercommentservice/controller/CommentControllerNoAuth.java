@@ -27,7 +27,7 @@ public class CommentControllerNoAuth {
     }
 
     // feign 요청
-    @PostMapping("/boards/{boardId}")
+    @PostMapping("/feign/{boardId}")
     void deleteCommentByBoardId(@PathVariable int boardId) {
         commentService.deleteAllCommentsByBoardId(boardId);
     }

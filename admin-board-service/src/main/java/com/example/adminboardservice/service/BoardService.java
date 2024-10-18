@@ -1,6 +1,7 @@
 package com.example.adminboardservice.service;
 
 import com.example.adminboardservice.dto.BoardListResponseDto;
+import com.example.adminboardservice.dto.BoardResponseDto;
 import com.example.adminboardservice.dto.SearchConditionDto;
 
 public interface BoardService {
@@ -18,4 +19,11 @@ public interface BoardService {
      * @author : T.S YUN
      */
     void deleteBoardByBoardId(int boardId);
+
+    /**
+     * 설명 : 게시글 확인
+     * @since : 2024.10.18
+     * @author : T.S YUN
+     */
+    BoardResponseDto findBoardById(int boardId);
 }

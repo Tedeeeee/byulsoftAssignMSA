@@ -1,5 +1,4 @@
 <template>
-  {{contentsType}}
   <alert-modal-component label-message="닫기" message="검색 결과가 존재하지 않습니다" />
   <q-page class="q-pa-md row justify-center">
     <div class="col-4">
@@ -27,7 +26,7 @@
               :key="index"
               clickable
               @click="getUser(user.memberId)"
-              :class="{ 'text-negative': user.memberIsDelete }"
+              :class="{ 'text-negative': user.memberIsDelete, 'selected-user': selectedUserId === user.memberId }"
             >
               <q-item-section>
                 <q-item-label>{{ user.memberNickname }}</q-item-label>
@@ -116,6 +115,8 @@
           :total-page="totalPage"
           @page-move="pageHandle"
           @boardPageView="boardDetail"
+          @search-board="getBoardByMemberId"
+          @search-comment="getCommentByMemberId"
         />
       </q-card>
     </div>
@@ -140,13 +141,16 @@ import type { CommentData } from '@/type/CommentData'
 import { useRouter } from 'vue-router'
 import UserReportComponent from '@/components/mainPage/UserReportComponent.vue'
 import type { ReportData } from '@/type/ReportData'
+import { useNotifications } from '@/common/CommonNotify'
 
+const { negativeNotify } = useNotifications();
 const router = useRouter();
 const currentPage = ref<number>(1)
 const totalPage = ref<number>(1)
 const userTotalPage = ref<number>(1)
 const contentsType = ref<string>('')
 
+const selectedUserId = ref<number>(0);
 const userList = ref<UserListData[] | undefined>([])
 const userDetailData = ref<UserData>({
   memberId: 0,
@@ -163,7 +167,6 @@ const boardList = ref<BoardData>([])
 const commentList = ref<CommentData>([])
 const reportList = ref<ReportData>([])
 const searchData = ref<SearchData>({
-  searchType: '',
   searchText: '',
   startDate: '',
   endDate: '',
@@ -171,17 +174,14 @@ const searchData = ref<SearchData>({
   memberId: 0,
 })
 
-const resetSearchData = () => {
+const resetSearchData = (memberId : number) => {
   searchData.value = {
-    searchType: '',
     searchText: '',
     startDate: '',
     endDate: '',
     pageNumber: 1,
-    memberId: 0,
+    memberId: memberId,
   }
-
-  contentsType.value = ''
 }
 
 const transformToUser = (response: UserData): UserData => {
@@ -215,9 +215,14 @@ const transformToBoardList = (response: BoardData): BoardData => {
 }
 
 const getUser = async (memberId: number): UserData => {
+  resetSearchData(memberId);
+  contentsType.value = ''
+  boardList.value = [];
+  commentList.value = [];
+
   try {
-    resetSearchData();
     searchData.value.memberId = memberId
+    selectedUserId.value = memberId
 
     const response = await callApi(`/adminService/admins/users/${memberId}`, {});
 
@@ -241,10 +246,13 @@ const getUserList = async () => {
 }
 
 const searchUserList = async (memberNickname: string) : UserData => {
+  if (memberNickname.length < 2) {
+    negativeNotify("2글자 이상 입력해주세요")
+    return
+  }
+
   try {
     const response = await getUserByNickname(memberNickname);
-    console.log(response.data.body.memberResponseDtoList.length)
-
     if (response.data.body.memberResponseDtoList.length === 0) {
       ModalStore().openModal()
       return
@@ -259,12 +267,13 @@ const getBoardByMemberId = async () => {
   boardList.value = [];
   contentsType.value = '게시글'
   try {
-    // 가져와서 데이터 넣기
     const response = await getUserBoards(searchData.value)
     totalPage.value = response.data.body.totalPages
     boardList.value = response.data.body.boards.map(transformToBoardList)
+
+    resetSearchData(searchData.value.memberId);
   } catch (error) {
-    console.log(error)
+    negativeNotify(error.response.data.message)
   }
 }
 
@@ -272,12 +281,17 @@ const getCommentByMemberId = async () => {
   commentList.value = [];
   contentsType.value = '댓글'
   try {
+    console.log(searchData.value)
     const response = await getUserComments(searchData.value)
-    console.log(response)
     commentList.value = response.data.body.commentResponseDtoList;
-    console.log(commentList.value)
+
+    resetSearchData(searchData.value.memberId);
+
+    if (commentList.value.length === 0) {
+      negativeNotify('댓글이 존재하지 않습니다')
+    }
   } catch (error) {
-    console.log(error)
+    negativeNotify(error.response.data.message)
   }
 }
 
@@ -286,26 +300,20 @@ const getReportByMemberId = async () => {
   contentsType.value = '신고'
   try {
     const response = await getUserReports(searchData.value.memberId)
-    console.log(response)
     reportList.value = response.data.body;
-    console.log(reportList.value)
   } catch (error) {
-    console.log(error)
+    negativeNotify(error.response.data.message)
   }
 }
 
 const boardDetail = async (boardId: number) => {
-  console.log(boardId)
-  await router.push({name: 'boardDetail', params: {boardId}});
+  await router.push({name: 'BoardDetail', params: {boardId}});
 }
-
-
 
 const pageHandle = async () => {
   // 변경된 페이지로 인한 데이터 새롭게 전달
   try {
     const response = await getUserBoards(searchData.value)
-    console.log(response)
     boardList.value = response.data.body.boards.map(transformToBoardList)
   } catch (error) {
     console.log(error)
@@ -332,5 +340,10 @@ q-card-section {
 
 .text-negative {
   color: red; /* 글자 색상을 빨간색으로 */
+}
+
+.selected-user {
+  background-color: #e0f7fa; /* 배경색 변경 */
+  color: #00796b; /* 글자 색상 변경 */
 }
 </style>

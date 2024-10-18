@@ -29,10 +29,7 @@
             <if test="memberId > 0">
                 and b.member_id = #{memberId}
             </if>
-            <if test="'지역'.equals(searchType)">
-                and b.board_region = #{searchText}
-            </if>
-            <if test="'제목'.equals(searchType)">
+            <if test="searchText != null and searchText != ''">
                 and b.board_title like CONCAT('%', #{searchText}, '%')
             </if>
             <if test="startDate != null and startDate != ''">
@@ -85,4 +82,22 @@
         set board_is_delete = 1
         where board_id = #{boardId}
     </update>
+
+    <select id="findBoardByBoardId" resultMap="boardResultMap">
+        select b.board_id,
+               b.member_id,
+               b.board_title,
+               b.board_content,
+               b.board_region,
+               b.board_view,
+               b.board_updated_at,
+               b.board_created_at,
+               bs.board_star_id,
+               bs.board_star_type,
+               bs.board_star_short_review,
+               bs.board_star_rating
+        from board b
+                 join board_star bs on b.board_id = bs.board_id
+        where b.board_id = ${boardId}
+    </select>
 </mapper>

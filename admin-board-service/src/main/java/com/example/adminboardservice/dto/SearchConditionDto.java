@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class SearchConditionDto {
-    private String searchType;
     private String searchText;
     private String startDate;
     private String endDate;
@@ -21,8 +20,7 @@ public class SearchConditionDto {
         return (pageNumber - 1) * pageSize;
     }
 
-    public SearchConditionDto(String searchType, String searchText, String startDate, String endDate, int memberId, int pageNumber) {
-        this.searchType = searchType;
+    public SearchConditionDto(String searchText, String startDate, String endDate, int memberId, int pageNumber) {
         this.searchText = searchText;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -34,7 +32,7 @@ public class SearchConditionDto {
 
     public void checkValidationPageNumber(final int totalPage) {
         if (pageNumber < 1 || pageNumber > totalPage) {
-            throw new RuntimeException("Invalid page number");
+            throw new RuntimeException("게시글이 존재하지 않습니다");
         }
     }
 }

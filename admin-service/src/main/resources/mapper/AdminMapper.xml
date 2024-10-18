@@ -70,4 +70,16 @@
         where admin_email = #{adminEmail}
         and admin_role = 'ADMIN';
     </select>
+
+    <select id="findAdminNicknameByAdminIdList" resultMap="adminResultMap">
+        select
+            admin_id,
+            admin_nickname
+        from admin
+        where admin_id in
+        <foreach collection="list" item="arr" index="idx"
+                 open="(" separator="," close=")">
+            #{arr}
+        </foreach>
+    </select>
 </mapper>

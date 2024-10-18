@@ -1,10 +1,8 @@
 <template>
-  {{boardList}}
   <div class="q-pa-md">
     <q-table
       flat
       bordered
-      title="Treats"
       :rows="contentsType === '게시글' ? boardList : commentList"
       :columns="contentsType === '게시글' ? boardColumns : commentColumns"
       row-key="boardId"
@@ -63,12 +61,13 @@
               debounce="300"
               color="primary"
               v-model="searchData.searchText"
+              @keyup.enter="search"
               label="검색"
             />
           </div>
           <div class="col-1">
             <div class="flex justify-center">
-              <q-btn color="primary" label="검색" @click="searchReports" />
+              <q-btn color="primary" label="검색" @click="search" />
             </div>
           </div>
         </div>
@@ -91,7 +90,8 @@ import type { BoardData } from '@/type/BoardData'
 import type { CommentData } from '@/type/CommentData'
 
 const searchData = defineModel()
-defineProps<{
+
+const props = defineProps<{
   contentsType: string
   boardList: BoardData
   commentList: CommentData
@@ -101,6 +101,8 @@ defineProps<{
 const emit = defineEmits<{
   (e : 'pageMove'): void
   (e : 'boardPageView', boardId: number): void
+  (e : 'searchBoard')
+  (e : 'searchComment')
 }>();
 
 const minimumDate = (endDate: string) => {
@@ -111,11 +113,17 @@ const minimumDate = (endDate: string) => {
 }
 
 const onRowClick = async (row, event) => {
+  console.log('행 클릭')
   emit('boardPageView', event.boardId)
 }
 
-const searchReports = () => {
+const search = () => {
   console.log('검색')
+  if (props.contentsType === '게시글') {
+    emit('searchBoard')
+    return
+  }
+  emit('searchComment')
 }
 
 const handlePageChange = async () => {
@@ -123,12 +131,14 @@ const handlePageChange = async () => {
 }
 
 const boardColumns = [
-  { name: '제목', field: rows => truncateText(rows.boardTitle), label: '제목', align: 'center', width: '70%'},
+  { name: '상태', field: rows => rows.boardIsDelete ? '삭제' : '삭제 안됨', label: '상태', align: 'center', width: '10%'},
+  { name: '제목', field: rows => truncateText(rows.boardTitle), label: '제목', align: 'center', width: '60%'},
   { name: '작성 일자', field: rows => rows.boardCreatedAt, label: '작성 일자', align: 'center', width: '30%' },
 ]
 
 const commentColumns = [
-  { name: '제목', field: rows => truncateText(rows.commentContent), label: '제목', align: 'center', width: '70%'},
+  { name: '상태', field: rows => rows.commentIsDelete ? '삭제' : '삭제 안됨', label: '상태', align: 'center', width: '10%'},
+  { name: '제목', field: rows => truncateText(rows.commentContent), label: '제목', align: 'center', width: '60%'},
   { name: '작성 일자', field: rows => rows.commentCreatedAt, label: '작성 일자', align: 'center', width: '30%' },
 ]
 
@@ -138,4 +148,5 @@ const truncateText = (text: string): string => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

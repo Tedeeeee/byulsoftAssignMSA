@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const LoginStore = defineStore("loginCheck", () => {
   const token = ref('');
@@ -8,5 +8,6 @@ export const LoginStore = defineStore("loginCheck", () => {
   const tokenSetting = (accessToken: string) => {
     token.value = accessToken;
   }
+
   return { tokenSetting, token }
 })

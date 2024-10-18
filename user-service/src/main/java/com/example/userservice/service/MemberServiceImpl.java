@@ -10,6 +10,7 @@ import com.example.userservice.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
         String nickname = memberMapper.findUserNicknameByMemberId(memberId)
                 .orElseThrow(() -> new RuntimeException("사용자가 확인되지 않습니다"));
 
-        if (nickname == null || nickname.isEmpty()) {
+        if (!StringUtils.hasText(nickname)) {
             nickname = "탈퇴한 회원입니다";
         }
 

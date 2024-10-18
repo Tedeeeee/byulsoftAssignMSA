@@ -16,13 +16,13 @@
   <div class="comment-section q-mt-lg">
     <h5>댓글</h5>
     <div class="q-mt-md">
-      <q-card v-for="(comment, idx) in comments" :key="idx" flat bordered class="q-pa-md comment-card">
+      <q-card v-for="(comment, idx) in comments" :key="idx" flat bordered class="q-pa-md comment-card" :class="{ 'bg-color' : comment.commentIsDelete}">
         <div class="comment-header row items-center q-mb-md">
           <strong class="col">{{ comment.memberNickname }}</strong>
           <span>{{ comment.commentCreatedAt }}</span>
-          <div v-if="comment.memberNickname === userStore().user.memberNickname && comment.memberId === userStore().user.memberId" class="comment-actions col-auto">
-            <q-btn flat label="수정" @click="openEditComment(comment.commentId)" color="primary" class="q-mr-xs" />
-            <q-btn flat label="삭제" @click="checkIfDelete(comment.commentId)" color="negative" class="q-mr-xs" />
+          <div class="comment-actions col-auto">
+            <q-btn v-if="comment.memberNickname === AdminStore().admin.adminNickname" flat label="수정" @click="openEditComment(comment.commentId)" color="primary" class="q-mr-xs" />
+            <q-btn v-if="!comment.commentIsDelete" flat label="삭제" @click="checkIfDelete(comment.commentId)" color="negative" class="q-mr-xs" />
           </div>
         </div>
         <q-separator />
@@ -41,9 +41,9 @@
 </template>
 <script setup lang="ts">
 import { ref, defineProps } from 'vue';
-import { userStore } from '@/stores/UserStore'
 import { useNotifications } from '@/common/CommonNotify';
-import { CommentData } from '@/type/CommentData'
+import { type CommentDataInBoard } from '@/type/CommentData'
+import { AdminStore } from '@/stores/AdminStore'
 
 const { negativeNotify } = useNotifications();
 
@@ -54,7 +54,7 @@ const nowCommentId = ref<number>(0);
 const modalMessage = ref<string>('');
 const isDialogOpen = ref<boolean>(false);
 const props = defineProps<{
-  comments: CommentData[];
+  comments: CommentDataInBoard[];
 }>();
 
 const emit = defineEmits<{
@@ -109,6 +109,11 @@ const editComment = (newUpdateComment: string, commentId: number) => {
 };
 
 const submitComment = () => {
+  if (newComment.value.trim() === '') {
+    negativeNotify('글을 입력해주세요');
+    return;
+  }
+
   if (newComment.value.trim()) {
     emit('addComment', newComment.value);
     newComment.value = '';
@@ -136,5 +141,9 @@ const submitComment = () => {
 .comment-text {
   white-space: pre-wrap;
   margin: 0px;
+}
+
+.bg-color {
+  background-color: #d66b6b;
 }
 </style>

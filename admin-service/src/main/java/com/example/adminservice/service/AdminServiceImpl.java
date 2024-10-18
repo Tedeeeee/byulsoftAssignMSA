@@ -11,6 +11,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -88,5 +91,15 @@ public class AdminServiceImpl implements AdminService {
         List<MemberResponseDto> memberList = memberServiceClient.getMemberByNickname(memberNickname);
 
         return MemberListResponseDto.from(memberList, memberList.size());
+    }
+
+    @Override
+    public Map<Integer, String> findAdminNicknamesByAdminList(List<Integer> adminIdList) {
+        // 여기서 list 순서대로 가져와야 한다.
+        List<AdminMember> findMemberList = adminMapper.findAdminNicknameByAdminIdList(adminIdList);
+
+        return findMemberList.stream()
+                .collect(Collectors.toMap(AdminMember::getAdminId,
+                        admin -> Optional.ofNullable(admin.getAdminNickname()).orElse("탈퇴 회원")));
     }
 }

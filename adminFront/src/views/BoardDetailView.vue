@@ -1,37 +1,13 @@
 <template>
-  <div>
-    <q-dialog v-model="isDialogOpen">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">{{ modalMessage }}</div>
-        </q-card-section>
-        <q-card-actions align="center">
-          <q-btn
-            v-if="modalMessage === '수정하시겠습니까?'"
-            flat
-            label="수정하기"
-            @click="closeModal"
-            :to="`/updatePost/${boardId}`"
-            color="primary"
-          />
-          <q-btn v-if="modalMessage === '삭제하시겠습니까?'" flat label="삭제하기" @click="deletePost(boardId)" color="primary" />
-          <q-btn flat label="닫기" @click="closeModal" color="primary" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-  </div>
-
+  <confirmation-modal-component message="삭제하시겠습니까?" label-message="삭제하기" @delete-board="deletePost"/>
   <q-page padding>
     <div class="q-gutter-md" v-if="postHeadData">
       <div class="post-card">
-        <board-detail-head-contents-component :postHeadData="postHeadData" />
+        <board-detail-head-contents-component :postHeadData="postHeadData"/>
       </div>
-      <!-- 여기서 nickname을 확인하고 컴포넌트를 띄워주면 된다     -->
-      <board-edit-delete-actions-component
-        v-if="postHeadData.memberNickname === userStore().user.memberNickname"
-        @update-modal="showModal"
-        @delete-modal="showModal"
-      />
+      <div class="button-container q-mt-md">
+        <q-btn label="삭제" @click="openDeleteModal" color="negative" class="q-mr-xs" />
+      </div>
       <div v-for="(star, idx) in boardStars" :key="idx" class="post-card">
         <review-star-component :star="star" :image="images[idx]" />
         <q-separator />
@@ -59,17 +35,18 @@ import difficultyImage from '@/assets/난이도.png';
 import storyImage from '@/assets/스토리.png';
 import interiorImage from '@/assets/인테리어.png';
 import activityImage from '@/assets/활동성.png';
-import { CommentData } from '@/type/CommentData'
-import type { BoardData, BoardHeaderData, BoardStarData } from '@/type/BoardData'
+import { CommentData, type CommentDataInBoard } from '@/type/CommentData'
+import type { BoardDetailData, BoardHeaderData, BoardStarData } from '@/type/BoardData'
 import { useRouter } from 'vue-router';
-import { userStore } from '@/stores/UserStore'
 import { useNotifications } from '@/common/CommonNotify';
 import { getBoardById, getCommentById } from '@/api/NoAuthRequiredApi'
-import { deleteBoard, insertComment, updateComment, deleteComment } from '@/api/AuthRequiredApi'
+import { insertComment, updateComment, deleteComment, deleteBoard } from '@/api/AuthRequiredApi'
 import BoardDetailHeadContentsComponent from '@/components/boardDetail/BoardDetailHeadContentsComponent.vue'
 import ReviewStarComponent from '@/components/boardDetail/ReviewStarComponent.vue'
-import BoardEditDeleteActionsComponent from '@/components/boardDetail/BoardEditDeleteActionsComponent.vue'
 import CommentFormComponent from '@/components/boardDetail/CommentFormComponent.vue'
+import { AdminStore } from '@/stores/AdminStore'
+import { ModalStore } from '@/stores/ModalStore'
+import ConfirmationModalComponent from '@/components/modal/ConfirmationModalComponent.vue'
 
 const { negativeNotify, positiveNotify } = useNotifications();
 const router = useRouter();
@@ -87,10 +64,8 @@ const postHeadData = ref<BoardHeaderData | undefined>({
 });
 const boardStars = ref<BoardStarData[] | undefined>([]);
 const comments = ref<CommentData[] | undefined>([]);
-const isDialogOpen = ref<boolean>(false);
-const modalMessage = ref<string>('');
 
-const transformToPostHeadData = (responseData: BoardData): BoardHeaderData => {
+const transformToPostHeadData = (responseData: BoardDetailData): BoardHeaderData => {
   return {
     boardId: responseData.boardId,
     boardTitle: responseData.boardTitle,
@@ -109,33 +84,31 @@ const transformToBoardStar = (responseData: BoardStarData): Omit<BoardStarData, 
   };
 };
 
-const transformToComment = (responseData: CommentData) : CommentData => {
+const transformToComment = (responseData: CommentDataInBoard) : CommentDataInBoard => {
   return {
     commentId: responseData.commentId,
     memberId: responseData.memberId,
+    adminId: responseData.adminId,
     memberNickname: responseData.memberNickname,
     commentCreatedAt: responseData.commentCreatedAt,
     commentUpdatedAt: responseData.commentUpdatedAt,
     commentContent: responseData.commentContent,
+    commentIsDelete: responseData.commentIsDelete,
     showReplyForm: false,
     isEdit: false,
   };
 };
 
 /* 게시글 삭제 여부 확인 모달*/
-const showModal = (message: string) => {
-  modalMessage.value = message;
-  isDialogOpen.value = true;
-};
-
-const closeModal = () => {
-  isDialogOpen.value = false;
-};
+const openDeleteModal = () => {
+  ModalStore().openConfirmModal()
+}
 
 /* 게시글 삭제 */
-const deletePost = async (boardId: number) => {
-  console.log(boardId)
+const deletePost = async () => {
+  ModalStore().confirmModalState = false
   try {
+    console.log(boardId)
     const response = await deleteBoard(boardId);
     console.log(response)
     positiveNotify(response.data.message);
@@ -147,14 +120,11 @@ const deletePost = async (boardId: number) => {
 
 /* 댓글 추가 */
 const addComment = async (content: string) => {
-  if (content.trim() === '') {
-    negativeNotify('글을 입력해주세요');
-    return;
-  }
-
+  console.log('댓글 추가')
+  console.log(content)
   try {
     const response = await insertComment({
-      memberId: userStore().user.memberId,
+      adminId: AdminStore().admin.adminId,
       boardId: boardId,
       commentContent: content,
     });
@@ -176,7 +146,7 @@ const editComment = async (content: string, id: number) => {
       commentContent: content,
       commentId: id,
       boardId: boardId,
-      memberId: userStore().user.memberId
+      adminId: AdminStore().admin.adminId
     });
 
     positiveNotify(response.data.message);
@@ -186,7 +156,6 @@ const editComment = async (content: string, id: number) => {
   } catch (error) {
     negativeNotify(error);
   }
-
 };
 
 /* 댓글 삭제 */
@@ -198,10 +167,6 @@ const deletedComment = async (commentId: number) => {
 
     /*삭제 후 해당 보드의 댓글 다시 로드*/
     const responseComment = await getCommentById(boardId);
-    if (responseComment.data.body === null ) {
-      comments.value = [];
-      return
-    }
     comments.value = responseComment.data.body.map(transformToComment);
   } catch (error) {
     negativeNotify(error.message);
@@ -209,16 +174,18 @@ const deletedComment = async (commentId: number) => {
 };
 
 const fetchContentDetails = async () => {
+  console.log('여기까지')
   const response = await getBoardById(boardId);
-  console.log(response.data)
   postHeadData.value = transformToPostHeadData(response.data.body);
   boardStars.value = response.data.body.boardStars.map(transformToBoardStar);
 
   // 댓글 따로 가져오기
   const commentResponse = await getCommentById(boardId)
+  console.log(commentResponse)
   if (commentResponse.data.body) {
     comments.value = commentResponse.data.body.map(transformToComment);
   }
+  console.log(comments.value)
 };
 
 onMounted(() => {
@@ -258,5 +225,11 @@ onMounted(() => {
 
 .text-center {
   white-space: pre-wrap;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 </style>

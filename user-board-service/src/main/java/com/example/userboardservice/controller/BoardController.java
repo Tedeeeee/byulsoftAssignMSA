@@ -1,10 +1,8 @@
 package com.example.userboardservice.controller;
 
 import com.example.userboardservice.commonApi.BodyResponse;
-import com.example.userboardservice.dto.BoardListResponseDto;
 import com.example.userboardservice.dto.BoardRequestDto;
 import com.example.userboardservice.dto.BoardResponseDto;
-import com.example.userboardservice.dto.SearchConditionDto;
 import com.example.userboardservice.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

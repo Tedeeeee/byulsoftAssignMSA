@@ -4,7 +4,6 @@
     <q-card class="login-card" flat bordered>
       <q-card-section class="q-pt-none">
         <div class="title">관리자 로그인</div>
-        {{isModalOpen}}
         <q-form @submit="handleSubmit">
           <q-input
             v-model="loginData.memberEmail"
@@ -51,11 +50,9 @@ const loginData = ref<LoginData>({
 const handleSubmit = async () => {
   try {
     const response = await login(loginData.value)
-    console.log(response)
     await localStorage.setItem(accessToken, response.data.AccessToken);
 
     const adminResponse = await getAdminData();
-    console.log(adminResponse)
 
     AdminStore().adminDataSetting(adminResponse.data.body);
     await router.push('/');

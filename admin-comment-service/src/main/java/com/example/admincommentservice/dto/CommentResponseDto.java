@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class CommentResponseDto {
     private int commentId;
     private int memberId;
+    private int adminId;
+    private String memberNickname;
     private int boardId;
     private String commentContent;
     private String commentCreatedAt;
@@ -23,7 +25,21 @@ public class CommentResponseDto {
     public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
+                .adminId(comment.getAdminId())
+                .boardId(comment.getBoardId())
+                .commentContent(comment.getCommentContent())
+                .commentCreatedAt(TimeChangerUtil.timeChange(comment.getCommentCreatedAt()))
+                .commentUpdatedAt(TimeChangerUtil.timeChange(comment.getCommentUpdatedAt()))
+                .commentIsDelete(comment.isCommentIsDelete())
+                .build();
+    }
+
+    public static CommentResponseDto from(Comment comment, String memberNickname) {
+        return CommentResponseDto.builder()
+                .commentId(comment.getCommentId())
                 .memberId(comment.getMemberId())
+                .adminId(comment.getAdminId())
+                .memberNickname(memberNickname)
                 .boardId(comment.getBoardId())
                 .commentContent(comment.getCommentContent())
                 .commentCreatedAt(TimeChangerUtil.timeChange(comment.getCommentCreatedAt()))

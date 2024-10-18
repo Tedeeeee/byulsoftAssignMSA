@@ -97,9 +97,7 @@ public class BoardServiceImpl implements BoardService{
     @Override
     @Transactional
     public void deleteBoardById(int boardId, String memberEmail) {
-        // boardId를 가지고 정보를 가져와야 한다
         Board board = boardMapper.findBoardByBoardId(boardId);
-        // 삭제하려는 자와 게시글 소유자가 맞는지 확인
         MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
 
         member.checkMemberIdNull();

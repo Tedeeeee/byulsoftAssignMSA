@@ -53,18 +53,21 @@
 <script setup lang="ts">
 import { ModalStore } from '@/stores/ModalStore'
 import { type ReportData, ReportState, ReportType } from '@/type/ReportData'
+import { cancelUserReport, completeUserReport } from '@/api/AuthRequiredApi'
 
-defineProps<{
+const props = defineProps<{
   reportData: ReportData
   reporterMemberNickname: string
 }>()
 
-const handleReportProcessing = () => {
-  console.log('신고 진행')
+const handleReportProcessing = async () => {
+  await completeUserReport(props.reportData.reportId)
+  ModalStore().closeReportModal()
 }
 
-const handleReportCanceling = () => {
-  console.log('취소')
+const handleReportCanceling = async () => {
+  await cancelUserReport(props.reportData.reportId)
+  ModalStore().closeReportModal()
 }
 
 </script>

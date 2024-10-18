@@ -35,15 +35,23 @@
             )
     </insert>
 
+    <select id="checkReport" resultType="java.lang.Boolean">
+        select exists(
+            select 1
+            from report
+            where report_id = #{reportId}
+        );
+    </select>
+
     <update id="completeReport">
         update report
-        set report_type = 'COMPLETE'
+        set report_status = 'COMPLETE'
         where report_id = #{reportId};
     </update>
 
     <update id="revokeReport">
         update report
-        set report_type = 'REVOKE'
+        set report_status = 'REVOKE'
         where report_id = #{reportId};
     </update>
 

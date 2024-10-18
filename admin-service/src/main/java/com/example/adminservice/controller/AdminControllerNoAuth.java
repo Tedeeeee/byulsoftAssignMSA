@@ -2,11 +2,15 @@ package com.example.adminservice.controller;
 
 import com.example.adminservice.commonApi.BodyResponse;
 import com.example.adminservice.dto.AdminRequestDto;
+import com.example.adminservice.dto.AdminResponseDto;
 import com.example.adminservice.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/noAuth/admins")
@@ -43,4 +47,15 @@ public class AdminControllerNoAuth {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(BodyResponse.success("회원가입이 완료되었습니다"));
     }
+
+    // feign 요청
+    @GetMapping("/feign/nicknames")
+    Map<Integer, String> getAdminNicknamesByAdminIdList(@RequestParam List<Integer> adminIdList) {
+        return adminService.findAdminNicknamesByAdminList(adminIdList);
+    }
+
+    @GetMapping("/feign/info")
+    AdminResponseDto getAdminByAdminEmail(@RequestParam String adminEmail) {
+        return adminService.getAdmin(adminEmail);
+    };
 }

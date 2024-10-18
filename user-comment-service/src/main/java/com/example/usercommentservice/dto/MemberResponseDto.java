@@ -19,8 +19,8 @@ public class MemberResponseDto {
     private String memberPhoneNumber;
     private boolean memberIsDelete;
     private Role memberRole;
-    private LocalDateTime memberCreatedAt;
-    private LocalDateTime memberUpdatedAt;
+    private String memberCreatedAt;
+    private String memberUpdatedAt;
 
     public void checkMemberIdNull() {
         if (memberId == 0) {

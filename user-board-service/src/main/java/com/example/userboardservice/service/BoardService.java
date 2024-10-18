@@ -22,7 +22,6 @@ public interface BoardService {
      */
     BoardResponseDto findBoardById(int boardId);
 
-
     /**
      * 설명 : 게시글 수정
      * @since : 2024.10.07

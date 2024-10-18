@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/reports")
 @RequiredArgsConstructor
-public class ReportUserController {
+public class ReportController {
 
     private final ReportService reportService;
 
@@ -25,6 +25,14 @@ public class ReportUserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(BodyResponse.success("신고가 접수되었습니다"));
+    }
+
+    @PostMapping("/complete/{reportId}")
+    public ResponseEntity<BodyResponse<String>> completeReport(@PathVariable int reportId) {
+        reportService.completeReport(reportId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BodyResponse.success("신고가 처리되었습니다"));
     }
 
     @PostMapping("/revoke/{reportId}")

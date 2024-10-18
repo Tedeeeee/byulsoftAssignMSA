@@ -11,6 +11,7 @@ import lombok.*;
 public class CommentResponseDto {
     private int commentId;
     private int memberId;
+    private int adminId;
     private String memberNickname;
     private int boardId;
     private String commentContent;
@@ -21,6 +22,7 @@ public class CommentResponseDto {
         return CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .memberId(comment.getMemberId())
+                .adminId(comment.getAdminId())
                 .memberNickname(memberNickname)
                 .boardId(comment.getBoardId())
                 .commentContent(comment.getCommentContent())

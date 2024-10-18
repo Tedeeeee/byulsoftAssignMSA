@@ -8,6 +8,7 @@
         요방어때 - 관리자
       </q-toolbar-title>
 
+      {{AdminStore().admin}}
       <div class="q-pa-md q-gutter-sm">
         <template v-if="userLoginState">
           <q-btn flat :label="AdminStore().admin.adminNickname" class="custom-link" />
@@ -28,11 +29,16 @@ import { useRouter } from 'vue-router'
 import logo from '@/assets/로고.png'
 import { onMounted, ref } from 'vue'
 import { useNotifications } from '@/common/CommonNotify'
-import { getAdminData } from '@/api/AuthRequiredApi'
+import { getAdminData, logout } from '@/api/AuthRequiredApi'
 
 const { positiveNotify } = useNotifications();
 const router = useRouter()
 const goHome = () => {
+  console.log(AdminStore().loginCheck)
+  if (!AdminStore().loginCheck) {
+    router.push('/login')
+    return
+  }
   router.push('/')
 }
 
@@ -44,8 +50,8 @@ const handleLogout = async () => {
     positiveNotify(response.data.message)
     localStorage.removeItem(accessToken);
     userLoginState.value = false
-    AdminStore().userDataReset()
-    await router.push("/");
+    AdminStore().adminDataReset()
+    await router.push("/login");
   } catch (error) {
     console.log(error)
   }

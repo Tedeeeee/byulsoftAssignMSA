@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchConditionDto {
+    private String searchText;
     private String startDate;
     private String endDate;
     private int memberId;
@@ -19,7 +20,8 @@ public class SearchConditionDto {
         return (pageNumber - 1) * pageSize;
     }
 
-    public SearchConditionDto(String startDate, String endDate, int memberId, int pageNumber) {
+    public SearchConditionDto(String searchText, String startDate, String endDate, int memberId, int pageNumber) {
+        this.searchText = searchText;
         this.startDate = startDate;
         this.endDate = endDate;
         this.memberId = memberId;

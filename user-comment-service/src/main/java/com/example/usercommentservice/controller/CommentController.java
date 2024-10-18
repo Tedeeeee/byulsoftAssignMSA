@@ -27,7 +27,6 @@ public class CommentController {
         );
     }
 
-    // 댓글 등록
     @PostMapping()
     public ResponseEntity<BodyResponse<List<CommentResponseDto>>> addComment(@RequestBody @Valid CommentRequestDto commentRequestDto,
                                                                              HttpServletRequest request) {

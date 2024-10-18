@@ -1,6 +1,7 @@
 import {instance} from '@/api/interceptor'
 import type { ReceiveData } from '@/type/AdminData'
 import type { SearchData } from '@/type/SearchData'
+import type { CommentDataInBoard } from '@/type/CommentData'
 
 export const callApi = async (url : string, options? : {
   params? : any,
@@ -45,7 +46,6 @@ export const getUserReportCount = async (memberId: number) : Promise<ReceiveData
 export const getUserBoards = async (search: SearchData) : Promise<ReceiveData> => {
   return instance.get('/adminBoardService/boards', {
     params: {
-      searchType: search.searchType,
       searchText: search.searchText,
       startDate: search.startDate,
       endDate: search.endDate,
@@ -68,6 +68,7 @@ export const getUserByNickname = async (memberNickname: string) : Promise<Receiv
 export const getUserComments = async (search: SearchData) : Promise<ReceiveData> => {
   return instance.get('/adminCommentService/comments', {
     params: {
+      searchText: search.searchText,
       startDate: search.startDate,
       endDate: search.endDate,
       memberId: search.memberId,
@@ -82,5 +83,36 @@ export const getUserReports = async (memberId: number) : Promise<ReceiveData> =>
 }
 
 // 사용자 신고 처리하기
+export const completeUserReport = async (reportId: number) : Promise<ReceiveData> => {
+  return instance.post(`/adminReportService/reports/complete/${reportId}`)
+}
 
 // 사용자 신고 취소하기
+export const cancelUserReport = async (reportId: number) : Promise<ReceiveData> => {
+  return instance.post(`/adminReportService/reports/revoke/${reportId}`)
+}
+
+// 로그아웃
+export const logout = () => {
+  return instance.post('/authService/auth/logout')
+}
+
+// 댓글 달기
+export const insertComment = async (commentInsertData: CommentDataInBoard) => {
+  return instance.post('/adminCommentService/comments', commentInsertData);
+};
+
+// 댓글 수정
+export const updateComment = async (data: CommentDataInBoard) => {
+  return instance.post('/adminCommentService/comments/update', data);
+};
+
+// 댓글 삭제
+export const deleteComment = async (id: number) => {
+  return instance.post(`/adminCommentService/comments/delete/${id}`);
+};
+
+// 게시글 삭제
+export const deleteBoard = async (id: number) => {
+  return instance.post(`/adminBoardService/boards/delete/${id}`);
+};

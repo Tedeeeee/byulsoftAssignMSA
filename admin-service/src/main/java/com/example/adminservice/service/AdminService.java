@@ -5,6 +5,9 @@ import com.example.adminservice.dto.AdminResponseDto;
 import com.example.adminservice.dto.MemberListResponseDto;
 import com.example.adminservice.dto.MemberResponseDto;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AdminService {
 
     /**
@@ -46,4 +49,11 @@ public interface AdminService {
     MemberListResponseDto getMemberList();
 
     MemberListResponseDto getMemberListByMemberNickname(String memberNickname);
+
+    /**
+     * 설명 : 댓글 Admin list
+     * @author : T.S YUN
+     * @since : 2024.10.04
+     */
+    Map<Integer, String> findAdminNicknamesByAdminList(List<Integer> adminIdList);
 }

@@ -45,9 +45,4 @@ public class BoardControllerNoAuth {
         // 존재 유무만 확인
         return boardService.existBoardByBoardId(boardId);
     }
-
-    @GetMapping("/feign/checkMemberId")
-    public boolean selfReportByMemberId() {
-        return true;
-    }
 }

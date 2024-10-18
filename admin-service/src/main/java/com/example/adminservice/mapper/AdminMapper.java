@@ -12,4 +12,6 @@ public interface AdminMapper {
     boolean checkNickName(String adminNickName);
     boolean checkEmail(String adminEmail);
     Optional<AdminMember> getAdminByEmail(String adminEmail);
+    List<AdminMember> findAdminNicknameByAdminIdList(List<Integer> adminIdList);
+
 }
