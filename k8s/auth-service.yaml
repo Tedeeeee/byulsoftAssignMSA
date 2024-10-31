@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: ddasick/byulassign:msa-auth-service
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:log4jdbc:mysql://mysql-service:3306/msa_auth?serverTimezone=UTC&characterEncoding=utf8
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+spec:
+  type: ClusterIP
+  selector:
+    app: auth-service
+  ports:
+    - name: auth-service
+      protocol: TCP
+      port: 8081
+      targetPort: 8081

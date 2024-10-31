@@ -2,6 +2,11 @@ server:
   port: 8088
 
 spring:
+  cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true
+        enabled: true
   application:
     name: admin-board-service
   datasource:
@@ -10,12 +15,13 @@ spring:
     username: root
     password: 1234
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
 
 management:
   endpoints:

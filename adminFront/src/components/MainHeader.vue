@@ -8,7 +8,6 @@
         요방어때 - 관리자
       </q-toolbar-title>
 
-      {{AdminStore().admin}}
       <div class="q-pa-md q-gutter-sm">
         <template v-if="userLoginState">
           <q-btn flat :label="AdminStore().admin.adminNickname" class="custom-link" />
@@ -34,7 +33,6 @@ import { getAdminData, logout } from '@/api/AuthRequiredApi'
 const { positiveNotify } = useNotifications();
 const router = useRouter()
 const goHome = () => {
-  console.log(AdminStore().loginCheck)
   if (!AdminStore().loginCheck) {
     router.push('/login')
     return

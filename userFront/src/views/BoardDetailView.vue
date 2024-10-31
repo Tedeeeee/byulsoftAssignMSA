@@ -26,7 +26,6 @@
       <div class="post-card">
         <board-detail-head-contents-component :postHeadData="postHeadData" />
       </div>
-      <!-- 여기서 nickname을 확인하고 컴포넌트를 띄워주면 된다     -->
       <board-edit-delete-actions-component
         v-if="postHeadData.memberNickname === userStore().user.memberNickname"
         @update-modal="showModal"
@@ -134,10 +133,8 @@ const closeModal = () => {
 
 /* 게시글 삭제 */
 const deletePost = async (boardId: number) => {
-  console.log(boardId)
   try {
     const response = await deleteBoard(boardId);
-    console.log(response)
     positiveNotify(response.data.message);
     await router.push('/');
   } catch (error) {
@@ -183,7 +180,7 @@ const editComment = async (content: string, id: number) => {
     if (response.data.body) {
       comments.value = response.data.body.map(transformToComment);
     }
-  } catch (error) {
+  } catch (error : any) {
     negativeNotify(error);
   }
 
@@ -191,7 +188,6 @@ const editComment = async (content: string, id: number) => {
 
 /* 댓글 삭제 */
 const deletedComment = async (commentId: number) => {
-  console.log(commentId)
   try {
     const response = await deleteComment(commentId);
     positiveNotify(response.data.message);
@@ -209,15 +205,21 @@ const deletedComment = async (commentId: number) => {
 };
 
 const fetchContentDetails = async () => {
-  const response = await getBoardById(boardId);
-  console.log(response.data)
-  postHeadData.value = transformToPostHeadData(response.data.body);
-  boardStars.value = response.data.body.boardStars.map(transformToBoardStar);
+  try {
+    const response = await getBoardById(boardId);
+    postHeadData.value = transformToPostHeadData(response.data.body);
+    boardStars.value = response.data.body.boardStars.map(transformToBoardStar);
 
-  // 댓글 따로 가져오기
-  const commentResponse = await getCommentById(boardId)
-  if (commentResponse.data.body) {
-    comments.value = commentResponse.data.body.map(transformToComment);
+    // 댓글 따로 가져오기
+    const commentResponse = await getCommentById(boardId)
+    if (commentResponse.data.body) {
+      comments.value = commentResponse.data.body.map(transformToComment);
+    }
+  } catch (error) {
+    if (error.response.data.body == null) {
+      negativeNotify("게시글이 존재하지 않습니다")
+    }
+    await router.push('/');
   }
 };
 

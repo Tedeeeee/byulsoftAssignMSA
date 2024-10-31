@@ -108,9 +108,7 @@ const openDeleteModal = () => {
 const deletePost = async () => {
   ModalStore().confirmModalState = false
   try {
-    console.log(boardId)
     const response = await deleteBoard(boardId);
-    console.log(response)
     positiveNotify(response.data.message);
     await router.push('/');
   } catch (error) {
@@ -120,8 +118,6 @@ const deletePost = async () => {
 
 /* 댓글 추가 */
 const addComment = async (content: string) => {
-  console.log('댓글 추가')
-  console.log(content)
   try {
     const response = await insertComment({
       adminId: AdminStore().admin.adminId,
@@ -160,7 +156,6 @@ const editComment = async (content: string, id: number) => {
 
 /* 댓글 삭제 */
 const deletedComment = async (commentId: number) => {
-  console.log(commentId)
   try {
     const response = await deleteComment(commentId);
     positiveNotify(response.data.message);
@@ -174,18 +169,15 @@ const deletedComment = async (commentId: number) => {
 };
 
 const fetchContentDetails = async () => {
-  console.log('여기까지')
   const response = await getBoardById(boardId);
   postHeadData.value = transformToPostHeadData(response.data.body);
   boardStars.value = response.data.body.boardStars.map(transformToBoardStar);
 
   // 댓글 따로 가져오기
   const commentResponse = await getCommentById(boardId)
-  console.log(commentResponse)
   if (commentResponse.data.body) {
     comments.value = commentResponse.data.body.map(transformToComment);
   }
-  console.log(comments.value)
 };
 
 onMounted(() => {

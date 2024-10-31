@@ -41,7 +41,6 @@ const emit = defineEmits<{
 }>()
 
 const handleSort = (sortOrder: string, sortType: string): void => {
-  console.log(searchBoard.value);
   searchBoard.value.sortOrder = sortOrder;
   searchBoard.value.sortType = sortType;
   emit('sort');

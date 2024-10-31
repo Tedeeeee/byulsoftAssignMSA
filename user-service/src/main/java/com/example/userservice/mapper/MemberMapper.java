@@ -21,4 +21,5 @@ public interface MemberMapper {
     List<Member> findMemberAll();
     Optional<Member> findMemberById(int memberId);
     List<Member> findMembersByMemberNickname(String memberNickname);
+    int deleteMember(int memberId);
 }

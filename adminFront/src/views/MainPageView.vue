@@ -142,6 +142,7 @@ import { useRouter } from 'vue-router'
 import UserReportComponent from '@/components/mainPage/UserReportComponent.vue'
 import type { ReportData } from '@/type/ReportData'
 import { useNotifications } from '@/common/CommonNotify'
+import { AdminStore } from '@/stores/AdminStore'
 
 const { negativeNotify } = useNotifications();
 const router = useRouter();
@@ -281,7 +282,6 @@ const getCommentByMemberId = async () => {
   commentList.value = [];
   contentsType.value = '댓글'
   try {
-    console.log(searchData.value)
     const response = await getUserComments(searchData.value)
     commentList.value = response.data.body.commentResponseDtoList;
 

@@ -27,8 +27,14 @@ dependencies {
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	//implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	/* 쿠버네티스 */
+	implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client-all'
 
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
@@ -40,8 +46,6 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 }
 
 dependencyManagement {

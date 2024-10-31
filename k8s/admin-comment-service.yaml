@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-comment-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-comment-service
+  template:
+    metadata:
+      labels:
+        app: admin-comment-service
+    spec:
+      containers:
+        - name: admin-comment-service
+          image: ddasick/byulassign:admin-comment-test1
+          ports:
+            - containerPort: 8087
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:log4jdbc:mysql://mysql-service:3306/msa_comment?serverTimezone=UTC&characterEncoding=utf8
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-comment-service
+spec:
+  type: ClusterIP
+  selector:
+    app: admin-comment-service
+  ports:
+    - name: admin-comment-service
+      protocol: TCP
+      port: 8087
+      targetPort: 8087
+      

@@ -24,6 +24,7 @@ public class BoardResponseDto {
     private String boardCreatedAt;
     private String boardUpdatedAt;
     private boolean boardIsDelete;
+    @Builder.Default
     private List<BoardStar> boardStars = new ArrayList<>();
 
     public static BoardResponseDto from(Board board, String memberNickname) {

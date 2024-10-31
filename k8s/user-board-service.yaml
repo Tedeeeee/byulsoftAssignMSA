@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-board-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-board-service
+  template:
+    metadata:
+      labels:
+        app: user-board-service
+    spec:
+      containers:
+        - name: user-board-service
+          image: ddasick/byulassign:user-board-test1
+          ports:
+            - containerPort: 8084
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:log4jdbc:mysql://mysql-service:3306/msa_board?serverTimezone=UTC&characterEncoding=utf8
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-board-service
+spec:
+  type: ClusterIP
+  selector:
+    app: user-board-service
+  ports:
+    - name: user-board-service
+      protocol: TCP
+      port: 8084
+      targetPort: 8084

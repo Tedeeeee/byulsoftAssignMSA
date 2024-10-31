@@ -113,12 +113,10 @@ const minimumDate = (endDate: string) => {
 }
 
 const onRowClick = async (row, event) => {
-  console.log('행 클릭')
   emit('boardPageView', event.boardId)
 }
 
 const search = () => {
-  console.log('검색')
   if (props.contentsType === '게시글') {
     emit('searchBoard')
     return

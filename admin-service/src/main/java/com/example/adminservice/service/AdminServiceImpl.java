@@ -1,13 +1,12 @@
 package com.example.adminservice.service;
 
+import com.example.adminservice.client.AuthServiceClient;
 import com.example.adminservice.client.MemberServiceClient;
 import com.example.adminservice.dto.*;
 import com.example.adminservice.entity.AdminMember;
-import com.example.adminservice.kafka.service.KafkaProducerSendService;
 import com.example.adminservice.mapper.AdminMapper;
 import com.example.adminservice.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminMapper adminMapper;
     private final MemberServiceClient memberServiceClient;
-    private final KafkaProducerSendService kafkaProducerSendService;
+    private final AuthServiceClient authServiceClient;
 
     @Override
     public void checkEmail(String email) {
@@ -50,17 +49,10 @@ public class AdminServiceImpl implements AdminService {
 
         AdminMember adminMember = adminRequestDto.toEntity();
 
-        try {
-            adminMapper.save(adminMember);
-            AuthMemberDto authMember = AuthMemberDto.from(adminMember);
-            // 만약 kafka의 서버가 장애가 발생해서 처리가 안되었다면?
-            // 해당 회원가입도 되지 않아야 한다.
-            kafkaProducerSendService.send("register-topic", authMember);
-        } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("무결성 문제");
-        } catch (Exception e) {
-            throw new RuntimeException("저장 실패" + e.getMessage());
-        }
+        adminMapper.save(adminMember);
+        AuthMemberDto authMember = AuthMemberDto.from(adminMember);
+
+        authServiceClient.adminDataSave(authMember);
     }
 
     @Override

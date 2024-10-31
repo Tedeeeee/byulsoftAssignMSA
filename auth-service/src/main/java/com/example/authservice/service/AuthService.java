@@ -1,5 +1,6 @@
 package com.example.authservice.service;
 
+import com.example.authservice.dto.AuthMemberDto;
 import com.example.authservice.dto.TokenResponseDto;
 
 public interface AuthService {
@@ -16,4 +17,11 @@ public interface AuthService {
      * @since : 2024.10.04
      */
     void logout(String refreshToken);
+
+    /**
+     * 설명 : 사용자 회원가입 후 데이터 저장
+     * @since : 2024.10.21
+     * @author : T.S YUN
+     */
+    void saveMember(AuthMemberDto authMemberDto);
 }

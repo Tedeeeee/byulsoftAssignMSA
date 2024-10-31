@@ -22,14 +22,12 @@ export const setInterceptor = instance => {
           const refreshToken = await axios.post('/api/authService/auth/token/renew', {
             withCredentials: true,
           })
-          console.log(refreshToken.data);
           const newAccessToken = refreshToken.data.message;
           await localStorage.setItem(accessToken, refreshToken.data.message);
 
           error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return axios(error.config)
         } catch (refreshTokenError) {
-          console.log(refreshTokenError)
           return Promise.reject(error);
         }
       } else {

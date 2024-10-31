@@ -71,7 +71,7 @@
         select exists(
             select 1
             from report
-            where reported_member_id = #{reportedMemberId}
+            where reporter_member_id = #{reporterMemberId}
             and report_type = #{reportType}
             and report_type_id = #{reportTypeId}
         )

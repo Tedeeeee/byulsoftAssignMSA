@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "userServiceClient", url = "http://localhost:8888")
+@FeignClient(name = "userServiceClient", url = "http://user-service:8082")
 public interface MemberServiceClient {
 
     /**
@@ -15,6 +15,6 @@ public interface MemberServiceClient {
      * @since : 2024.10.13
      * @author : T.S YUN
      */
-    @GetMapping("/api/userService/noAuth/users/feign/nicknames")
+    @GetMapping("/noAuth/users/feign/nicknames")
     Map<Integer, String> getMemberNicknamesByMemberIdList(@RequestParam List<Integer> memberIdList);
 }

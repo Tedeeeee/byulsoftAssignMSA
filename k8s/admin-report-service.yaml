@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-report-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-report-service
+  template:
+    metadata:
+      labels:
+        app: admin-report-service
+    spec:
+      containers:
+        - name: admin-report-service
+          image: ddasick/byulassign:admin-report-test1
+          ports:
+            - containerPort: 8089
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:log4jdbc:mysql://mysql-service:3306/msa_report?serverTimezone=UTC&characterEncoding=utf8
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-report-service
+spec:
+  type: ClusterIP
+  selector:
+    app: admin-report-service
+  ports:
+    - name: admin-report-service
+      protocol: TCP
+      port: 8089
+      targetPort: 8089
+
+      

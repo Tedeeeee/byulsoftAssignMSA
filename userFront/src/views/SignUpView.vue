@@ -158,12 +158,10 @@ const emailCheckDuplicate = async () => {
 
   try {
     const response = await checkEmail(registerData.value.email)
-    console.log(response)
     positiveNotify(response.data.message)
     registerData.value.emailCheck = true
     emailInput.value.resetValidation()
   } catch (error) {
-    console.log(error)
     negativeNotify(error.response.data.message)
     registerData.value.emailCheck = false
   }
@@ -177,12 +175,10 @@ const nicknameCheckDuplicate = async () => {
 
   try {
     const response = await checkNickname(registerData.value.nickname)
-    console.log(response)
     positiveNotify(response.data.message)
     registerData.value.nicknameCheck = true
     nicknameInput.value.resetValidation()
   } catch (error) {
-    console.log(error)
     negativeNotify(error.response.data.message)
     registerData.value.nicknameCheck = false
   }
@@ -201,18 +197,20 @@ const handleSubmit = async () => {
 
   try {
     const response = await register(signUpData.value)
-    console.log(response)
     positiveNotify(response.data.message)
-    await router.push("/");
+    await router.push("/login");
   } catch (error) {
-    console.log(error)
-    registerData.value.email = '';
-    registerData.value.emailCheck = false;
-    //emailInput.value.focus();
-    registerData.value.nickname = '';
-    registerData.value.nicknameCheck = false;
-    //nicknameInput.value.focus()
-    negativeNotify('실패');
+    if (error.response.data.message === '이미 존재하는 이메일입니다') {
+      registerData.value.email = '';
+      registerData.value.emailCheck = false;
+      emailInput.value.focus()
+    }
+    if (error.response.data.message === '이미 존재하는 닉네임입니다') {
+      registerData.value.nickname = '';
+      registerData.value.nicknameCheck = false;
+      nicknameInput.value.focus()
+    }
+    negativeNotify(error.response.data.message);
   }
 }
 </script>

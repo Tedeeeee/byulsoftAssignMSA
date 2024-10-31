@@ -9,7 +9,7 @@
       <q-separator vertical />
       <div class="right-section">
         <div class="info-section q-mb-md">
-          <h4>[{{ post.boardRegion }}] {{ post.boardTitle }}</h4>
+          <div class="ellipsis-2-lines text-h4" >[{{ post.boardRegion }}] {{ post.boardTitle }}</div>
           <div class="info-row row items-center q-gutter-sm">
             <span class="col-5">작성자: {{ post.memberNickname }}</span>
             <span class="col-5">작성시간: {{ post.boardCreatedAt }}</span>

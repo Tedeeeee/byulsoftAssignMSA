@@ -28,7 +28,7 @@ public interface MemberService {
      * @since : 2024.10.07
      * @author : T.S YUN
      */
-    MemberResponseDto findMemberIdByMemberNickname(String memberNickname);
+    MemberResponseDto findMemberByMemberNickname(String memberNickname);
 
     /**
      * 설명 : 이메일 유효성 검사와 중복 체크

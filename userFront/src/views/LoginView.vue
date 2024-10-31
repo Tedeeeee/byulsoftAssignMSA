@@ -52,13 +52,11 @@ const handleSubmit = async () => {
     await localStorage.setItem(accessToken, response.data.AccessToken);
 
     const userResponse = await getUserData();
-    console.log(userResponse)
     userStore().userDataSetting(userResponse.data.body)
     await router.push('/');
   } catch (error) {
     modalMessage.value = '아이디 혹은 비밀번호가 틀렸습니다'
     ModalStore().openModal();
-    console.log(error)
   }
 }
 </script>

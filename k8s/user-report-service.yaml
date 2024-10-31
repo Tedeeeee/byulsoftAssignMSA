@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-report-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-report-service
+  template:
+    metadata:
+      labels:
+        app: user-report-service
+    spec:
+      containers:
+        - name: user-report-service
+          image: ddasick/byulassign:user-report-test1
+          ports:
+            - containerPort: 8085
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:log4jdbc:mysql://mysql-service:3306/msa_report?serverTimezone=UTC&characterEncoding=utf8
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-report-service
+spec:
+  type: ClusterIP
+  selector:
+    app: user-report-service
+  ports:
+    - name: user-report-service
+      protocol: TCP
+      port: 8085
+      targetPort: 8085
+      

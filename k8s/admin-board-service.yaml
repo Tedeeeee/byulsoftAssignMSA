@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-board-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-board-service
+  template:
+    metadata:
+      labels:
+        app: admin-board-service
+    spec:
+      containers:
+        - name: admin-board-service
+          image: ddasick/byulassign:admin-board-test1
+          ports:
+            - containerPort: 8088
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:log4jdbc:mysql://mysql-service:3306/msa_board?serverTimezone=UTC&characterEncoding=utf8
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-board-service
+spec:
+  type: ClusterIP
+  selector:
+    app: admin-board-service
+  ports:
+    - name: admin-board-service
+      protocol: TCP
+      port: 8088
+      targetPort: 8088
+      

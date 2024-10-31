@@ -31,6 +31,7 @@ public class BoardServiceImpl implements BoardService {
 
     private List<BoardResponseDto> getBoardResponseDtoList(SearchConditionDto searchConditionDto) {
         String nickname = memberServiceClient.getMemberNicknameByMemberId(searchConditionDto.getMemberId());
+
         return boardMapper.getAllBoard(searchConditionDto).stream()
                 .map(board -> BoardResponseDto.from(board, nickname))
                 .toList();

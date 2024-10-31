@@ -58,7 +58,6 @@ const handleSubmit = async () => {
     await router.push('/');
   } catch (error) {
     ModalStore().openModal()
-    console.log(error)
   }
 }
 </script>

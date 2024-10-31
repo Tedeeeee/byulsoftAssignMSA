@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-comment-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-comment-service
+  template:
+    metadata:
+      labels:
+        app: user-comment-service
+    spec:
+      containers:
+        - name: user-comment-service
+          image: ddasick/byulassign:user-comment-test1
+          ports:
+            - containerPort: 8086
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:log4jdbc:mysql://mysql-service:3306/msa_comment?serverTimezone=UTC&characterEncoding=utf8
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "1234"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-comment-service
+spec:
+  type: ClusterIP
+  selector:
+    app: user-comment-service
+  ports:
+    - name: user-comment-service
+      protocol: TCP
+      port: 8086
+      targetPort: 8086
+  

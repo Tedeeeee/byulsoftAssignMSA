@@ -8,6 +8,7 @@ import com.example.usercommentservice.dto.CommentResponseDto;
 import com.example.usercommentservice.dto.MemberResponseDto;
 import com.example.usercommentservice.entity.Comment;
 import com.example.usercommentservice.mapper.CommentMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
 
         // boardId를 검색하면 자연스럽게 member도 검증
         if (!boardServiceClient.getBoardByBoardId(commentRequestDto.getBoardId())) {
-            throw new RuntimeException("Board does not exist");
+            throw new RuntimeException("해당 게시글은 존재하지 않습니다.");
         }
 
         Comment comment = commentRequestDto.toEntity();
@@ -69,9 +70,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void updateComment(CommentRequestDto commentRequestDto, String memberEmail) {
+        MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
         commentRequestDto.validationCheck();
 
-        MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
         member.checkSameMemberId(commentRequestDto.getMemberId());
 
         Comment comment = commentRequestDto.toEntity();
@@ -92,7 +93,6 @@ public class CommentServiceImpl implements CommentService {
         commentMapper.deleteCommentByCommentId(commentId);
     }
 
-    // 여기서 카프카 활용 가능
     @Override
     @Transactional
     public void deleteAllCommentsByBoardId(int boardId) {

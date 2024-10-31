@@ -12,6 +12,7 @@ export const AdminStore = defineStore('admin', () => {
     adminNickname: '',
     adminPhoneNumber: ''
   })
+
   const loginCheck = computed(() => {
     return !!admin.value.adminEmail;
   })

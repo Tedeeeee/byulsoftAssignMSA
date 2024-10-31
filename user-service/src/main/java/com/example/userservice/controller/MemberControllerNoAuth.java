@@ -48,7 +48,6 @@ public class MemberControllerNoAuth {
                 .body(BodyResponse.success("회원가입이 완료되었습니다"));
     }
 
-
     // feign 요청 전용
     @GetMapping("/feign")
     MemberResponseDto getMembers(@RequestParam String memberEmail) {
@@ -67,7 +66,7 @@ public class MemberControllerNoAuth {
 
     @GetMapping("/feign/nickname/{memberNickname}")
     MemberResponseDto getMemberNickname(@PathVariable("memberNickname") String memberNickname) {
-        return memberService.findMemberIdByMemberNickname(memberNickname);
+        return memberService.findMemberByMemberNickname(memberNickname);
     }
 
     @GetMapping("/feign/members/nickname")

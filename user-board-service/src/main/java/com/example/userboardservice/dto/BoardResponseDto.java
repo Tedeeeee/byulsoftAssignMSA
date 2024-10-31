@@ -23,6 +23,8 @@ public class BoardResponseDto {
     private int boardView;
     private String boardCreatedAt;
     private String boardUpdatedAt;
+
+    @Builder.Default
     private List<BoardStar> boardStars = new ArrayList<>();
 
     public static BoardResponseDto from(Board board) {

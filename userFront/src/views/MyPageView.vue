@@ -18,6 +18,7 @@
     <!-- 아이콘 그리드 -->
     <q-card class="q-ma-md">
       <q-card-section>
+        <div class="row q-col-gutter-md justify-evenly">
         <q-btn-group flat class="q-gutter-md">
           <q-btn icon="edit" label="닉네임 변경" stack-label class="col" @click="showType = 'nickname'"/>
           <q-btn icon="lock" label="비밀번호 변경" stack-label class="col" @click="showType = 'password'"/>
@@ -25,6 +26,7 @@
           <q-btn icon="comment" label="내가 쓴 댓글" stack-label class="col" @click="getMyComments"/>
           <q-btn icon="report_problem" label="신고 내역" stack-label class="col" @click="getMyReports"/>
         </q-btn-group>
+        </div>
       </q-card-section>
     </q-card>
 
@@ -293,7 +295,6 @@ const checkMyPassword = async () => {
     changePasswordData.value.checkOriginPassword = true;
     positiveNotify(response.data.message)
   } catch (error) {
-    console.log(error)
     negativeNotify(error.response.data.message)
   }
 }
@@ -314,13 +315,11 @@ const isPasswordValid = computed(() => {
 
   const isPasswordValid = checkPassword.every((rule) => {
     const result = rule(changePasswordData.value.newPassword);
-    console.log('isPasswordValid' + result)
     return typeof result === 'boolean' ? result : false;
   });
 
   const isConfirmPasswordValid = checkConfirmPassword.every((rule) => {
     const result = rule(changePasswordData.value.doubleCheckPassword);
-    console.log('isConfirmPasswordValid' + result)
     return typeof result === 'boolean' ? result : false;
   });
 
@@ -328,7 +327,6 @@ const isPasswordValid = computed(() => {
 });
 
 const changePassword = async () =>{
-  console.log(isPasswordValid.value)
   if (!isPasswordValid.value) {
     negativeNotify("비밀번호를 정확히 입력해주세요");
     return;
@@ -357,7 +355,6 @@ const checkNicknameAvailability = async () => {
     positiveNotify(response.data.message)
     changeNicknameData.value.confirmNickname = true;
   } catch (error) {
-    console.log(error)
     negativeNotify(error.response.data.message)
   }
 }
@@ -369,7 +366,6 @@ const changeUserNickname = async () => {
     userStore().setUserNickname(changeNicknameData.value.newNickname);
     await router.push('/');
   } catch (error) {
-    console.log(error)
     negativeNotify(error.response.data.message)
   }
 }

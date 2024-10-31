@@ -8,6 +8,7 @@ import com.example.userboardservice.entity.BoardStar;
 import com.example.userboardservice.mapper.BoardMapper;
 import com.example.userboardservice.mapper.BoardStarMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardServiceImpl implements BoardService{
 
     private final BoardMapper boardMapper;
@@ -29,12 +31,10 @@ public class BoardServiceImpl implements BoardService{
     @Override
     @Transactional
     public void addBoard(BoardRequestDto boardRequestDto, String memberEmail) {
-        // 사용자의 정보 가져오기 ( openFeign )
         MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
 
         member.checkMemberIdNull();
 
-        // 가져온 정보 validation 진행
         boardRequestDto.validationCheck();
 
         Board board = boardRequestDto.toEntity(member.getMemberId());
@@ -48,7 +48,6 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardMapper.findBoardByBoardId(boardId);
         BoardResponseDto boardResponseDto = BoardResponseDto.from(board);
 
-        // board의 id를 통해 사용자 정보 가져오기
         String nickname = memberServiceClient.getMemberNicknameByMemberId(board.getMemberId());
         boardResponseDto.setMemberNickname(nickname);
 
@@ -58,21 +57,17 @@ public class BoardServiceImpl implements BoardService{
     @Override
     @Transactional
     public void updateBoard(BoardRequestDto boardRequestDto, String memberEmail) {
-        // 사용자 확인 및 유효성 체크
         MemberResponseDto member = memberServiceClient.getMemberByMemberEmail(memberEmail);
 
         member.checkSameMemberId(boardRequestDto.getMemberId());
         boardRequestDto.validationCheck();
 
-        // 게시글 수정
         Board board = boardRequestDto.toEntity(member.getMemberId());
 
         boardMapper.updateBoard(board);
 
-        // board에 해당된 boarStar는 모두 지운다
         boardStarMapper.deleteBoardStarByBoardId(board.getBoardId());
 
-        // 이후 별점을 다시 저장한다.
         bulkInsertBoardStars(boardRequestDto.getBoardStars(), board.getBoardId());
     }
 
@@ -81,8 +76,9 @@ public class BoardServiceImpl implements BoardService{
         List<Integer> postList = getFilteredPostIdsByCondition(searchConditionDto);
 
         if (postList.isEmpty()) {
-            throw new RuntimeException("검색 조건이 없습니다");
+            throw new RuntimeException("검색 결과가 존재하지 않습니다");
         }
+
         List<Board> postsByPostIdList = boardMapper.getBoardsByBoardIdList(postList);
 
         Map<Integer, Board> postListMapping = getPostMappingByPostIdList(postsByPostIdList);

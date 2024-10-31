@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "userServiceClient", url = "http://localhost:8888")
+@FeignClient(name = "userServiceClient", url = "http://user-service:8082")
 public interface MemberServiceClient {
     /**
      * 설명 : user service 로부터 서비스 사용자 전체 가져오기
      * @author : T.S YUN
      * @since : 2024.10.16
      */
-    @GetMapping("/api/userService/noAuth/users/feign/all")
+    @GetMapping("/noAuth/users/feign/all")
     List<MemberResponseDto> getMemberAll();
 
     /**
@@ -23,7 +23,7 @@ public interface MemberServiceClient {
      * @since : 2024.10.17
      * @author : T.S YUN
      */
-    @GetMapping("/api/userService/noAuth/users/feign/members/nickname")
+    @GetMapping("/noAuth/users/feign/members/nickname")
     List<MemberResponseDto> getMemberByNickname(@RequestParam String memberNickname);
 
     /**
@@ -31,6 +31,6 @@ public interface MemberServiceClient {
      * @author : T.S YUN
      * @since : 2024.10.16
      */
-    @GetMapping("/api/userService/noAuth/users/feign/{memberId}")
+    @GetMapping("/noAuth/users/feign/{memberId}")
     MemberResponseDto getMemberByMemberId(@PathVariable int memberId);
 }

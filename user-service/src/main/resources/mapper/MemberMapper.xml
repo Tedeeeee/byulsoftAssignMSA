@@ -19,7 +19,7 @@
     </resultMap>
 
     <insert id="save" parameterType="com.example.userservice.entity.Member" useGeneratedKeys="true" keyProperty="memberId">
-        INSERT INTO Member
+        INSERT INTO member
         (
             member_email,
             member_password,
@@ -165,4 +165,9 @@
         from member
         where member_nickname like CONCAT('%', #{memberNickname}, '%')
     </select>
+
+    <delete id="deleteMember">
+        delete from member
+        where member_id = #{memberId}
+    </delete>
 </mapper>

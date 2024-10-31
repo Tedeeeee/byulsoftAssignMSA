@@ -52,12 +52,10 @@ const fetchContentDetails = async () => {
 const submitForm = async () => {
   try {
     const response = await updateBoard(postContents.value);
-    console.log(response)
 
     positiveNotify(response.data.message);
     await router.push(`/${boardId}`);
   } catch (error) {
-    console.log(error)
     negativeNotify(error.message);
   }
 };

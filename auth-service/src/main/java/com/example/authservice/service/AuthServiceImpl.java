@@ -1,5 +1,6 @@
 package com.example.authservice.service;
 
+import com.example.authservice.dto.AuthMemberDto;
 import com.example.authservice.dto.TokenResponseDto;
 import com.example.authservice.entity.Member;
 import com.example.authservice.entity.Role;
@@ -42,5 +43,9 @@ public class AuthServiceImpl implements AuthService {
         memberMapper.logout(member);
     }
 
-
+    @Override
+    public void saveMember(AuthMemberDto authMemberDto) {
+        Member member = authMemberDto.toEntity();
+        memberMapper.save(member);
+    }
 }

@@ -1,13 +1,14 @@
 package com.example.userservice.service;
 
+import com.example.userservice.client.AuthServiceClient;
 import com.example.userservice.dto.AuthMemberDto;
 import com.example.userservice.dto.MemberRequestDto;
 import com.example.userservice.entity.Member;
 import com.example.userservice.dto.MemberResponseDto;
-import com.example.userservice.kafka.service.KafkaProducerSendService;
 import com.example.userservice.mapper.MemberMapper;
 import com.example.userservice.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -19,10 +20,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
-    private final KafkaProducerSendService kafkaProducerSendService;
+    private final AuthServiceClient authServiceClient;
 
     @Override
     public MemberResponseDto findUserByMemberEmail(String memberEmail) {
@@ -38,14 +40,14 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new RuntimeException("사용자가 확인되지 않습니다"));
 
         if (!StringUtils.hasText(nickname)) {
-            nickname = "탈퇴한 회원입니다";
+            nickname = "익명";
         }
 
         return nickname;
     }
 
     @Override
-    public MemberResponseDto findMemberIdByMemberNickname(String memberNickname) {
+    public MemberResponseDto findMemberByMemberNickname(String memberNickname) {
         Member member = memberMapper.findMemberIdByMemberNickname(memberNickname)
                 .orElseThrow(() -> new RuntimeException("사용자가 존재하지 않습니다"));
 
@@ -58,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
 
         boolean checkEmail = memberMapper.checkEmail(email);
         if (checkEmail) {
-            throw new RuntimeException("이미 존재하는 이메일 입니다");
+            throw new RuntimeException("이미 존재하는 이메일입니다");
         }
     }
 
@@ -97,16 +99,11 @@ public class MemberServiceImpl implements MemberService {
 
         String newPassword = member.changePasswordEncoding(enterPassword);
 
-        try {
-            memberMapper.changeMemberPassword(newPassword, member.getMemberId());
+        memberMapper.changeMemberPassword(newPassword, member.getMemberId());
 
-            member.setMemberPassword(newPassword);
-            AuthMemberDto authMember = AuthMemberDto.from(member);
-            // 변경된 비밀번호 kafka 통신으로 옮기기 ( AuthService )
-            kafkaProducerSendService.send("newPassword-topic", authMember);
-        } catch (Exception e) {
-            throw new RuntimeException("비밀번호 변경 실패" + e.getMessage());
-        }
+        member.setMemberPassword(newPassword);
+        AuthMemberDto authMember = AuthMemberDto.from(member);
+        authServiceClient.changePassword(authMember);
     }
 
     @Override
@@ -117,20 +114,14 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberRequestDto.toEntity();
 
-        try {
-            memberMapper.save(member);
-            AuthMemberDto authMember = AuthMemberDto.from(member);
-            // 만약 kafka의 서버가 장애가 발생해서 처리가 안되었다면?
-            // 해당 회원가입도 되지 않아야 한다.
-            kafkaProducerSendService.send("register-topic", authMember);
-        } catch (Exception e) {
-            throw new RuntimeException("회원가입 실패" + e.getMessage());
-        }
+        memberMapper.save(member);
+
+        AuthMemberDto authMember = AuthMemberDto.from(member);
+        authServiceClient.memberDataSave(authMember);
     }
 
     @Override
     public Map<Integer, String> findUserNicknamesByMemberList(List<Integer> memberIdList) {
-        // 여기서 list 순서대로 가져와야 한다.
         List<Member> findMemberList = memberMapper.findMemberNicknameByMemberIdList(memberIdList);
 
         return findMemberList.stream()

@@ -205,7 +205,6 @@ const handleSubmit = async () => {
     positiveNotify(response.data.message)
     await router.push('/');
   } catch (error) {
-    // 닉네임 혹은 이메일이 변경되었을 경우 처리
     console.log(error)
   }
 }
