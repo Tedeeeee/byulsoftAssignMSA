@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: admin-report-service
-          image: ddasick/byulassign:admin-report-test1
+          image: ddasick/byulassign:msa-admin-report-service
           ports:
             - containerPort: 8089
               protocol: TCP

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-board-service
-          image: ddasick/byulassign:user-board-test1
+          image: ddasick/byulassign:msa-user-board-service
           ports:
             - containerPort: 8084
               protocol: TCP

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: ddasick/byulassign:efg
+          image: ddasick/byulassign:msa-user-service
           ports:
             - containerPort: 8082
               protocol: TCP

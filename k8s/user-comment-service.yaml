@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-comment-service
-          image: ddasick/byulassign:user-comment-test1
+          image: ddasick/byulassign:msa-user-comment-service
           ports:
             - containerPort: 8086
               protocol: TCP

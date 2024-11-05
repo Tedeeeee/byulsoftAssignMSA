@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: admin-board-service
-          image: ddasick/byulassign:admin-board-test1
+          image: ddasick/byulassign:msa-admin-board-service
           ports:
             - containerPort: 8088
               protocol: TCP

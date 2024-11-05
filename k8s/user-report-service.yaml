@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-report-service
-          image: ddasick/byulassign:user-report-test1
+          image: ddasick/byulassign:msa-user-report-service
           ports:
             - containerPort: 8085
               protocol: TCP

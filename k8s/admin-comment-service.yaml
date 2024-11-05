@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: admin-comment-service
-          image: ddasick/byulassign:admin-comment-test1
+          image: ddasick/byulassign:msa-admin-comment-service
           ports:
             - containerPort: 8087
               protocol: TCP

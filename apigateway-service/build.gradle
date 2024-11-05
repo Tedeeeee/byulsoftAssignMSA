@@ -32,7 +32,6 @@ dependencies {
 
     /* 쿠버네티스 */
     implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client-all'
     implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client-loadbalancer'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
